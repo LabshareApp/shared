@@ -1,0 +1,30 @@
+{
+  "name": "@labshare/shared-react",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "tsc -b --clean"
+  },
+  "dependencies": {
+    "@labshare/shared-core": "0.0.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "^5.70.0"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "@tanstack/react-query": "^5.70.0"
+  }
+}

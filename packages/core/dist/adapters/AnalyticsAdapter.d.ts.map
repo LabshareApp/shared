@@ -1,0 +1,1 @@
+{"version":3,"file":"AnalyticsAdapter.d.ts","sourceRoot":"","sources":["../../src/adapters/AnalyticsAdapter.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,gBAAgB;IAC/B,SAAS,CAAC,MAAM,EAAE,MAAM,GAAG,IAAI,CAAC;IAChC,KAAK,CAAC,KAAK,EAAE,MAAM,EAAE,UAAU,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,GAAG,IAAI,CAAC;CAClE"}

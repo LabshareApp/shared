@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTag = createTag;
 exports.createSublocation = createSublocation;
 exports.fetchTags = fetchTags;
+exports.deleteTag = deleteTag;
 exports.fetchTagsByCategory = fetchTagsByCategory;
 exports.fetchSublocations = fetchSublocations;
-exports.deleteTag = deleteTag;
 const inventory_1 = require("../../../types/inventory");
 const responseValidation_1 = require("../../responseValidation");
 async function createTag(client, tagData) {
@@ -43,6 +43,13 @@ async function fetchTags(client) {
     const tags = await client.request({ method: 'GET', path: '/get-tags' });
     return (0, responseValidation_1.validateArrayResponse)(tags, 'fetchTags');
 }
+async function deleteTag(client, tagId) {
+    await client.request({
+        method: 'DELETE',
+        path: '/delete-tag',
+        query: { id: tagId },
+    });
+}
 async function fetchTagsByCategory(client, category, labId) {
     const tags = await client.request({
         method: 'GET',
@@ -58,12 +65,5 @@ async function fetchSublocations(client, parentLocationId) {
         query: { parentLocationId },
     });
     return (0, responseValidation_1.validateArrayResponse)(tags, 'fetchSublocations');
-}
-async function deleteTag(client, tagId) {
-    await client.request({
-        method: 'DELETE',
-        path: '/delete-tag',
-        query: { id: tagId },
-    });
 }
 //# sourceMappingURL=tags.js.map

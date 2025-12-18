@@ -56,6 +56,14 @@ export async function fetchTags(client: ApiClient): Promise<BackendTag[]> {
   return validateArrayResponse<BackendTag>(tags, 'fetchTags');
 }
 
+export async function deleteTag(client: ApiClient, tagId: string): Promise<void> {
+  await client.request<any>({
+    method: 'DELETE',
+    path: '/delete-tag',
+    query: { id: tagId },
+  });
+}
+
 export async function fetchTagsByCategory(
   client: ApiClient,
   category: TagCategoryType,
@@ -79,13 +87,5 @@ export async function fetchSublocations(
     query: { parentLocationId },
   });
   return validateArrayResponse<BackendTag>(tags, 'fetchSublocations');
-}
-
-export async function deleteTag(client: ApiClient, tagId: string): Promise<void> {
-  await client.request<any>({
-    method: 'DELETE',
-    path: '/delete-tag',
-    query: { id: tagId },
-  });
 }
 

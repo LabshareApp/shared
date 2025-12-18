@@ -1,0 +1,43 @@
+export interface ContactInfo {
+    phone?: string;
+    email?: string;
+    name?: string;
+    role?: string;
+}
+export interface ItemRequest {
+    _id: string;
+    itemId: string;
+    itemName: string;
+    quantity: number;
+    brandName: string;
+    status: 'pending' | 'accepted' | 'fulfilled';
+    requestingLabId: string;
+    requestingLabName?: string;
+    recipientLabId: string;
+    recipientLabName?: string;
+    requestedByUserId?: string;
+    requestedByUserName?: string;
+    acceptedByUserId?: string;
+    fulfilledByUserId?: string;
+    notes?: string;
+    createdAt: string;
+    updatedAt: string;
+    recipientContact?: ContactInfo;
+    requestingContact?: ContactInfo;
+}
+export interface ListItemRequestsResponse {
+    total: number;
+    requests: ItemRequest[];
+}
+export interface CreateItemRequestRequest {
+    ItemID: string;
+    ItemName: string;
+    Quantity: number;
+    BrandName: string;
+    RecipientLabID: string;
+    Notes?: string;
+}
+export interface CreateItemRequestResponse {
+    id: string;
+}
+//# sourceMappingURL=itemRequests.d.ts.map

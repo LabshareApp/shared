@@ -1,2 +1,7 @@
 export * from './inventory';
+export * from './orderRequests';
+export * from './collaboration';
+export * from './itemRequests';
+export * from './notifications';
+export * from './labs';
 //# sourceMappingURL=index.d.ts.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"labs.d.ts","sourceRoot":"","sources":["../../src/types/labs.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,SAAS;IACxB,EAAE,EAAE,MAAM,CAAC;IACX,UAAU,EAAE,MAAM,GAAG,IAAI,CAAC;IAC1B,SAAS,EAAE,MAAM,GAAG,IAAI,CAAC;IACzB,KAAK,EAAE,MAAM,GAAG,IAAI,CAAC;IACrB,IAAI,EAAE,MAAM,GAAG,IAAI,CAAC;CACrB"}

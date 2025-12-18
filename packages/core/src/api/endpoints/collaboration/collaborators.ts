@@ -64,3 +64,4 @@ export async function getAvailableLabs(client: ApiClient): Promise<LabInfo[]> {
   return validateArrayResponse<LabInfo>(response, 'getAvailableLabs');
 }
 
+

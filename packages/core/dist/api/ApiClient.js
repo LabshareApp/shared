@@ -19,6 +19,32 @@ class ApiClient {
                 Accept: 'application/json',
             },
         });
+        // Add response interceptor for automatic token refresh on 401
+        this.axios.interceptors.response.use((response) => response, async (error) => {
+            var _a, _b;
+            const originalRequest = error.config;
+            // If error is 401 and we haven't already retried, try to refresh token
+            if (((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status) === 401 &&
+                !originalRequest._retry &&
+                this.tokenProvider.refreshSession &&
+                originalRequest) {
+                originalRequest._retry = true;
+                try {
+                    const newToken = await this.tokenProvider.refreshSession();
+                    if (newToken && originalRequest) {
+                        // Update the authorization header and retry the request
+                        originalRequest.headers = originalRequest.headers || {};
+                        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                        return this.axios.request(originalRequest);
+                    }
+                }
+                catch (refreshError) {
+                    (_b = this.logger) === null || _b === void 0 ? void 0 : _b.error('api.token_refresh_failed', { error: refreshError });
+                    // If refresh fails, reject with original error
+                }
+            }
+            return Promise.reject(error);
+        });
     }
     async request(req) {
         var _a, _b, _c, _d, _e, _f, _g, _h;

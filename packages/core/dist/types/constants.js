@@ -1,0 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.COMMON_UNITS = void 0;
+exports.COMMON_UNITS = [
+    { label: 'ml', value: 'ml' },
+    { label: 'L', value: 'L' },
+    { label: 'µl', value: 'µl' },
+    { label: 'g', value: 'g' },
+    { label: 'kg', value: 'kg' },
+    { label: 'mg', value: 'mg' },
+    { label: 'µg', value: 'µg' },
+    { label: 'pcs', value: 'pcs' },
+    { label: 'box', value: 'box' },
+    { label: 'bottle', value: 'bottle' },
+    { label: 'tube', value: 'tube' },
+    { label: 'vial', value: 'vial' },
+    { label: 'plate', value: 'plate' },
+    { label: 'well', value: 'well' },
+    { label: 'pack', value: 'pack' },
+    { label: 'roll', value: 'roll' },
+    { label: 'sheet', value: 'sheet' },
+    { label: 'strip', value: 'strip' },
+    { label: 'Custom...', value: '__CUSTOM__' },
+];
+//# sourceMappingURL=constants.js.map

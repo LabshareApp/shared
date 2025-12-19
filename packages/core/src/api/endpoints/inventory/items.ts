@@ -49,7 +49,9 @@ export async function updateInventoryItem(
       | 'grantTags'
       | 'labelTags'
     >
-  >
+  > & {
+    catalog?: string;
+  }
 ): Promise<void> {
   await client.request<any>({
     method: 'PUT',

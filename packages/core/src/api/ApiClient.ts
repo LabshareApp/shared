@@ -75,6 +75,8 @@ export class ApiClient {
     const startedAt = Date.now();
     const url = `${this.repositoryPrefix}${req.path}`;
 
+    // Token will be added by request interceptor, but we still get it here
+    // for logging purposes. The interceptor ensures it's fresh.
     const token = await this.tokenProvider.getAccessToken();
 
     const config: AxiosRequestConfig = {
@@ -82,6 +84,7 @@ export class ApiClient {
       method: req.method as Method,
       params: req.query,
       data: req.body,
+      // Token is set by request interceptor, but include it here as fallback
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     };
 

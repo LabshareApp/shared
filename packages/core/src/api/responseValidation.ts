@@ -29,6 +29,10 @@ export function validateObjectResponse<T>(
     if (!(field in response)) {
       throw new Error(`Incomplete response from ${functionName}. Missing '${String(field)}'.`);
     }
+    // For array fields, ensure they're arrays (not null)
+    if (field === 'items' && response[field] === null) {
+      response[field] = [];
+    }
   }
   return response;
 }
@@ -37,10 +41,25 @@ export function validatePaginatedResponse(
   response: any,
   functionName: string
 ): PaginatedInventoryResponse {
-  if (!response || !Array.isArray(response.items) || typeof response.totalCount !== 'number') {
-    throw new Error(`Unexpected response format from ${functionName}: Expected paginated structure.`);
+  // Handle both lowercase and uppercase field names (Go JSON serialization)
+  const items = response?.items || response?.Items;
+  const totalCount = response?.totalCount ?? response?.TotalCount;
+  
+  if (!response) {
+    throw new Error(`Unexpected response format from ${functionName}: Response is null or undefined.`);
   }
-  return response as PaginatedInventoryResponse;
+  
+  if (!Array.isArray(items)) {
+    console.error(`[${functionName}] Invalid response:`, response);
+    throw new Error(`Unexpected response format from ${functionName}: Expected items array. Got: ${typeof items}. Response keys: ${Object.keys(response || {}).join(', ')}`);
+  }
+  
+  if (typeof totalCount !== 'number') {
+    console.error(`[${functionName}] Invalid response:`, response);
+    throw new Error(`Unexpected response format from ${functionName}: Expected totalCount number. Got: ${typeof totalCount}. Response keys: ${Object.keys(response || {}).join(', ')}`);
+  }
+  
+  return { items, totalCount } as PaginatedInventoryResponse;
 }
 
 export function mapInventoryItems(items: PaginatedInventoryResponse['items']): InventoryItem[] {

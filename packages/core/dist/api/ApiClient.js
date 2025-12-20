@@ -50,12 +50,15 @@ class ApiClient {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         const startedAt = Date.now();
         const url = `${this.repositoryPrefix}${req.path}`;
+        // Token will be added by request interceptor, but we still get it here
+        // for logging purposes. The interceptor ensures it's fresh.
         const token = await this.tokenProvider.getAccessToken();
         const config = {
             url,
             method: req.method,
             params: req.query,
             data: req.body,
+            // Token is set by request interceptor, but include it here as fallback
             headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         };
         (_a = this.logger) === null || _a === void 0 ? void 0 : _a.debug('api.request', {

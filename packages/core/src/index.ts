@@ -10,6 +10,7 @@ export * from './api/endpoints/itemRequests';
 export * from './api/endpoints/notifications';
 export * from './api/endpoints/labs';
 export * from './api/endpoints/excel';
+export * from './api/endpoints/grants';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -24,6 +25,7 @@ export * from './types/itemRequests';
 export * from './types/notifications';
 export * from './types/labs';
 export * from './types/excel';
+export * from './types/grants';
 export * from './types/api';
 
 export * from './utils/logger';

@@ -1,5 +1,11 @@
 import type { ApiClient } from '../../ApiClient';
-import type { CreateOrderRequestData, OrderRequestItem, BulkOperationResult } from '../../../types/orderRequests';
+import type {
+  CreateOrderRequestData,
+  OrderRequestItem,
+  BulkOperationResult,
+  PlaceOrderPayload,
+  BulkPlaceOrdersPayload,
+} from '../../../types/orderRequests';
 import { validateObjectResponse } from '../../responseValidation';
 
 export async function createOrderRequest(
@@ -105,11 +111,20 @@ export async function bulkMoveOrderRequestsToInventory(
   return validateObjectResponse(response, 'bulkMoveOrderRequestsToInventory', ['successCount', 'failureCount', 'errors'] as any) as any;
 }
 
-export async function placeOrderRequest(client: ApiClient, orderRequestId: string): Promise<{ id: string }> {
+export async function placeOrderRequest(
+  client: ApiClient,
+  payload: PlaceOrderPayload
+): Promise<{ id: string }> {
+  const { orderRequestId, unitCost, shippingCost, currency } = payload;
+  const body: any = { orderRequestId };
+  if (typeof unitCost === 'number') body.unitCost = unitCost;
+  if (typeof shippingCost === 'number') body.shippingCost = shippingCost;
+  if (currency) body.currency = currency;
+
   const response = await client.request<{ id: string; message?: string }>({
     method: 'POST',
     path: '/place-order',
-    body: { orderRequestId },
+    body,
   });
   return validateObjectResponse(response, 'placeOrderRequest', ['id'] as any) as { id: string };
 }
@@ -128,14 +143,19 @@ export async function revertPlacedOrderRequest(
 
 export async function bulkPlaceOrderRequests(
   client: ApiClient,
-  orderRequestIds: string[]
+  payload: BulkPlaceOrdersPayload
 ): Promise<BulkOperationResult> {
   const response = await client.request<BulkOperationResult>({
     method: 'POST',
     path: '/bulk-place-orders',
-    body: { orderRequestIds },
+    body: payload,
   });
-  return validateObjectResponse(response, 'bulkPlaceOrderRequests', ['successCount', 'failureCount', 'errors'] as any) as any;
+  return validateObjectResponse(
+    response,
+    'bulkPlaceOrderRequests',
+    ['successCount', 'failureCount', 'errors'] as any
+  ) as any;
 }
+
 
 

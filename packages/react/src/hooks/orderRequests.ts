@@ -169,7 +169,7 @@ export function useOrderRequestMutations(client: ApiClient) {
   });
 
   const placeOrderRequestMutation = useMutation({
-    mutationFn: ({ orderRequestId }: { orderRequestId: string }) => placeOrderRequest(client, orderRequestId),
+    mutationFn: (payload: Parameters<typeof placeOrderRequest>[1]) => placeOrderRequest(client, payload),
     onSuccess: invalidateSearch,
   });
 
@@ -198,7 +198,8 @@ export function useOrderRequestMutations(client: ApiClient) {
   });
 
   const bulkPlaceOrderRequestsMutation = useMutation({
-    mutationFn: ({ orderRequestIds }: { orderRequestIds: string[] }) => bulkPlaceOrderRequests(client, orderRequestIds),
+    mutationFn: (payload: Parameters<typeof bulkPlaceOrderRequests>[1]) =>
+      bulkPlaceOrderRequests(client, payload),
     onSuccess: invalidateSearch,
   });
 
@@ -244,5 +245,6 @@ export function useOrderRequestMutations(client: ApiClient) {
     reRequestArchivedOrderMutation,
   };
 }
+
 
 

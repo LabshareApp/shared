@@ -50,9 +50,7 @@ export declare function useOrderRequestMutations(client: ApiClient): {
     }, unknown>;
     placeOrderRequestMutation: import("@tanstack/react-query").UseMutationResult<{
         id: string;
-    }, Error, {
-        orderRequestId: string;
-    }, unknown>;
+    }, Error, import("@labshare/shared-core").PlaceOrderPayload, unknown>;
     revertPlacedOrderRequestMutation: import("@tanstack/react-query").UseMutationResult<{
         id: string;
     }, Error, {
@@ -69,9 +67,7 @@ export declare function useOrderRequestMutations(client: ApiClient): {
         orderRequestIds: string[];
         locationId?: string;
     }, unknown>;
-    bulkPlaceOrderRequestsMutation: import("@tanstack/react-query").UseMutationResult<import("@labshare/shared-core").BulkOperationResult, Error, {
-        orderRequestIds: string[];
-    }, unknown>;
+    bulkPlaceOrderRequestsMutation: import("@tanstack/react-query").UseMutationResult<import("@labshare/shared-core").BulkOperationResult, Error, import("@labshare/shared-core").BulkPlaceOrdersPayload, unknown>;
     deleteOrderRequestMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
     bulkDeleteOrderRequestsMutation: import("@tanstack/react-query").UseMutationResult<{
         deletedCount: number;

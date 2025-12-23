@@ -20,4 +20,5 @@ __exportStar(require("./collaboration"), exports);
 __exportStar(require("./itemRequests"), exports);
 __exportStar(require("./notifications"), exports);
 __exportStar(require("./labs"), exports);
+__exportStar(require("./grants"), exports);
 //# sourceMappingURL=index.js.map

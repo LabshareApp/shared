@@ -200,7 +200,7 @@ function createAuthStore(adapters) {
             }
         },
         registerUser: async (data) => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+            var _a, _b;
             const { email, password, userData, labData } = data;
             const { data: authData, error } = await adapters.supabaseAuth.signUp({
                 email,
@@ -225,23 +225,12 @@ function createAuthStore(adapters) {
                     userData,
                     labData,
                 });
+                // CRITICAL FIX: Fetch the profile from the database to get the correct lab_id
+                // This ensures that when a new lab is created, we get the actual lab_id
+                // that was generated during upsertProfile, rather than using labData?.id
+                // which will be empty for newly created labs
+                await get().fetchUserProfile(user.id);
                 set({
-                    userProfile: {
-                        id: user.id,
-                        first_name: (_c = userData === null || userData === void 0 ? void 0 : userData.firstName) !== null && _c !== void 0 ? _c : '',
-                        last_name: (_d = userData === null || userData === void 0 ? void 0 : userData.lastName) !== null && _d !== void 0 ? _d : '',
-                        phone_number: (_e = userData === null || userData === void 0 ? void 0 : userData.phoneNumber) !== null && _e !== void 0 ? _e : '',
-                        email: (_f = user.email) !== null && _f !== void 0 ? _f : '',
-                        role: (_g = labData === null || labData === void 0 ? void 0 : labData.role) !== null && _g !== void 0 ? _g : '',
-                        lab_id: (_h = labData === null || labData === void 0 ? void 0 : labData.id) !== null && _h !== void 0 ? _h : '',
-                        labs: {
-                            id: (_j = labData === null || labData === void 0 ? void 0 : labData.id) !== null && _j !== void 0 ? _j : '',
-                            name: (_k = labData === null || labData === void 0 ? void 0 : labData.name) !== null && _k !== void 0 ? _k : '',
-                            country: (_l = labData === null || labData === void 0 ? void 0 : labData.country) !== null && _l !== void 0 ? _l : '',
-                            department: (_m = labData === null || labData === void 0 ? void 0 : labData.department) !== null && _m !== void 0 ? _m : '',
-                            institution: (_o = labData === null || labData === void 0 ? void 0 : labData.institution) !== null && _o !== void 0 ? _o : '',
-                        },
-                    },
                     session,
                 });
                 adapters.analytics.track('Sign Up');

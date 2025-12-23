@@ -110,7 +110,7 @@ function useOrderRequestMutations(client) {
         },
     });
     const placeOrderRequestMutation = (0, react_query_1.useMutation)({
-        mutationFn: ({ orderRequestId }) => (0, shared_core_1.placeOrderRequest)(client, orderRequestId),
+        mutationFn: (payload) => (0, shared_core_1.placeOrderRequest)(client, payload),
         onSuccess: invalidateSearch,
     });
     const revertPlacedOrderRequestMutation = (0, react_query_1.useMutation)({
@@ -126,7 +126,7 @@ function useOrderRequestMutations(client) {
         onSuccess: invalidateSearch,
     });
     const bulkPlaceOrderRequestsMutation = (0, react_query_1.useMutation)({
-        mutationFn: ({ orderRequestIds }) => (0, shared_core_1.bulkPlaceOrderRequests)(client, orderRequestIds),
+        mutationFn: (payload) => (0, shared_core_1.bulkPlaceOrderRequests)(client, payload),
         onSuccess: invalidateSearch,
     });
     const deleteOrderRequestMutation = (0, react_query_1.useMutation)({

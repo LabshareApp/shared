@@ -65,11 +65,19 @@ async function bulkMoveOrderRequestsToInventory(client, orderRequestIds, locatio
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'bulkMoveOrderRequestsToInventory', ['successCount', 'failureCount', 'errors']);
 }
-async function placeOrderRequest(client, orderRequestId) {
+async function placeOrderRequest(client, payload) {
+    const { orderRequestId, unitCost, shippingCost, currency } = payload;
+    const body = { orderRequestId };
+    if (typeof unitCost === 'number')
+        body.unitCost = unitCost;
+    if (typeof shippingCost === 'number')
+        body.shippingCost = shippingCost;
+    if (currency)
+        body.currency = currency;
     const response = await client.request({
         method: 'POST',
         path: '/place-order',
-        body: { orderRequestId },
+        body,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'placeOrderRequest', ['id']);
 }
@@ -81,11 +89,11 @@ async function revertPlacedOrderRequest(client, orderRequestId) {
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'revertPlacedOrderRequest', ['id']);
 }
-async function bulkPlaceOrderRequests(client, orderRequestIds) {
+async function bulkPlaceOrderRequests(client, payload) {
     const response = await client.request({
         method: 'POST',
         path: '/bulk-place-orders',
-        body: { orderRequestIds },
+        body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'bulkPlaceOrderRequests', ['successCount', 'failureCount', 'errors']);
 }

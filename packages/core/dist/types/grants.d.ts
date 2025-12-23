@@ -43,6 +43,10 @@ export interface GrantTransactionsResponse {
     transactions: GrantTransaction[];
     totalCount: number;
 }
+export interface MoveGrantTransactionRequest {
+    transactionId: string;
+    targetGrantId: string;
+}
 export interface CreateGrantRequest {
     name: string;
     description?: string;

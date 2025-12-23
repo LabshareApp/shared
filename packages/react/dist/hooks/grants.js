@@ -71,9 +71,13 @@ function useGrantMutations(client) {
     const createGrantTransactionMutation = (0, react_query_1.useMutation)({
         mutationFn: (args) => (0, shared_core_1.createGrantTransaction)(client, args),
     });
+    const moveGrantTransactionMutation = (0, react_query_1.useMutation)({
+        mutationFn: (payload) => (0, shared_core_1.moveGrantTransaction)(client, payload),
+    });
     return {
         createGrantMutation,
         createGrantTransactionMutation,
+        moveGrantTransactionMutation,
     };
 }
 //# sourceMappingURL=grants.js.map

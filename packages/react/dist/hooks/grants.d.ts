@@ -1,4 +1,4 @@
-import type { ApiClient, CreateGrantRequest, CreateGrantTransactionRequest, Grant, GrantListResponse, GrantTransactionsResponse } from '@labshare/shared-core';
+import type { ApiClient, CreateGrantRequest, CreateGrantTransactionRequest, Grant, GrantListResponse, GrantTransactionsResponse, MoveGrantTransactionRequest } from '@labshare/shared-core';
 export declare function useGrantsList(client: ApiClient, params: {
     labId: string | null | undefined;
     status?: string | null;
@@ -23,5 +23,11 @@ export declare function useGrantMutations(client: ApiClient): {
         grantId: string;
         payload: CreateGrantTransactionRequest;
     }, unknown>;
+    moveGrantTransactionMutation: import("@tanstack/react-query").UseMutationResult<{
+        message: string;
+        transactionId: string;
+        fromGrantId: string;
+        toGrantId: string;
+    }, Error, MoveGrantTransactionRequest, unknown>;
 };
 //# sourceMappingURL=grants.d.ts.map

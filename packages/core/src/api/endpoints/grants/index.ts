@@ -7,6 +7,8 @@ import type {
   GrantTransactionsResponse,
   MoveGrantTransactionRequest,
   UpdateGrantData,
+  ShippingEstimateRequest,
+  ShippingEstimateResponse,
 } from '../../../types/grants';
 import { validateObjectResponse } from '../../responseValidation';
 
@@ -132,6 +134,18 @@ export async function deleteGrant(client: ApiClient, grantId: string): Promise<v
     path: '/delete-grant',
     query: { grantId },
   });
+}
+
+export async function estimateShipping(
+  client: ApiClient,
+  estimateRequest: ShippingEstimateRequest
+): Promise<ShippingEstimateResponse> {
+  const response = await client.request<ShippingEstimateResponse>({
+    method: 'POST',
+    path: '/grants/estimate-shipping',
+    body: estimateRequest,
+  });
+  return validateObjectResponse(response, 'estimateShipping', ['estimates'] as any) as ShippingEstimateResponse;
 }
 
 

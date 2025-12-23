@@ -5,6 +5,7 @@ import type {
   Grant,
   GrantListResponse,
   GrantTransactionsResponse,
+  MoveGrantTransactionRequest,
 } from '../../../types/grants';
 import { validateObjectResponse } from '../../responseValidation';
 
@@ -75,6 +76,38 @@ export async function createGrantTransaction(
   });
   // Response is the created transaction
   return validateObjectResponse(response, 'createGrantTransaction', ['_id'] as any);
+}
+
+export async function moveGrantTransaction(
+  client: ApiClient,
+  payload: MoveGrantTransactionRequest
+): Promise<{
+  message: string;
+  transactionId: string;
+  fromGrantId: string;
+  toGrantId: string;
+}> {
+  const response = await client.request<{
+    message: string;
+    transactionId: string;
+    fromGrantId: string;
+    toGrantId: string;
+  }>({
+    method: 'POST',
+    path: '/move-grant-transaction',
+    body: payload,
+  });
+
+  return validateObjectResponse(
+    response,
+    'moveGrantTransaction',
+    ['message', 'transactionId', 'fromGrantId', 'toGrantId'] as any
+  ) as {
+    message: string;
+    transactionId: string;
+    fromGrantId: string;
+    toGrantId: string;
+  };
 }
 
 

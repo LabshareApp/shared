@@ -6,6 +6,7 @@ import type {
   Grant,
   GrantListResponse,
   GrantTransactionsResponse,
+  MoveGrantTransactionRequest,
 } from '@labshare/shared-core';
 import {
   createGrant,
@@ -13,6 +14,7 @@ import {
   getGrant,
   getGrantTransactions,
   listGrants,
+  moveGrantTransaction,
 } from '@labshare/shared-core';
 
 import { grantsList, grantItem, grantTransactions } from '../queryKeys/grants';
@@ -94,9 +96,14 @@ export function useGrantMutations(client: ApiClient) {
       createGrantTransaction(client, args),
   });
 
+  const moveGrantTransactionMutation = useMutation({
+    mutationFn: (payload: MoveGrantTransactionRequest) => moveGrantTransaction(client, payload),
+  });
+
   return {
     createGrantMutation,
     createGrantTransactionMutation,
+    moveGrantTransactionMutation,
   };
 }
 

@@ -27,7 +27,23 @@ export async function searchCollaboratorItems(
     query,
   });
 
-  return validateObjectResponse(response, 'searchCollaboratorItems', ['items', 'totalCount'] as any) as any;
+  console.log('[searchCollaboratorItems] Raw response:', response);
+
+  // Ensure items is always an array, even if backend returns null
+  const validated = validateObjectResponse(response, 'searchCollaboratorItems', ['items', 'totalCount'] as any) as any;
+  
+  // Handle null items array
+  if (!validated.items || !Array.isArray(validated.items)) {
+    console.warn('[searchCollaboratorItems] Items is not an array, defaulting to empty array:', validated.items);
+    validated.items = [];
+  }
+  
+  // Ensure totalCount is a number
+  if (typeof validated.totalCount !== 'number') {
+    validated.totalCount = validated.items.length;
+  }
+  
+  return validated as CollaboratorSearchResponse;
 }
 
 export async function filterCollaboratorItems(

@@ -69,6 +69,12 @@ function emptyLabs() {
   return { id: '', name: '', country: '', department: '', institution: '' };
 }
 
+// Flag to track if we're in the middle of a manual signOut to prevent race conditions
+// with the auth state change listener
+let isManualSignOut = false;
+// Flag to prevent concurrent signOut calls
+let isSigningOut = false;
+
 export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthState> {
   const log = adapters.logger;
 
@@ -106,6 +112,15 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
       const { data: subData } = adapters.supabaseAuth.onAuthStateChange(
         async (event, newSession) => {
           log?.info('auth.state_change', { event });
+          
+          // If we're in the middle of a manual signOut, let it handle the cleanup
+          // This prevents race conditions where the listener fires during manual signOut
+          if (isManualSignOut && event === 'SIGNED_OUT') {
+            // Just update the session, don't clear state (manual signOut will do that)
+            set({ session: null });
+            return;
+          }
+
           set({ session: newSession as any });
 
           const ns: any = newSession as any;
@@ -118,19 +133,23 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
               }
             }
           } else if (event === 'SIGNED_OUT') {
-            adapters.queryClient.clear();
-            set({
-              userProfile: null,
-              currentStep: 'login',
-              labData: null,
-              isLabRegistered: false,
-              registrationData: {
-                email: '',
-                password: '',
-                userData: null,
+            // Only clear state if this wasn't triggered by manual signOut
+            // (manual signOut handles its own cleanup)
+            if (!isManualSignOut) {
+              adapters.queryClient.clear();
+              set({
+                userProfile: null,
+                currentStep: 'login',
                 labData: null,
-              },
-            });
+                isLabRegistered: false,
+                registrationData: {
+                  email: '',
+                  password: '',
+                  userData: null,
+                  labData: null,
+                },
+              });
+            }
           }
         }
       );
@@ -167,7 +186,17 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
     },
 
     signOut: async (deviceId: string) => {
+      // Prevent concurrent signOut calls
+      if (isSigningOut) {
+        log?.warn('auth.signOut_already_in_progress');
+        return;
+      }
+      
+      // Set flags to prevent auth state change listener from interfering
+      isSigningOut = true;
+      isManualSignOut = true;
       set({ isLoading: true });
+      
       try {
         const token = get().getAccessToken();
         if (token && deviceId && adapters.notifications) {
@@ -175,12 +204,12 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
             await adapters.notifications.deregisterDevice({ deviceId, token });
           } catch (e) {
             log?.warn('auth.deregisterDevice_failed', { error: e });
+            // Don't fail sign out if device deregistration fails
           }
         }
 
-        const { error } = await adapters.supabaseAuth.signOut();
-        if (error) throw error;
-
+        // Clear local state FIRST before calling Supabase signOut
+        // This ensures state is cleared even if Supabase call fails or is slow
         adapters.queryClient.clear();
         adapters.analytics.track('Sign Out');
 
@@ -197,8 +226,54 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
             labData: null,
           },
         });
+
+        // Now attempt to sign out from Supabase
+        // This will trigger the auth state change listener, but our flag prevents double-clearing
+        // IMPORTANT: Wait for signOut to complete to ensure cookies are cleared
+        try {
+          const { error } = await adapters.supabaseAuth.signOut();
+          if (error) {
+            log?.warn('auth.signOut_error', { error });
+            // Even if there's an error, we've cleared local state
+            // The error might be due to network issues, but cookies should still be cleared
+          }
+          
+          // Wait a bit to ensure cookies are cleared and auth state change propagates
+          // This is especially important for middleware to see the updated state
+          // Increased delay to ensure cookies are fully cleared before any navigation
+          await new Promise(resolve => setTimeout(resolve, 200));
+        } catch (supabaseError) {
+          log?.warn('auth.signOut_supabase_error', { error: supabaseError });
+          // Even on error, wait a bit for any partial cleanup
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+      } catch (error) {
+        // If there's an unexpected error, still ensure state is cleared
+        log?.error('auth.signOut_unexpected_error', { error });
+        adapters.queryClient.clear();
+        set({
+          session: null,
+          userProfile: null,
+          currentStep: 'login',
+          labData: null,
+          isLabRegistered: false,
+          registrationData: {
+            email: '',
+            password: '',
+            userData: null,
+            labData: null,
+          },
+        });
+        // Re-throw so UI can handle it
+        throw error;
       } finally {
         set({ isLoading: false });
+        // Reset flags after a longer delay to ensure auth state change listener has processed
+        // This prevents the listener from interfering with the signOut process
+        setTimeout(() => {
+          isManualSignOut = false;
+          isSigningOut = false;
+        }, 500);
       }
     },
 
@@ -231,23 +306,13 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
           labData,
         });
 
+        // CRITICAL FIX: Fetch the profile from the database to get the correct lab_id
+        // This ensures that when a new lab is created, we get the actual lab_id
+        // that was generated during upsertProfile, rather than using labData?.id
+        // which will be empty for newly created labs
+        await get().fetchUserProfile(user.id);
+
         set({
-          userProfile: {
-            id: user.id,
-            first_name: userData?.firstName ?? '',
-            last_name: userData?.lastName ?? '',
-            phone_number: userData?.phoneNumber ?? '',
-            email: user.email ?? '',
-            role: labData?.role ?? '',
-            lab_id: labData?.id ?? '',
-            labs: {
-              id: labData?.id ?? '',
-              name: labData?.name ?? '',
-              country: labData?.country ?? '',
-              department: labData?.department ?? '',
-              institution: labData?.institution ?? '',
-            },
-          },
           session,
         });
 

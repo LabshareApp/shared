@@ -27,6 +27,7 @@ export * from './types/labs';
 export * from './types/excel';
 export * from './types/grants';
 export * from './types/api';
+export * from './types/constants';
 
 export * from './utils/logger';
 export * from './utils/jwt';

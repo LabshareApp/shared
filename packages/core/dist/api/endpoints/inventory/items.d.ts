@@ -4,7 +4,9 @@ export declare function createInventoryItem(client: ApiClient, itemData: CreateI
     id: string;
 }>;
 export declare function fetchInventoryItem(client: ApiClient, itemId: string): Promise<InventoryItem>;
-export declare function updateInventoryItem(client: ApiClient, itemId: string, itemUpdateData: Partial<Pick<InventoryItem, 'name' | 'brands' | 'totalQuantity' | 'units' | 'notes' | 'attributes' | 'customFields' | 'vendorTags' | 'locationTags' | 'grantTags' | 'labelTags'>>): Promise<void>;
+export declare function updateInventoryItem(client: ApiClient, itemId: string, itemUpdateData: Partial<Pick<InventoryItem, 'name' | 'brands' | 'totalQuantity' | 'units' | 'notes' | 'attributes' | 'customFields' | 'vendorTags' | 'locationTags' | 'grantTags' | 'labelTags'>> & {
+    catalog?: string;
+}): Promise<void>;
 export declare function deleteInventoryItem(client: ApiClient, itemId: string): Promise<void>;
 export declare function bulkDeleteInventoryItems(client: ApiClient, itemIds: string[]): Promise<{
     deletedCount: number;

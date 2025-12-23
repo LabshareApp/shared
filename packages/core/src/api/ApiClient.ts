@@ -36,12 +36,47 @@ export class ApiClient {
         Accept: 'application/json',
       },
     });
+
+    // Add response interceptor for automatic token refresh on 401
+    this.axios.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        // If error is 401 and we haven't already retried, try to refresh token
+        if (
+          error?.response?.status === 401 &&
+          !originalRequest._retry &&
+          this.tokenProvider.refreshSession &&
+          originalRequest
+        ) {
+          originalRequest._retry = true;
+
+          try {
+            const newToken = await this.tokenProvider.refreshSession();
+            if (newToken && originalRequest) {
+              // Update the authorization header and retry the request
+              originalRequest.headers = originalRequest.headers || {};
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              return this.axios.request(originalRequest);
+            }
+          } catch (refreshError) {
+            this.logger?.error('api.token_refresh_failed', { error: refreshError });
+            // If refresh fails, reject with original error
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
   }
 
   async request<T>(req: ApiRequest): Promise<T> {
     const startedAt = Date.now();
     const url = `${this.repositoryPrefix}${req.path}`;
 
+    // Token will be added by request interceptor, but we still get it here
+    // for logging purposes. The interceptor ensures it's fresh.
     const token = await this.tokenProvider.getAccessToken();
 
     const config: AxiosRequestConfig = {
@@ -49,6 +84,7 @@ export class ApiClient {
       method: req.method as Method,
       params: req.query,
       data: req.body,
+      // Token is set by request interceptor, but include it here as fallback
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     };
 

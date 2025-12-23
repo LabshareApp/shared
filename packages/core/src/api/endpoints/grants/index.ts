@@ -6,6 +6,7 @@ import type {
   GrantListResponse,
   GrantTransactionsResponse,
   MoveGrantTransactionRequest,
+  UpdateGrantData,
 } from '../../../types/grants';
 import { validateObjectResponse } from '../../responseValidation';
 
@@ -108,6 +109,29 @@ export async function moveGrantTransaction(
     fromGrantId: string;
     toGrantId: string;
   };
+}
+
+export async function updateGrant(
+  client: ApiClient,
+  grantId: string,
+  grantData: UpdateGrantData
+): Promise<Grant> {
+  const response = await client.request<{ grant: Grant }>({
+    method: 'PUT',
+    path: '/update-grant',
+    query: { grantId },
+    body: grantData,
+  });
+  const validated = validateObjectResponse(response, 'updateGrant', ['grant'] as any) as any;
+  return validated.grant;
+}
+
+export async function deleteGrant(client: ApiClient, grantId: string): Promise<void> {
+  await client.request({
+    method: 'DELETE',
+    path: '/delete-grant',
+    query: { grantId },
+  });
 }
 
 

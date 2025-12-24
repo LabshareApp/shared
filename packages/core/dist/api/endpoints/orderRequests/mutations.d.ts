@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { CreateOrderRequestData, OrderRequestItem, BulkOperationResult } from '../../../types/orderRequests';
+import type { CreateOrderRequestData, OrderRequestItem, BulkOperationResult, PlaceOrderPayload, BulkPlaceOrdersPayload } from '../../../types/orderRequests';
 export declare function createOrderRequest(client: ApiClient, orderRequestData: CreateOrderRequestData): Promise<{
     id: string;
 }>;
@@ -16,12 +16,12 @@ export declare function moveOrderRequestToInventory(client: ApiClient, orderRequ
     id: string;
 }>;
 export declare function bulkMoveOrderRequestsToInventory(client: ApiClient, orderRequestIds: string[], locationId?: string): Promise<BulkOperationResult>;
-export declare function placeOrderRequest(client: ApiClient, orderRequestId: string): Promise<{
+export declare function placeOrderRequest(client: ApiClient, payload: PlaceOrderPayload): Promise<{
     id: string;
 }>;
 export declare function revertPlacedOrderRequest(client: ApiClient, orderRequestId: string): Promise<{
     id: string;
 }>;
-export declare function bulkPlaceOrderRequests(client: ApiClient, orderRequestIds: string[]): Promise<BulkOperationResult>;
+export declare function bulkPlaceOrderRequests(client: ApiClient, payload: BulkPlaceOrdersPayload): Promise<BulkOperationResult>;
 export {};
 //# sourceMappingURL=mutations.d.ts.map

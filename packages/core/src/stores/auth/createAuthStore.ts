@@ -2,6 +2,7 @@ import type { AnalyticsAdapter } from '../../adapters/AnalyticsAdapter';
 import type { SupabaseAuthAdapter } from '../../adapters/SupabaseAdapter';
 import type { Logger } from '../../utils/logger';
 import type { LabData, ProfileData, RegistrationData, RegistrationStep } from './authTypes';
+import { isTokenExpired } from '../../utils/jwt';
 
 export interface QueryClientAdapter {
   clear(): void;
@@ -98,7 +99,28 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
       const { data, error } = await adapters.supabaseAuth.getSession();
       if (error) log?.error('auth.getSession_error', { error });
 
-      const session: any = data?.session ?? null;
+      let session: any = data?.session ?? null;
+      
+      // Check if session exists but token is expired
+      if (session?.access_token && isTokenExpired(session.access_token)) {
+        log?.info('auth.session_expired_on_init', {});
+        // Try to refresh the session
+        try {
+          const refreshResult = await adapters.supabaseAuth.refreshSession?.();
+          if (refreshResult?.data?.session && !isTokenExpired(refreshResult.data.session.access_token as string)) {
+            session = refreshResult.data.session;
+            log?.info('auth.session_refreshed_on_init', {});
+          } else {
+            // Refresh failed or returned expired token - clear session
+            session = null;
+            log?.warn('auth.session_refresh_failed_on_init', {});
+          }
+        } catch (refreshError) {
+          log?.warn('auth.session_refresh_error_on_init', { error: refreshError });
+          session = null;
+        }
+      }
+      
       set({ session });
 
       if (session?.user?.id) {
@@ -230,12 +252,18 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
         // Now attempt to sign out from Supabase
         // This will trigger the auth state change listener, but our flag prevents double-clearing
         // IMPORTANT: Wait for signOut to complete to ensure cookies are cleared
+        // Add timeout to prevent hanging if session is expired/invalid
         try {
-          const { error } = await adapters.supabaseAuth.signOut();
+          const signOutPromise = adapters.supabaseAuth.signOut();
+          const timeoutPromise = new Promise<{ error: unknown | null }>((resolve) => {
+            setTimeout(() => resolve({ error: new Error('Sign out timeout') }), 5000);
+          });
+          
+          const { error } = await Promise.race([signOutPromise, timeoutPromise]);
           if (error) {
             log?.warn('auth.signOut_error', { error });
             // Even if there's an error, we've cleared local state
-            // The error might be due to network issues, but cookies should still be cleared
+            // The error might be due to network issues or expired session, but cookies should still be cleared
           }
           
           // Wait a bit to ensure cookies are cleared and auth state change propagates

@@ -97,4 +97,55 @@ export interface CreateGrantTransactionRequest {
   shippingMethod?: string;
 }
 
+// ---------------------------------------------------------------------------
+// Backwards-compatible aliases for older grant endpoint types
+// ---------------------------------------------------------------------------
+
+// Older code (and generated d.ts files) refer to CreateGrantData / UpdateGrantData /
+// CreateGrantTransactionData. Keep them as aliases over the canonical request types.
+
+export type CreateGrantData = CreateGrantRequest;
+
+export interface UpdateGrantData extends Partial<CreateGrantRequest> {
+  status?: GrantStatus;
+}
+
+export type CreateGrantTransactionData = CreateGrantTransactionRequest;
+
+// ---------------------------------------------------------------------------
+// Shipping estimate types used by grant + order request UIs
+// ---------------------------------------------------------------------------
+
+export interface ShippingEstimate {
+  method: string;
+  estimatedDays: number;
+  cost: MoneyAmount;
+}
+
+export interface ShippingEstimateRequest {
+  to: {
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+  itemIds?: string[];
+}
+
+export interface ShippingEstimateResponse {
+  estimates: ShippingEstimate[];
+}
+
+// ---------------------------------------------------------------------------
+// Legacy list response aliases used by older endpoints
+// ---------------------------------------------------------------------------
+
+export type ListGrantsResponse = GrantListResponse;
+export type ListGrantTransactionsResponse = GrantTransactionsResponse;
+
+export interface ListGrantItemsResponse {
+  items: any[];
+  totalCount: number;
+}
 

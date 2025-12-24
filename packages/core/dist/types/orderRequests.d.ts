@@ -87,4 +87,27 @@ export interface BulkOrderRequestTagPayload {
     tagIds: string[];
     category: TagCategory;
 }
+export interface PlaceOrderPayload {
+    orderRequestId: string;
+    /**
+     * Cost per unit in cents. Required for grant transaction creation.
+     */
+    unitCost?: number;
+    /**
+     * Optional shipping cost in cents.
+     */
+    shippingCost?: number;
+    /**
+     * Optional currency code, defaults to USD on the backend.
+     */
+    currency?: string;
+}
+export interface BulkPlaceOrdersPayload {
+    orders: {
+        orderRequestId: string;
+        unitCost?: number;
+        shippingCost?: number;
+        currency?: string;
+    }[];
+}
 //# sourceMappingURL=orderRequests.d.ts.map

@@ -1,6 +1,7 @@
 import type { ApiClient } from '../../ApiClient';
 import type { InventoryItem, SearchRequest } from '../../../types/inventory';
 import { mapInventoryItems, validatePaginatedResponse } from '../../responseValidation';
+import { logger } from '../../../utils/logger';
 
 export async function searchInventory(
   client: ApiClient,
@@ -17,29 +18,18 @@ export async function searchInventory(
     sortDirection,
   };
 
-  console.log('[searchInventory] Request:', {
+  logger.debug('searchInventory request', {
     path: '/search',
-    body: JSON.stringify(searchRequest, null, 2),
     query: queryParams,
     hasGlobalSearchTerm: !!searchRequest.globalSearchTerm,
-    globalSearchTerm: searchRequest.globalSearchTerm,
   });
 
   try {
-    const response = await client.request<any>({
+    const response = await client.request<{ items?: InventoryItem[]; Items?: InventoryItem[]; totalCount?: number; TotalCount?: number }>({
       method: 'POST',
       path: '/search',
       body: searchRequest,
       query: queryParams,
-    });
-
-    console.log('[searchInventory] Raw response:', {
-      type: typeof response,
-      keys: response ? Object.keys(response) : [],
-      hasItems: !!(response?.items || response?.Items),
-      itemsLength: (response?.items || response?.Items || []).length,
-      totalCount: response?.totalCount ?? response?.TotalCount,
-      fullResponse: JSON.stringify(response, null, 2).substring(0, 500),
     });
 
     // Handle both possible response formats
@@ -48,8 +38,7 @@ export async function searchInventory(
     const totalCount = response.totalCount ?? response.TotalCount ?? 0;
 
     if (!Array.isArray(items)) {
-      console.error('[searchInventory] Invalid items format:', {
-        items,
+      logger.error('Invalid items format in searchInventory response', {
         itemsType: typeof items,
         responseKeys: Object.keys(response || {}),
       });
@@ -57,15 +46,15 @@ export async function searchInventory(
     }
 
     const mappedItems = mapInventoryItems(items);
-    console.log('[searchInventory] Success - Mapped items:', mappedItems.length, 'totalCount:', totalCount);
+    logger.debug('searchInventory success', { itemCount: mappedItems.length, totalCount });
     
     return { items: mappedItems, totalCount };
-  } catch (error: any) {
-    console.error('[searchInventory] Error details:', {
-      message: error?.message,
-      status: error?.status,
-      response: error?.response,
-      stack: error?.stack,
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStatus = (error as { status?: number }).status;
+    logger.error('searchInventory error', {
+      message: errorMessage,
+      status: errorStatus,
     });
     throw error;
   }

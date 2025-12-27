@@ -107,8 +107,9 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
         // Try to refresh the session
         try {
           const refreshResult = await adapters.supabaseAuth.refreshSession?.();
-          if (refreshResult?.data?.session && !isTokenExpired(refreshResult.data.session.access_token as string)) {
-            session = refreshResult.data.session;
+          const refreshedSession = refreshResult?.data?.session as { access_token?: string } | null | undefined;
+          if (refreshedSession?.access_token && !isTokenExpired(refreshedSession.access_token)) {
+            session = refreshedSession as any;
             log?.info('auth.session_refreshed_on_init', {});
           } else {
             // Refresh failed or returned expired token - clear session

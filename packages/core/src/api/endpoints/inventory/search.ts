@@ -9,8 +9,24 @@ export async function searchInventory(
   page: number = 1,
   limit: number = 20,
   sortBy: 'name' | 'date' | string = 'name',
-  sortDirection: 'asc' | 'desc' = 'asc'
+  sortDirection: 'asc' | 'desc' = 'asc',
+  signal?: AbortSignal
 ): Promise<{ items: InventoryItem[]; totalCount: number }> {
+  // Validate and normalize pagination parameters
+  const validatedPage = Math.max(1, page);
+  const validatedLimit = Math.min(100, Math.max(1, limit)); // Server max is 100
+  
+  // Validate and normalize sort parameters
+  const allowedSortFields = ['name', 'updatedAt', 'createdAt', 'expirationDate'];
+  let validatedSortBy = sortBy === 'date' ? 'updatedAt' : sortBy;
+  if (!allowedSortFields.includes(validatedSortBy)) {
+    validatedSortBy = 'name';
+  }
+  
+  const validatedSortDirection = (sortDirection === 'asc' || sortDirection === 'desc') 
+    ? sortDirection 
+    : 'asc';
+  
   const queryParams = {
     page,
     limit,
@@ -30,6 +46,7 @@ export async function searchInventory(
       path: '/search',
       body: searchRequest,
       query: queryParams,
+      signal, // Pass signal to request
     });
 
     // Handle both possible response formats

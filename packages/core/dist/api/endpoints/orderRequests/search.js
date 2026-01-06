@@ -8,7 +8,7 @@ function normalize(item) {
         return item;
     return { ...item, _id: idValue, id: idValue };
 }
-async function searchOrderRequests(client, searchRequest, page = 1, limit = 20, sortBy = 'name', sortDirection = 'asc') {
+async function searchOrderRequests(client, searchRequest, page = 1, limit = 20, sortBy = 'name', sortDirection = 'asc', signal) {
     var _a;
     const queryParams = {
         page,
@@ -21,6 +21,7 @@ async function searchOrderRequests(client, searchRequest, page = 1, limit = 20, 
         path: '/search-requests',
         body: searchRequest,
         query: queryParams,
+        signal, // Add signal support
     });
     const validated = (0, responseValidation_1.validatePaginatedResponse)(response, 'searchOrderRequests');
     return { items: ((_a = validated.items) !== null && _a !== void 0 ? _a : []).map(normalize), totalCount: validated.totalCount };

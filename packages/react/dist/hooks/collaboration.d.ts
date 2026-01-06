@@ -1,4 +1,4 @@
-import type { ApiClient, Collaborator, CollaboratorSearchResponse, LabInfo } from '@labshare/shared-core';
+import type { ApiClient, Collaborator, CollaboratorSearchResponse, LabInfo, TagCategory, AttributeFilter, FilterOperation } from '@labshare/shared-core';
 export declare function useCollaborators(client: ApiClient, options?: {
     enabled?: boolean;
 }): import("@tanstack/react-query").UseQueryResult<Collaborator[], Error>;
@@ -14,6 +14,9 @@ export declare function useCollaboratorInventorySearch(client: ApiClient, params
     activeFilters: {
         searchText: string;
         selectedLabIds: string[];
+        tags?: Partial<Record<TagCategory, string[]>>;
+        attributes?: AttributeFilter[];
+        filterOperation?: FilterOperation;
     };
     sortingState: {
         sortBy: 'name' | 'date' | 'updatedAt';

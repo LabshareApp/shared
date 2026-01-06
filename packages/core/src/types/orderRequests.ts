@@ -104,6 +104,7 @@ export interface BulkOperationResult {
 export interface ReRequestOrderPayload {
   id: string;
   quantity: number;
+  locationTags?: string[]; // Optional: allows modifying locations when re-requesting
 }
 
 export interface BulkOrderRequestTagPayload {
@@ -140,6 +141,7 @@ export interface BulkPlaceOrdersPayload {
     currency?: string;
   }[];
 }
+
 
 
 

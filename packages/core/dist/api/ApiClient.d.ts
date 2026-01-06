@@ -12,13 +12,16 @@ export interface ApiRequest {
     path: string;
     query?: Record<string, string | number | boolean | undefined | null>;
     body?: unknown;
+    signal?: AbortSignal;
 }
 export declare class ApiClient {
     private readonly axios;
     private readonly repositoryPrefix;
     private readonly tokenProvider;
     private readonly logger?;
+    private retryCountMap;
     constructor(config: ApiClientConfig);
+    private getRequestKey;
     request<T>(req: ApiRequest): Promise<T>;
 }
 //# sourceMappingURL=ApiClient.d.ts.map

@@ -55,6 +55,15 @@ export interface CreateGrantRequest {
     endDate?: string | null;
     totalBudget: MoneyAmount;
 }
+export interface UpdateGrantRequest {
+    name?: string;
+    description?: string;
+    grantNumber?: string;
+    startDate?: string | null;
+    endDate?: string | null;
+    status?: GrantStatus;
+    totalBudget?: MoneyAmount;
+}
 export interface CreateGrantTransactionRequest {
     type: GrantTransactionType;
     amount: MoneyAmount;

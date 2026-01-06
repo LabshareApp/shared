@@ -13,6 +13,23 @@ const responseValidation_1 = require("../../responseValidation");
  */
 async function getExcelImportPresignedPutUrl(client, params) {
     var _a;
+    // Validate file extension
+    const allowedExts = ['csv', 'xlsx', 'xls'];
+    if (!allowedExts.includes(params.fileExt)) {
+        throw new Error(`Invalid file extension: ${params.fileExt}. Allowed extensions: ${allowedExts.join(', ')}`);
+    }
+    // Validate item type
+    const allowedItemTypes = ['inventory', 'order-request', 'placed-order'];
+    let validatedItemType = params.itemType;
+    if (validatedItemType) {
+        const normalized = validatedItemType.toLowerCase();
+        if (!allowedItemTypes.includes(normalized)) {
+            validatedItemType = 'inventory'; // Default to inventory if invalid
+        }
+        else {
+            validatedItemType = normalized;
+        }
+    }
     const endpoint = params.fileExt === 'csv' ? 'csv' : 'xlsx';
     const response = await client.request({
         method: 'GET',
@@ -21,7 +38,7 @@ async function getExcelImportPresignedPutUrl(client, params) {
             // Used by mobile to avoid cached presign responses.
             t: (_a = params.cacheBuster) !== null && _a !== void 0 ? _a : Date.now(),
             // Optional: server defaults to "inventory" if omitted.
-            itemType: params.itemType,
+            itemType: validatedItemType,
         },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getExcelImportPresignedPutUrl', ['url']);

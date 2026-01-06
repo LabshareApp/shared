@@ -38,7 +38,8 @@ export function useAllTags(client: ApiClient, options?: { enabled?: boolean }) {
     queryKey: inventoryKeys.tagsAll(),
     queryFn: async () => fetchTags(client),
     enabled: options?.enabled ?? true,
-    staleTime: 15 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, // 30 minutes (tags change infrequently)
+    gcTime: 60 * 60 * 1000, // 1 hour
   });
 }
 
@@ -53,7 +54,8 @@ export function useTagsByCategory(
       return fetchTagsByCategory(client, params.category, params.labId);
     },
     enabled: params.enabled ?? (!!params.category && !!params.labId),
-    staleTime: 60 * 1000,
+    staleTime: 15 * 60 * 1000, // 15 minutes (tags change infrequently)
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 
@@ -62,7 +64,8 @@ export function useCustomGroups(client: ApiClient, options?: { enabled?: boolean
     queryKey: inventoryKeys.customGroupsAll(options?.labId),
     queryFn: async () => fetchCustomGroups(client),
     enabled: options?.enabled ?? true,
-    staleTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, // 30 minutes (custom groups change infrequently)
+    gcTime: 60 * 60 * 1000, // 1 hour
   });
 }
 
@@ -85,7 +88,8 @@ export function useSpecificCustomGroup(
       }
     },
     enabled: params.enabled ?? (!!normalizedId && !isDefaultGroup),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 }
 
@@ -130,14 +134,15 @@ export function useInventorySearch(
 ) {
   return useInfiniteQuery<{ items: InventoryItem[]; totalCount: number }, Error>({
     queryKey: inventoryKeys.search(params.queryKeyArgs),
-    queryFn: async ({ pageParam = 1 }) =>
+    queryFn: async ({ pageParam = 1, signal }) =>
       searchInventory(
         client,
         params.searchRequest,
         pageParam as number,
         params.pageSize,
         params.sortBy,
-        params.sortDirection
+        params.sortDirection,
+        signal
       ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -147,8 +152,19 @@ export function useInventorySearch(
       }
       return undefined;
     },
-    placeholderData: (previousData) => previousData,
+    placeholderData: (previousData) => {
+      // Return previous data if it exists and query key structure matches
+      // This provides optimistic updates when filters change slightly
+      if (previousData && previousData.pages && previousData.pages.length > 0) {
+        return previousData;
+      }
+      return undefined;
+    },
     enabled: params.enabled ?? true,
+    staleTime: 60 * 1000, // Cache for 1 minute (good balance for inventory data)
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't refetch on mount if data is fresh
   });
 }
 
@@ -224,7 +240,7 @@ export function useInventoryMutations(client: ApiClient) {
   const bulkDeleteItemsMutation = useMutation({
     mutationFn: ({ itemIds }: { itemIds: string[] }) => bulkDeleteInventoryItems(client, itemIds),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: inventoryKeys.inventory, refetchType: 'inactive' });
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.inventory });
     },
   });
 

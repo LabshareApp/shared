@@ -62,6 +62,7 @@ export interface SearchRequest {
     query: SearchCriteria;
     globalSearchTerm?: string;
     view?: 'current' | 'placed' | 'archived';
+    selectedLabIds?: string[];
 }
 export interface PaginatedSearchResult<T> {
     items: T[];

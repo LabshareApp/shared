@@ -74,6 +74,7 @@ export interface SearchRequest {
   query: SearchCriteria;
   globalSearchTerm?: string;
   view?: 'current' | 'placed' | 'archived';
+  selectedLabIds?: string[]; // For collaborator inventory filtering
 }
 
 export interface PaginatedSearchResult<T> {

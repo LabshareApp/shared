@@ -76,5 +76,10 @@ export interface CollaboratorSearchParams {
   labIds?: string[];
 }
 
+// Re-export SearchRequest from inventory types for convenience
+export type { SearchRequest } from './inventory';
+
+
+
 
 

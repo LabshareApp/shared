@@ -83,9 +83,13 @@ export class ApiClient {
           try {
             const newToken = await this.tokenProvider.refreshSession();
             if (newToken && originalRequest) {
-              // Update the authorization header and retry the request
+              // Clear the retry flag temporarily so the request interceptor can add the fresh token
+              // The request interceptor will automatically add the token from getAccessToken()
+              // Reset headers to ensure a clean retry
               originalRequest.headers = originalRequest.headers || {};
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              // Remove the old Authorization header so the interceptor sets a fresh one
+              delete originalRequest.headers.Authorization;
+              // Retry the request - the request interceptor will add the fresh token
               return this.axios.request(originalRequest);
             }
           } catch (refreshError) {

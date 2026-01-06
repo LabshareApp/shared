@@ -88,11 +88,16 @@ export class ApiClient {
               // Remove the old Authorization header so the request interceptor sets a fresh one
               delete originalRequest.headers?.Authorization;
               // Retry the request - the request interceptor will add the fresh token
-              return this.axios.request(originalRequest);
+              const retryResponse = await this.axios.request(originalRequest);
+              // Clear retry count on successful retry
+              this.retryCountMap.delete(requestKey);
+              return retryResponse;
             }
             
             // If refresh returned null, session has expired
             this.logger?.error('api.token_refresh_returned_null', {});
+            // Clear retry count before calling onSessionExpired
+            this.retryCountMap.delete(requestKey);
             // Call onSessionExpired callback if provided
             if (this.tokenProvider.onSessionExpired) {
               this.tokenProvider.onSessionExpired();
@@ -100,6 +105,8 @@ export class ApiClient {
             return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
           } catch (refreshError) {
             this.logger?.error('api.token_refresh_failed', { error: refreshError });
+            // Clear retry count before calling onSessionExpired
+            this.retryCountMap.delete(requestKey);
             // If refresh throws an error, trigger logout immediately
             // Call onSessionExpired callback if provided
             if (this.tokenProvider.onSessionExpired) {
@@ -112,6 +119,7 @@ export class ApiClient {
           !this.tokenProvider.refreshSession
         ) {
           // 401 but no refresh method available - session expired
+          this.retryCountMap.delete(requestKey);
           if (this.tokenProvider.onSessionExpired) {
             this.tokenProvider.onSessionExpired();
           }
@@ -169,6 +177,29 @@ export class ApiClient {
           path: req.path,
         });
         throw err;
+      }
+
+      // Check for network errors (no internet connection)
+      const isNetworkError = 
+        !err?.response && // No response means request never reached server
+        (err?.code === 'ERR_NETWORK' || 
+         err?.code === 'ECONNABORTED' || 
+         err?.code === 'ETIMEDOUT' ||
+         err?.message?.toLowerCase().includes('network') ||
+         err?.message?.toLowerCase().includes('connection'));
+
+      if (isNetworkError) {
+        this.logger?.error('api.network_error', {
+          method: req.method,
+          path: req.path,
+          code: err?.code,
+          ms: Date.now() - startedAt,
+        });
+        throw new ApiError(
+          'Network Error',
+          0,
+          'Unable to connect to the server. Please check your internet connection and try again.'
+        );
       }
 
       const status = err?.response?.status ?? 0;

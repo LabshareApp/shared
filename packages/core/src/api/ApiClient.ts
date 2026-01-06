@@ -82,36 +82,25 @@ export class ApiClient {
 
           try {
             const newToken = await this.tokenProvider.refreshSession();
-            if (newToken && originalRequest) {
-              // Clear the retry flag temporarily so the request interceptor can add the fresh token
-              // The request interceptor will automatically add the token from getAccessToken()
-              // Reset headers to ensure a clean retry
-              originalRequest.headers = originalRequest.headers || {};
-              // Remove the old Authorization header so the interceptor sets a fresh one
-              delete originalRequest.headers.Authorization;
+            
+            // If refresh succeeded and we got a new token, retry the request
+            if (newToken) {
+              // Remove the old Authorization header so the request interceptor sets a fresh one
+              delete originalRequest.headers?.Authorization;
               // Retry the request - the request interceptor will add the fresh token
               return this.axios.request(originalRequest);
-            } else {
-              // Refresh succeeded but returned null/undefined - session is invalid
-              this.logger?.error('api.token_refresh_returned_null', {});
-              // Call onSessionExpired callback if provided
-              if (this.tokenProvider.onSessionExpired) {
-                this.tokenProvider.onSessionExpired();
-              }
             }
+            
+            // If refresh returned null, session has expired
+            // The refreshSession method has already logged the user out and redirected
+            // Just reject with a clear error message
+            this.logger?.error('api.token_refresh_failed_session_expired', {});
+            return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
           } catch (refreshError) {
             this.logger?.error('api.token_refresh_failed', { error: refreshError });
-            // If refresh fails, trigger logout immediately
-            // Call onSessionExpired callback if provided
-            if (this.tokenProvider.onSessionExpired) {
-              this.tokenProvider.onSessionExpired();
-            }
-          }
-        } else if (error?.response?.status === 401) {
-          // 401 error but either no refreshSession method, max retries exceeded, or no originalRequest
-          // Trigger logout
-          if (this.tokenProvider.onSessionExpired) {
-            this.tokenProvider.onSessionExpired();
+            // If refresh throws an error, session has expired
+            // The refreshSession method has already logged the user out and redirected
+            return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
           }
         }
 

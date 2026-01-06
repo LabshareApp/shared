@@ -5,9 +5,6 @@ const jwt_1 = require("../../utils/jwt");
 function emptyLabs() {
     return { id: '', name: '', country: '', department: '', institution: '' };
 }
-// Flag to track if we're in the middle of a manual signOut to prevent race conditions
-// with the auth state change listener
-let isManualSignOut = false;
 // Flag to prevent concurrent signOut calls
 let isSigningOut = false;
 function createAuthStore(adapters) {
@@ -66,13 +63,6 @@ function createAuthStore(adapters) {
             const { data: subData } = adapters.supabaseAuth.onAuthStateChange(async (event, newSession) => {
                 var _a;
                 log === null || log === void 0 ? void 0 : log.info('auth.state_change', { event });
-                // If we're in the middle of a manual signOut, let it handle the cleanup
-                // This prevents race conditions where the listener fires during manual signOut
-                if (isManualSignOut && event === 'SIGNED_OUT') {
-                    // Just update the session, don't clear state (manual signOut will do that)
-                    set({ session: null });
-                    return;
-                }
                 set({ session: newSession });
                 const ns = newSession;
                 if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
@@ -86,23 +76,21 @@ function createAuthStore(adapters) {
                     }
                 }
                 else if (event === 'SIGNED_OUT') {
-                    // Only clear state if this wasn't triggered by manual signOut
-                    // (manual signOut handles its own cleanup)
-                    if (!isManualSignOut) {
-                        adapters.queryClient.clear();
-                        set({
-                            userProfile: null,
-                            currentStep: 'login',
+                    // Clear state when signed out
+                    adapters.queryClient.clear();
+                    set({
+                        session: null,
+                        userProfile: null,
+                        currentStep: 'login',
+                        labData: null,
+                        isLabRegistered: false,
+                        registrationData: {
+                            email: '',
+                            password: '',
+                            userData: null,
                             labData: null,
-                            isLabRegistered: false,
-                            registrationData: {
-                                email: '',
-                                password: '',
-                                userData: null,
-                                labData: null,
-                            },
-                        });
-                    }
+                        },
+                    });
                 }
             });
             set({ isLoading: false });
@@ -115,10 +103,18 @@ function createAuthStore(adapters) {
             var _a, _b;
             set({ isLoading: true });
             try {
-                const { data, error } = await adapters.supabaseAuth.signInWithPassword({
+                // Sign in with timeout (4 seconds)
+                const signInPromise = adapters.supabaseAuth.signInWithPassword({
                     email,
                     password,
                 });
+                const timeoutPromise = new Promise((resolve) => {
+                    setTimeout(() => resolve({
+                        data: { session: null, user: null },
+                        error: new Error('Sign in timeout - please try again')
+                    }), 4000);
+                });
+                const { data, error } = await Promise.race([signInPromise, timeoutPromise]);
                 if (error)
                     throw error;
                 set({ session: (_a = data === null || data === void 0 ? void 0 : data.session) !== null && _a !== void 0 ? _a : null });
@@ -139,11 +135,10 @@ function createAuthStore(adapters) {
                 log === null || log === void 0 ? void 0 : log.warn('auth.signOut_already_in_progress');
                 return;
             }
-            // Set flags to prevent auth state change listener from interfering
             isSigningOut = true;
-            isManualSignOut = true;
             set({ isLoading: true });
             try {
+                // Deregister device if needed
                 const token = get().getAccessToken();
                 if (token && deviceId && adapters.notifications) {
                     try {
@@ -154,10 +149,11 @@ function createAuthStore(adapters) {
                         // Don't fail sign out if device deregistration fails
                     }
                 }
-                // Clear local state FIRST before calling Supabase signOut
-                // This ensures state is cleared even if Supabase call fails or is slow
+                // Clear query cache
                 adapters.queryClient.clear();
+                // Track analytics
                 adapters.analytics.track('Sign Out');
+                // Clear local state
                 set({
                     session: null,
                     userProfile: null,
@@ -171,35 +167,22 @@ function createAuthStore(adapters) {
                         labData: null,
                     },
                 });
-                // Now attempt to sign out from Supabase
-                // This will trigger the auth state change listener, but our flag prevents double-clearing
-                // IMPORTANT: Wait for signOut to complete to ensure cookies are cleared
-                // Add timeout to prevent hanging if session is expired/invalid
+                // Sign out from Supabase with timeout (4 seconds)
                 try {
                     const signOutPromise = adapters.supabaseAuth.signOut();
                     const timeoutPromise = new Promise((resolve) => {
-                        setTimeout(() => resolve({ error: new Error('Sign out timeout') }), 5000);
+                        setTimeout(() => resolve({ error: new Error('Sign out timeout') }), 4000);
                     });
-                    const { error } = await Promise.race([signOutPromise, timeoutPromise]);
-                    if (error) {
-                        log === null || log === void 0 ? void 0 : log.warn('auth.signOut_error', { error });
-                        // Even if there's an error, we've cleared local state
-                        // The error might be due to network issues or expired session, but cookies should still be cleared
-                    }
-                    // Wait a bit to ensure cookies are cleared and auth state change propagates
-                    // This is especially important for middleware to see the updated state
-                    // Increased delay to ensure cookies are fully cleared before any navigation
-                    await new Promise(resolve => setTimeout(resolve, 200));
+                    await Promise.race([signOutPromise, timeoutPromise]);
                 }
                 catch (supabaseError) {
                     log === null || log === void 0 ? void 0 : log.warn('auth.signOut_supabase_error', { error: supabaseError });
-                    // Even on error, wait a bit for any partial cleanup
-                    await new Promise(resolve => setTimeout(resolve, 200));
+                    // Continue even if Supabase sign out fails - we've cleared local state
                 }
             }
             catch (error) {
-                // If there's an unexpected error, still ensure state is cleared
                 log === null || log === void 0 ? void 0 : log.error('auth.signOut_unexpected_error', { error });
+                // Ensure state is cleared even on error
                 adapters.queryClient.clear();
                 set({
                     session: null,
@@ -214,17 +197,11 @@ function createAuthStore(adapters) {
                         labData: null,
                     },
                 });
-                // Re-throw so UI can handle it
                 throw error;
             }
             finally {
                 set({ isLoading: false });
-                // Reset flags after a longer delay to ensure auth state change listener has processed
-                // This prevents the listener from interfering with the signOut process
-                setTimeout(() => {
-                    isManualSignOut = false;
-                    isSigningOut = false;
-                }, 500);
+                isSigningOut = false;
             }
         },
         registerUser: async (data) => {

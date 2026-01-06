@@ -92,15 +92,28 @@ export class ApiClient {
             }
             
             // If refresh returned null, session has expired
-            // The refreshSession method has already logged the user out and redirected
-            // Just reject with a clear error message
-            this.logger?.error('api.token_refresh_failed_session_expired', {});
+            this.logger?.error('api.token_refresh_returned_null', {});
+            // Call onSessionExpired callback if provided
+            if (this.tokenProvider.onSessionExpired) {
+              this.tokenProvider.onSessionExpired();
+            }
             return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
           } catch (refreshError) {
             this.logger?.error('api.token_refresh_failed', { error: refreshError });
-            // If refresh throws an error, session has expired
-            // The refreshSession method has already logged the user out and redirected
+            // If refresh throws an error, trigger logout immediately
+            // Call onSessionExpired callback if provided
+            if (this.tokenProvider.onSessionExpired) {
+              this.tokenProvider.onSessionExpired();
+            }
             return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
+          }
+        } else if (
+          error?.response?.status === 401 &&
+          !this.tokenProvider.refreshSession
+        ) {
+          // 401 but no refresh method available - session expired
+          if (this.tokenProvider.onSessionExpired) {
+            this.tokenProvider.onSessionExpired();
           }
         }
 

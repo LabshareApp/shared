@@ -24,20 +24,26 @@ async function createGrant(client, grantData) {
     return normalizeGrant(response);
 }
 async function updateGrant(client, grantId, grantData) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
     const response = await client.request({
         method: 'PUT',
         path: '/update-grant',
-        query: { grantId },
+        query: { id: String(grantId) },
         body: grantData,
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'updateGrant', ['grant']);
     return normalizeGrant(validated.grant);
 }
 async function deleteGrant(client, grantId) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
     await client.request({
         method: 'DELETE',
         path: '/delete-grant',
-        query: { grantId },
+        query: { id: String(grantId) },
     });
 }
 async function createGrantTransaction(client, grantId, transactionData) {

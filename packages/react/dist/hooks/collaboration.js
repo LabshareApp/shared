@@ -66,13 +66,13 @@ function useCollaboratorInventorySearch(client, params) {
                 const searchRequest = {
                     useCustomGroup: false,
                     query: {
-                        operation: params.activeFilters.filterOperation || 'AND',
+                        operation: params.activeFilters.filterOperation || shared_core_1.FilterOperation.AND,
                         filters: params.activeFilters.tags ? Object.entries(params.activeFilters.tags)
                             .filter(([_, ids]) => ids && ids.length > 0)
                             .map(([category, tagIds]) => ({
                             category: category,
                             tagIds: tagIds,
-                            operator: 'OR',
+                            operator: shared_core_1.FilterOperation.OR,
                         })) : [],
                         attributeFilters: params.activeFilters.attributes || [],
                     },

@@ -36,7 +36,7 @@ class ApiClient {
             this.retryCountMap.delete(requestKey);
             return response;
         }, async (error) => {
-            var _a, _b, _c, _d;
+            var _a, _b, _c, _d, _e;
             const originalRequest = error.config;
             if (!originalRequest) {
                 return Promise.reject(error);
@@ -53,37 +53,34 @@ class ApiClient {
                 this.retryCountMap.set(requestKey, retryCount + 1);
                 try {
                     const newToken = await this.tokenProvider.refreshSession();
-                    if (newToken && originalRequest) {
-                        // Clear the retry flag temporarily so the request interceptor can add the fresh token
-                        // The request interceptor will automatically add the token from getAccessToken()
-                        // Reset headers to ensure a clean retry
-                        originalRequest.headers = originalRequest.headers || {};
-                        // Remove the old Authorization header so the interceptor sets a fresh one
-                        delete originalRequest.headers.Authorization;
+                    // If refresh succeeded and we got a new token, retry the request
+                    if (newToken) {
+                        // Remove the old Authorization header so the request interceptor sets a fresh one
+                        (_b = originalRequest.headers) === null || _b === void 0 ? true : delete _b.Authorization;
                         // Retry the request - the request interceptor will add the fresh token
                         return this.axios.request(originalRequest);
                     }
-                    else {
-                        // Refresh succeeded but returned null/undefined - session is invalid
-                        (_b = this.logger) === null || _b === void 0 ? void 0 : _b.error('api.token_refresh_returned_null', {});
-                        // Call onSessionExpired callback if provided
-                        if (this.tokenProvider.onSessionExpired) {
-                            this.tokenProvider.onSessionExpired();
-                        }
-                    }
-                }
-                catch (refreshError) {
-                    (_c = this.logger) === null || _c === void 0 ? void 0 : _c.error('api.token_refresh_failed', { error: refreshError });
-                    // If refresh fails, trigger logout immediately
+                    // If refresh returned null, session has expired
+                    (_c = this.logger) === null || _c === void 0 ? void 0 : _c.error('api.token_refresh_returned_null', {});
                     // Call onSessionExpired callback if provided
                     if (this.tokenProvider.onSessionExpired) {
                         this.tokenProvider.onSessionExpired();
                     }
+                    return Promise.reject(new ApiError_1.ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
+                }
+                catch (refreshError) {
+                    (_d = this.logger) === null || _d === void 0 ? void 0 : _d.error('api.token_refresh_failed', { error: refreshError });
+                    // If refresh throws an error, trigger logout immediately
+                    // Call onSessionExpired callback if provided
+                    if (this.tokenProvider.onSessionExpired) {
+                        this.tokenProvider.onSessionExpired();
+                    }
+                    return Promise.reject(new ApiError_1.ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
                 }
             }
-            else if (((_d = error === null || error === void 0 ? void 0 : error.response) === null || _d === void 0 ? void 0 : _d.status) === 401) {
-                // 401 error but either no refreshSession method, max retries exceeded, or no originalRequest
-                // Trigger logout
+            else if (((_e = error === null || error === void 0 ? void 0 : error.response) === null || _e === void 0 ? void 0 : _e.status) === 401 &&
+                !this.tokenProvider.refreshSession) {
+                // 401 but no refresh method available - session expired
                 if (this.tokenProvider.onSessionExpired) {
                     this.tokenProvider.onSessionExpired();
                 }

@@ -1,4 +1,5 @@
-import type { ApiClient, Collaborator, CollaboratorSearchResponse, LabInfo, TagCategory, AttributeFilter, FilterOperation } from '@labshare/shared-core';
+import type { ApiClient, Collaborator, CollaboratorSearchResponse, LabInfo, TagCategory, AttributeFilter } from '@labshare/shared-core';
+import { FilterOperation } from '@labshare/shared-core';
 export declare function useCollaborators(client: ApiClient, options?: {
     enabled?: boolean;
 }): import("@tanstack/react-query").UseQueryResult<Collaborator[], Error>;

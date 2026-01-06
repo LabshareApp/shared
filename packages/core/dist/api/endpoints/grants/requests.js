@@ -45,13 +45,16 @@ async function fetchGrants(client, params) {
     return { grants: grants.map(normalizeGrant), totalCount };
 }
 async function fetchGrant(client, grantId) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
     const response = await client.request({
         method: 'GET',
         path: '/get-grant',
-        query: { grantId },
+        query: { id: String(grantId) },
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchGrant', ['grant']);
-    return normalizeGrant(validated.grant);
+    // Response is the grant object directly, not wrapped
+    return normalizeGrant(response);
 }
 async function fetchGrantTransactions(client, grantId, params) {
     var _a;

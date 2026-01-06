@@ -31,10 +31,13 @@ async function listGrants(client, params = {}) {
     return (0, responseValidation_1.validateObjectResponse)(response, 'listGrants', ['grants', 'totalCount']);
 }
 async function getGrant(client, grantId) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
     const response = await client.request({
         method: 'GET',
         path: '/get-grant',
-        query: { id: grantId },
+        query: { id: String(grantId) },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getGrant', ['_id']);
 }
@@ -70,20 +73,26 @@ async function moveGrantTransaction(client, payload) {
     return (0, responseValidation_1.validateObjectResponse)(response, 'moveGrantTransaction', ['message', 'transactionId', 'fromGrantId', 'toGrantId']);
 }
 async function updateGrant(client, grantId, grantData) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
     const response = await client.request({
         method: 'PUT',
         path: '/update-grant',
-        query: { grantId },
+        query: { id: String(grantId) },
         body: grantData,
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'updateGrant', ['grant']);
     return validated.grant;
 }
 async function deleteGrant(client, grantId) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
     await client.request({
         method: 'DELETE',
         path: '/delete-grant',
-        query: { grantId },
+        query: { id: String(grantId) },
     });
 }
 async function estimateShipping(client, estimateRequest) {

@@ -8,7 +8,6 @@ import type {
   SearchRequest,
   TagCategory,
   AttributeFilter,
-  FilterOperation,
 } from '@labshare/shared-core';
 import {
   acceptCollaboratorRequest,
@@ -18,6 +17,7 @@ import {
   listCollaborators,
   searchCollaboratorItems,
   searchCollaboratorItemsWithFilters,
+  FilterOperation,
 } from '@labshare/shared-core';
 
 import { collaborationKeys } from '../queryKeys/collaboration';
@@ -99,13 +99,13 @@ export function useCollaboratorInventorySearch(
         const searchRequest: SearchRequest = {
           useCustomGroup: false,
           query: {
-            operation: params.activeFilters.filterOperation || 'AND',
+            operation: params.activeFilters.filterOperation || FilterOperation.AND,
             filters: params.activeFilters.tags ? Object.entries(params.activeFilters.tags)
               .filter(([_, ids]) => ids && ids.length > 0)
               .map(([category, tagIds]) => ({
                 category: category as TagCategory,
                 tagIds: tagIds,
-                operator: 'OR' as FilterOperation,
+                operator: FilterOperation.OR,
               })) : [],
             attributeFilters: params.activeFilters.attributes || [],
           },

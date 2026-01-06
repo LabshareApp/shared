@@ -39,7 +39,7 @@ function createAuthStore(adapters) {
                 try {
                     const refreshResult = await ((_c = (_b = adapters.supabaseAuth).refreshSession) === null || _c === void 0 ? void 0 : _c.call(_b));
                     const refreshedSession = (_d = refreshResult === null || refreshResult === void 0 ? void 0 : refreshResult.data) === null || _d === void 0 ? void 0 : _d.session;
-                    if (refreshedSession && !(0, jwt_1.isTokenExpired)(refreshedSession.access_token)) {
+                    if ((refreshedSession === null || refreshedSession === void 0 ? void 0 : refreshedSession.access_token) && !(0, jwt_1.isTokenExpired)(refreshedSession.access_token)) {
                         session = refreshedSession;
                         log === null || log === void 0 ? void 0 : log.info('auth.session_refreshed_on_init', {});
                     }

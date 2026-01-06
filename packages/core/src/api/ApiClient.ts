@@ -91,20 +91,25 @@ export class ApiClient {
               delete originalRequest.headers.Authorization;
               // Retry the request - the request interceptor will add the fresh token
               return this.axios.request(originalRequest);
-            }
-          } catch (refreshError) {
-            this.logger?.error('api.token_refresh_failed', { error: refreshError });
-            
-            // If refresh fails and we've exhausted retries, trigger logout
-            if (retryCount >= maxRetries - 1) {
+            } else {
+              // Refresh succeeded but returned null/undefined - session is invalid
+              this.logger?.error('api.token_refresh_returned_null', {});
               // Call onSessionExpired callback if provided
               if (this.tokenProvider.onSessionExpired) {
                 this.tokenProvider.onSessionExpired();
               }
             }
+          } catch (refreshError) {
+            this.logger?.error('api.token_refresh_failed', { error: refreshError });
+            // If refresh fails, trigger logout immediately
+            // Call onSessionExpired callback if provided
+            if (this.tokenProvider.onSessionExpired) {
+              this.tokenProvider.onSessionExpired();
+            }
           }
-        } else if (error?.response?.status === 401 && retryCount >= maxRetries) {
-          // Max retries exceeded, trigger logout
+        } else if (error?.response?.status === 401) {
+          // 401 error but either no refreshSession method, max retries exceeded, or no originalRequest
+          // Trigger logout
           if (this.tokenProvider.onSessionExpired) {
             this.tokenProvider.onSessionExpired();
           }

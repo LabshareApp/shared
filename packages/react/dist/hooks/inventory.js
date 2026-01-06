@@ -178,7 +178,7 @@ function useInventoryMutations(client) {
     const bulkDeleteItemsMutation = (0, react_query_1.useMutation)({
         mutationFn: ({ itemIds }) => (0, shared_core_1.bulkDeleteInventoryItems)(client, itemIds),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: inventory_1.inventoryKeys.inventory, refetchType: 'inactive' });
+            queryClient.invalidateQueries({ queryKey: inventory_1.inventoryKeys.inventory });
         },
     });
     const bulkAddTagsMutation = (0, react_query_1.useMutation)({

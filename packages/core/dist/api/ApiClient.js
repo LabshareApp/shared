@@ -36,7 +36,7 @@ class ApiClient {
             this.retryCountMap.delete(requestKey);
             return response;
         }, async (error) => {
-            var _a, _b, _c;
+            var _a, _b, _c, _d;
             const originalRequest = error.config;
             if (!originalRequest) {
                 return Promise.reject(error);
@@ -54,25 +54,36 @@ class ApiClient {
                 try {
                     const newToken = await this.tokenProvider.refreshSession();
                     if (newToken && originalRequest) {
-                        // Update the authorization header and retry the request
+                        // Clear the retry flag temporarily so the request interceptor can add the fresh token
+                        // The request interceptor will automatically add the token from getAccessToken()
+                        // Reset headers to ensure a clean retry
                         originalRequest.headers = originalRequest.headers || {};
-                        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                        // Remove the old Authorization header so the interceptor sets a fresh one
+                        delete originalRequest.headers.Authorization;
+                        // Retry the request - the request interceptor will add the fresh token
                         return this.axios.request(originalRequest);
                     }
-                }
-                catch (refreshError) {
-                    (_b = this.logger) === null || _b === void 0 ? void 0 : _b.error('api.token_refresh_failed', { error: refreshError });
-                    // If refresh fails and we've exhausted retries, trigger logout
-                    if (retryCount >= maxRetries - 1) {
+                    else {
+                        // Refresh succeeded but returned null/undefined - session is invalid
+                        (_b = this.logger) === null || _b === void 0 ? void 0 : _b.error('api.token_refresh_returned_null', {});
                         // Call onSessionExpired callback if provided
                         if (this.tokenProvider.onSessionExpired) {
                             this.tokenProvider.onSessionExpired();
                         }
                     }
                 }
+                catch (refreshError) {
+                    (_c = this.logger) === null || _c === void 0 ? void 0 : _c.error('api.token_refresh_failed', { error: refreshError });
+                    // If refresh fails, trigger logout immediately
+                    // Call onSessionExpired callback if provided
+                    if (this.tokenProvider.onSessionExpired) {
+                        this.tokenProvider.onSessionExpired();
+                    }
+                }
             }
-            else if (((_c = error === null || error === void 0 ? void 0 : error.response) === null || _c === void 0 ? void 0 : _c.status) === 401 && retryCount >= maxRetries) {
-                // Max retries exceeded, trigger logout
+            else if (((_d = error === null || error === void 0 ? void 0 : error.response) === null || _d === void 0 ? void 0 : _d.status) === 401) {
+                // 401 error but either no refreshSession method, max retries exceeded, or no originalRequest
+                // Trigger logout
                 if (this.tokenProvider.onSessionExpired) {
                     this.tokenProvider.onSessionExpired();
                 }

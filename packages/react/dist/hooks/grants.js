@@ -68,6 +68,12 @@ function useGrantMutations(client) {
     const createGrantMutation = (0, react_query_1.useMutation)({
         mutationFn: (payload) => (0, shared_core_1.createGrant)(client, payload),
     });
+    const updateGrantMutation = (0, react_query_1.useMutation)({
+        mutationFn: ({ grantId, grantData }) => (0, shared_core_1.updateGrant)(client, grantId, grantData),
+    });
+    const deleteGrantMutation = (0, react_query_1.useMutation)({
+        mutationFn: (grantId) => (0, shared_core_1.deleteGrant)(client, grantId),
+    });
     const createGrantTransactionMutation = (0, react_query_1.useMutation)({
         mutationFn: (args) => (0, shared_core_1.createGrantTransaction)(client, args),
     });
@@ -76,6 +82,8 @@ function useGrantMutations(client) {
     });
     return {
         createGrantMutation,
+        updateGrantMutation,
+        deleteGrantMutation,
         createGrantTransactionMutation,
         moveGrantTransactionMutation,
     };

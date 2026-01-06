@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, Method, InternalAxiosRequestConfig } from 'axios';
 import { ApiError } from './ApiError';
 import type { TokenProvider } from './TokenProvider';
 import type { Logger } from '../utils/logger';
@@ -25,6 +25,7 @@ export class ApiClient {
   private readonly tokenProvider: TokenProvider;
   private readonly logger?: Logger;
   private retryCountMap: Map<string, number> = new Map(); // Track retry counts per request
+  private readonly maxRetryMapSize = 1000; // Limit map size to prevent memory leaks
 
   constructor(config: ApiClientConfig) {
     this.repositoryPrefix = config.repositoryPrefix ?? '/repository';
@@ -127,14 +128,36 @@ export class ApiClient {
 
         // Clear retry count on final failure
         this.retryCountMap.delete(requestKey);
+        
+        // Periodic cleanup to prevent memory leaks
+        this.cleanupRetryCountMap();
+        
         return Promise.reject(error);
       }
     );
   }
 
-  private getRequestKey(config: any): string {
-    // Create a unique key for the request based on method and URL
-    return `${config.method}:${config.url}`;
+  private getRequestKey(config: InternalAxiosRequestConfig): string {
+    // Create a unique key for the request based on method, URL, and query params
+    const queryString = config.params 
+      ? new URLSearchParams(config.params as Record<string, string>).toString() 
+      : '';
+    const url = config.url || '';
+    const method = config.method || 'GET';
+    return `${method}:${url}${queryString ? `?${queryString}` : ''}`;
+  }
+
+  private cleanupRetryCountMap(): void {
+    // If map gets too large, clear old entries (keep most recent 500)
+    if (this.retryCountMap.size > this.maxRetryMapSize) {
+      const entries = Array.from(this.retryCountMap.entries());
+      // Keep the most recent entries
+      const toKeep = entries.slice(-500);
+      this.retryCountMap.clear();
+      toKeep.forEach(([key, value]) => {
+        this.retryCountMap.set(key, value);
+      });
+    }
   }
 
   async request<T>(req: ApiRequest): Promise<T> {
@@ -203,7 +226,29 @@ export class ApiClient {
       }
 
       const status = err?.response?.status ?? 0;
-      const body = err?.response?.data ?? err?.message ?? String(err);
+      const rawBody = err?.response?.data ?? err?.message ?? String(err);
+
+      // Sanitize error message to prevent leaking internal details
+      let userMessage: string;
+      if (typeof rawBody === 'string') {
+        // Remove potential stack traces, file paths, etc.
+        userMessage = rawBody
+          .split('\n')[0] // Take only first line
+          .replace(/at\s+.*/gi, '') // Remove stack trace patterns
+          .replace(/file:\/\/.*/gi, '') // Remove file paths
+          .trim();
+      } else if (typeof rawBody === 'object' && rawBody !== null) {
+        // If it's an object, try to extract a user-friendly message
+        const bodyObj = rawBody as { message?: string; error?: string };
+        userMessage = bodyObj.message || bodyObj.error || 'An error occurred';
+      } else {
+        userMessage = String(rawBody);
+      }
+
+      // Limit message length
+      if (userMessage.length > 200) {
+        userMessage = userMessage.substring(0, 200) + '...';
+      }
 
       this.logger?.error('api.error', {
         method: req.method,
@@ -212,8 +257,8 @@ export class ApiClient {
         ms: Date.now() - startedAt,
       });
 
-      // User-facing message should not leak HTTP details.
-      throw new ApiError('An error occurred', status, body);
+      // User-facing message should not leak HTTP details
+      throw new ApiError('An error occurred', status, userMessage);
     }
   }
 }

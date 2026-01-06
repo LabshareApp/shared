@@ -70,6 +70,15 @@ function emptyLabs() {
   return { id: '', name: '', country: '', department: '', institution: '' };
 }
 
+// Minimal session type for type safety (Supabase session structure)
+interface SessionLike {
+  access_token?: string;
+  user?: {
+    id?: string;
+    email?: string;
+  };
+}
+
 // Flag to prevent concurrent signOut calls
 let isSigningOut = false;
 
@@ -96,7 +105,7 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
       const { data, error } = await adapters.supabaseAuth.getSession();
       if (error) log?.error('auth.getSession_error', { error });
 
-      let session: any = data?.session ?? null;
+      let session: SessionLike | null = (data?.session as SessionLike | null) ?? null;
       
       // Check if session exists but token is expired
       if (session?.access_token && isTokenExpired(session.access_token)) {
@@ -104,9 +113,9 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
         // Try to refresh the session
         try {
           const refreshResult = await adapters.supabaseAuth.refreshSession?.();
-          const refreshedSession = refreshResult?.data?.session as { access_token?: string } | null | undefined;
+          const refreshedSession = refreshResult?.data?.session as SessionLike | null | undefined;
           if (refreshedSession?.access_token && !isTokenExpired(refreshedSession.access_token)) {
-            session = refreshedSession as any;
+            session = refreshedSession;
             log?.info('auth.session_refreshed_on_init', {});
           } else {
             // Refresh failed or returned expired token - clear session
@@ -133,9 +142,9 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
         async (event, newSession) => {
           log?.info('auth.state_change', { event });
 
-          set({ session: newSession as any });
+          set({ session: newSession as SessionLike | null });
 
-          const ns: any = newSession as any;
+          const ns = newSession as SessionLike | null;
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
             if (ns?.user?.id) {
               try {
@@ -193,9 +202,9 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
         
         if (error) throw error;
 
-        set({ session: (data as any)?.session ?? null });
+        set({ session: (data?.session as SessionLike | null) ?? null });
 
-        const user: any = (data as any)?.user ?? null;
+        const user = (data?.user as SessionLike['user'] | null) ?? null;
         if (user?.id) {
           await get().fetchUserProfile(user.id);
           adapters.analytics.setUserId(user.id);
@@ -303,8 +312,8 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
 
       if (error) throw error;
 
-      const user: any = (authData as any)?.user ?? null;
-      const session: any = (authData as any)?.session ?? null;
+      const user = (authData?.user as SessionLike['user'] | null) ?? null;
+      const session = (authData?.session as SessionLike | null) ?? null;
 
       if (user?.id) {
         await adapters.profiles.upsertProfile({

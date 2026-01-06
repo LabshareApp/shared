@@ -7,14 +7,17 @@ import type {
   GrantListResponse,
   GrantTransactionsResponse,
   MoveGrantTransactionRequest,
+  UpdateGrantData,
 } from '@labshare/shared-core';
 import {
   createGrant,
   createGrantTransaction,
+  deleteGrant,
   getGrant,
   getGrantTransactions,
   listGrants,
   moveGrantTransaction,
+  updateGrant,
 } from '@labshare/shared-core';
 
 import { grantsList, grantItem, grantTransactions } from '../queryKeys/grants';
@@ -91,6 +94,15 @@ export function useGrantMutations(client: ApiClient) {
     mutationFn: (payload: CreateGrantRequest) => createGrant(client, payload),
   });
 
+  const updateGrantMutation = useMutation({
+    mutationFn: ({ grantId, grantData }: { grantId: string; grantData: UpdateGrantData }) =>
+      updateGrant(client, grantId, grantData),
+  });
+
+  const deleteGrantMutation = useMutation({
+    mutationFn: (grantId: string) => deleteGrant(client, grantId),
+  });
+
   const createGrantTransactionMutation = useMutation({
     mutationFn: (args: { grantId: string; payload: CreateGrantTransactionRequest }) =>
       createGrantTransaction(client, args),
@@ -102,6 +114,8 @@ export function useGrantMutations(client: ApiClient) {
 
   return {
     createGrantMutation,
+    updateGrantMutation,
+    deleteGrantMutation,
     createGrantTransactionMutation,
     moveGrantTransactionMutation,
   };

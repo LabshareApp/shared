@@ -13,11 +13,11 @@ import {
   acceptCollaboratorRequest,
   createCollaboratorRequest,
   deleteCollaborator,
+  FilterOperation,
   getAvailableLabs,
   listCollaborators,
   searchCollaboratorItems,
   searchCollaboratorItemsWithFilters,
-  FilterOperation,
 } from '@labshare/shared-core';
 
 import { collaborationKeys } from '../queryKeys/collaboration';

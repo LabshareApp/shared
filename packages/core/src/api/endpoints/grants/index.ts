@@ -39,10 +39,13 @@ export async function listGrants(
 }
 
 export async function getGrant(client: ApiClient, grantId: string): Promise<Grant> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
   const response = await client.request<Grant>({
     method: 'GET',
     path: '/get-grant',
-    query: { id: grantId },
+    query: { id: String(grantId) },
   });
   return validateObjectResponse(response, 'getGrant', ['_id'] as any) as Grant;
 }
@@ -119,10 +122,13 @@ export async function updateGrant(
   grantId: string,
   grantData: UpdateGrantData
 ): Promise<Grant> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
   const response = await client.request<{ grant: Grant }>({
     method: 'PUT',
     path: '/update-grant',
-    query: { grantId },
+    query: { id: String(grantId) },
     body: grantData,
   });
   const validated = validateObjectResponse(response, 'updateGrant', ['grant'] as any) as any;
@@ -130,10 +136,13 @@ export async function updateGrant(
 }
 
 export async function deleteGrant(client: ApiClient, grantId: string): Promise<void> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
   await client.request({
     method: 'DELETE',
     path: '/delete-grant',
-    query: { grantId },
+    query: { id: String(grantId) },
   });
 }
 

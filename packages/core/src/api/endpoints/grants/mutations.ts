@@ -38,10 +38,13 @@ export async function updateGrant(
   grantId: string,
   grantData: UpdateGrantData
 ): Promise<Grant> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
   const response = await client.request<{ grant: NormalizedGrant }>({
     method: 'PUT',
     path: '/update-grant',
-    query: { grantId },
+    query: { id: String(grantId) },
     body: grantData,
   });
 
@@ -53,10 +56,13 @@ export async function deleteGrant(
   client: ApiClient,
   grantId: string
 ): Promise<void> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
   await client.request({
     method: 'DELETE',
     path: '/delete-grant',
-    query: { grantId },
+    query: { id: String(grantId) },
   });
 }
 

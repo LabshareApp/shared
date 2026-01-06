@@ -59,14 +59,17 @@ export async function fetchGrant(
   client: ApiClient,
   grantId: string
 ): Promise<Grant> {
-  const response = await client.request<{ grant: NormalizedGrant }>({
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
+  const response = await client.request<NormalizedGrant>({
     method: 'GET',
     path: '/get-grant',
-    query: { grantId },
+    query: { id: String(grantId) },
   });
 
-  const validated = validateObjectResponse(response, 'fetchGrant', ['grant'] as any) as any;
-  return normalizeGrant(validated.grant);
+  // Response is the grant object directly, not wrapped
+  return normalizeGrant(response);
 }
 
 export async function fetchGrantTransactions(

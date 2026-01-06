@@ -203,19 +203,30 @@ export class ApiClient {
       }
 
       // Check for network errors (no internet connection)
+      // This includes timeout errors, connection refused, and other network-related failures
       const isNetworkError = 
         !err?.response && // No response means request never reached server
         (err?.code === 'ERR_NETWORK' || 
          err?.code === 'ECONNABORTED' || 
          err?.code === 'ETIMEDOUT' ||
+         err?.code === 'ENOTFOUND' ||
+         err?.code === 'ECONNREFUSED' ||
+         err?.code === 'EHOSTUNREACH' ||
+         err?.code === 'ENETUNREACH' ||
+         err?.code === 'EAI_AGAIN' ||
+         err?.code === 'TIMEOUT' ||
          err?.message?.toLowerCase().includes('network') ||
-         err?.message?.toLowerCase().includes('connection'));
+         err?.message?.toLowerCase().includes('connection') ||
+         err?.message?.toLowerCase().includes('timeout') ||
+         err?.message?.toLowerCase().includes('failed to connect') ||
+         err?.message?.toLowerCase().includes('network request failed'));
 
       if (isNetworkError) {
         this.logger?.error('api.network_error', {
           method: req.method,
           path: req.path,
           code: err?.code,
+          message: err?.message,
           ms: Date.now() - startedAt,
         });
         throw new ApiError(

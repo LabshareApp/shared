@@ -9,7 +9,10 @@ export declare const collaborationKeys: {
         sortBy?: string | null;
         sortDirection?: string | null;
         limit?: number | null;
-    }) => readonly ["collaboratorInventorySearch", string | null, string, string, string | null, string | null, number | null];
+        tags?: Partial<Record<string, string[]>> | null;
+        attributes?: any[] | null;
+        filterOperation?: string | null;
+    }) => readonly ["collaboratorInventorySearch", string | null, string, string, string | null, string | null, number | null, string | null, string | null, string | null];
     collaboratorInventorySemanticSearch: (params: {
         labId?: string | null;
         searchText?: string | null;

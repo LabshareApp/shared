@@ -81,6 +81,7 @@ export interface BulkOperationResult {
 export interface ReRequestOrderPayload {
     id: string;
     quantity: number;
+    locationTags?: string[];
 }
 export interface BulkOrderRequestTagPayload {
     orderRequestIds: string[];

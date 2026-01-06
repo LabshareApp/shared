@@ -120,14 +120,15 @@ export function useOrderRequestSearch(
       limit: params.queryKeyArgs.limit,
       view: params.queryKeyArgs.view ?? null,
     }),
-    queryFn: async ({ pageParam = 1 }) =>
+    queryFn: async ({ pageParam = 1, signal }) =>
       searchOrderRequests(
         client,
         params.searchRequest,
         pageParam as number,
         params.pageSize,
         params.sortBy,
-        params.sortDirection
+        params.sortDirection,
+        signal
       ),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -139,7 +140,10 @@ export function useOrderRequestSearch(
     },
     placeholderData: undefined,
     enabled: params.enabled ?? true,
-    staleTime: 0,
+    staleTime: 30 * 1000, // Cache for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't refetch on mount if data is fresh
   });
 }
 

@@ -11,6 +11,9 @@ export const collaborationKeys = {
     sortBy?: string | null;
     sortDirection?: string | null;
     limit?: number | null;
+    tags?: Partial<Record<string, string[]>> | null;
+    attributes?: any[] | null;
+    filterOperation?: string | null;
   }) =>
     [
       'collaboratorInventorySearch',
@@ -20,6 +23,9 @@ export const collaborationKeys = {
       params.sortBy ?? null,
       params.sortDirection ?? null,
       params.limit ?? null,
+      params.tags ? JSON.stringify(params.tags) : null,
+      params.attributes ? JSON.stringify(params.attributes) : null,
+      params.filterOperation ?? null,
     ] as const,
 
   collaboratorInventorySemanticSearch: (params: {
@@ -40,6 +46,8 @@ export const collaborationKeys = {
       params.limit ?? null,
     ] as const,
 };
+
+
 
 
 

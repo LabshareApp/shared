@@ -47,16 +47,6 @@ export async function getGrant(client: ApiClient, grantId: string): Promise<Gran
   return validateObjectResponse(response, 'getGrant', ['_id'] as any) as Grant;
 }
 
-export async function updateGrant(client: ApiClient, grantId: string, payload: UpdateGrantRequest): Promise<Grant> {
-  const response = await client.request<Grant>({
-    method: 'PUT',
-    path: '/update-grant',
-    query: { id: grantId },
-    body: payload,
-  });
-  return validateObjectResponse(response, 'updateGrant', ['_id'] as any) as Grant;
-}
-
 export async function getGrantTransactions(
   client: ApiClient,
   params: { grantId: string; type?: string; page?: number; limit?: number }

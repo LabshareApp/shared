@@ -6,7 +6,7 @@ exports.collaborationKeys = {
     availableLabs: () => ['availableLabs'],
     collaboratorLabs: () => ['collaboratorLabs'],
     collaboratorInventorySearch: (params) => {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         return [
             'collaboratorInventorySearch',
             (_a = params.labId) !== null && _a !== void 0 ? _a : null,
@@ -15,6 +15,9 @@ exports.collaborationKeys = {
             (_d = params.sortBy) !== null && _d !== void 0 ? _d : null,
             (_e = params.sortDirection) !== null && _e !== void 0 ? _e : null,
             (_f = params.limit) !== null && _f !== void 0 ? _f : null,
+            params.tags ? JSON.stringify(params.tags) : null,
+            params.attributes ? JSON.stringify(params.attributes) : null,
+            (_g = params.filterOperation) !== null && _g !== void 0 ? _g : null,
         ];
     },
     collaboratorInventorySemanticSearch: (params) => {

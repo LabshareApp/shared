@@ -76,7 +76,7 @@ function useOrderRequestSearch(client, params) {
             limit: params.queryKeyArgs.limit,
             view: (_a = params.queryKeyArgs.view) !== null && _a !== void 0 ? _a : null,
         }),
-        queryFn: async ({ pageParam = 1 }) => (0, shared_core_1.searchOrderRequests)(client, params.searchRequest, pageParam, params.pageSize, params.sortBy, params.sortDirection),
+        queryFn: async ({ pageParam = 1, signal }) => (0, shared_core_1.searchOrderRequests)(client, params.searchRequest, pageParam, params.pageSize, params.sortBy, params.sortDirection, signal),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) => {
             const totalFetched = allPages.reduce((acc, page) => { var _a; return acc + (((_a = page.items) === null || _a === void 0 ? void 0 : _a.length) || 0); }, 0);
@@ -87,7 +87,10 @@ function useOrderRequestSearch(client, params) {
         },
         placeholderData: undefined,
         enabled: (_b = params.enabled) !== null && _b !== void 0 ? _b : true,
-        staleTime: 0,
+        staleTime: 30 * 1000, // Cache for 30 seconds
+        gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+        refetchOnWindowFocus: false, // Don't refetch on window focus
+        refetchOnMount: false, // Don't refetch on mount if data is fresh
     });
 }
 function useOrderRequestMutations(client) {

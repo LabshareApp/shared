@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createAuthStore = createAuthStore;
+const jwt_1 = require("../../utils/jwt");
 function emptyLabs() {
     return { id: '', name: '', country: '', department: '', institution: '' };
 }
@@ -25,14 +26,36 @@ function createAuthStore(adapters) {
         labData: null,
         isLabRegistered: false,
         initialize: async () => {
-            var _a, _b;
+            var _a, _b, _c, _d, _e;
             set({ isLoading: true });
             const { data, error } = await adapters.supabaseAuth.getSession();
             if (error)
                 log === null || log === void 0 ? void 0 : log.error('auth.getSession_error', { error });
-            const session = (_a = data === null || data === void 0 ? void 0 : data.session) !== null && _a !== void 0 ? _a : null;
+            let session = (_a = data === null || data === void 0 ? void 0 : data.session) !== null && _a !== void 0 ? _a : null;
+            // Check if session exists but token is expired
+            if ((session === null || session === void 0 ? void 0 : session.access_token) && (0, jwt_1.isTokenExpired)(session.access_token)) {
+                log === null || log === void 0 ? void 0 : log.info('auth.session_expired_on_init', {});
+                // Try to refresh the session
+                try {
+                    const refreshResult = await ((_c = (_b = adapters.supabaseAuth).refreshSession) === null || _c === void 0 ? void 0 : _c.call(_b));
+                    const refreshedSession = (_d = refreshResult === null || refreshResult === void 0 ? void 0 : refreshResult.data) === null || _d === void 0 ? void 0 : _d.session;
+                    if (refreshedSession && !(0, jwt_1.isTokenExpired)(refreshedSession.access_token)) {
+                        session = refreshedSession;
+                        log === null || log === void 0 ? void 0 : log.info('auth.session_refreshed_on_init', {});
+                    }
+                    else {
+                        // Refresh failed or returned expired token - clear session
+                        session = null;
+                        log === null || log === void 0 ? void 0 : log.warn('auth.session_refresh_failed_on_init', {});
+                    }
+                }
+                catch (refreshError) {
+                    log === null || log === void 0 ? void 0 : log.warn('auth.session_refresh_error_on_init', { error: refreshError });
+                    session = null;
+                }
+            }
             set({ session });
-            if ((_b = session === null || session === void 0 ? void 0 : session.user) === null || _b === void 0 ? void 0 : _b.id) {
+            if ((_e = session === null || session === void 0 ? void 0 : session.user) === null || _e === void 0 ? void 0 : _e.id) {
                 try {
                     await get().fetchUserProfile(session.user.id);
                 }
@@ -151,12 +174,17 @@ function createAuthStore(adapters) {
                 // Now attempt to sign out from Supabase
                 // This will trigger the auth state change listener, but our flag prevents double-clearing
                 // IMPORTANT: Wait for signOut to complete to ensure cookies are cleared
+                // Add timeout to prevent hanging if session is expired/invalid
                 try {
-                    const { error } = await adapters.supabaseAuth.signOut();
+                    const signOutPromise = adapters.supabaseAuth.signOut();
+                    const timeoutPromise = new Promise((resolve) => {
+                        setTimeout(() => resolve({ error: new Error('Sign out timeout') }), 5000);
+                    });
+                    const { error } = await Promise.race([signOutPromise, timeoutPromise]);
                     if (error) {
                         log === null || log === void 0 ? void 0 : log.warn('auth.signOut_error', { error });
                         // Even if there's an error, we've cleared local state
-                        // The error might be due to network issues, but cookies should still be cleared
+                        // The error might be due to network issues or expired session, but cookies should still be cleared
                     }
                     // Wait a bit to ensure cookies are cleared and auth state change propagates
                     // This is especially important for middleware to see the updated state

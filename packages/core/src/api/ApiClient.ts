@@ -16,6 +16,7 @@ export interface ApiRequest {
   path: string; // e.g. '/items/list'
   query?: Record<string, string | number | boolean | undefined | null>;
   body?: unknown;
+  signal?: AbortSignal; // Add signal support for request cancellation
 }
 
 export class ApiClient {
@@ -23,6 +24,7 @@ export class ApiClient {
   private readonly repositoryPrefix: string;
   private readonly tokenProvider: TokenProvider;
   private readonly logger?: Logger;
+  private retryCountMap: Map<string, number> = new Map(); // Track retry counts per request
 
   constructor(config: ApiClientConfig) {
     this.repositoryPrefix = config.repositoryPrefix ?? '/repository';
@@ -37,20 +39,46 @@ export class ApiClient {
       },
     });
 
+    // Add request interceptor to add token
+    this.axios.interceptors.request.use(
+      async (config) => {
+        const token = await this.tokenProvider.getAccessToken();
+        if (token) {
+          config.headers = config.headers || {};
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
     // Add response interceptor for automatic token refresh on 401
     this.axios.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Clear retry count on successful response
+        const requestKey = this.getRequestKey(response.config);
+        this.retryCountMap.delete(requestKey);
+        return response;
+      },
       async (error) => {
         const originalRequest = error.config;
+        if (!originalRequest) {
+          return Promise.reject(error);
+        }
 
-        // If error is 401 and we haven't already retried, try to refresh token
+        const requestKey = this.getRequestKey(originalRequest);
+        const retryCount = this.retryCountMap.get(requestKey) || 0;
+        const maxRetries = 2;
+
+        // If error is 401 and we haven't exceeded max retries, try to refresh token
         if (
           error?.response?.status === 401 &&
-          !originalRequest._retry &&
+          retryCount < maxRetries &&
           this.tokenProvider.refreshSession &&
           originalRequest
         ) {
-          originalRequest._retry = true;
+          // Increment retry count
+          this.retryCountMap.set(requestKey, retryCount + 1);
 
           try {
             const newToken = await this.tokenProvider.refreshSession();
@@ -62,13 +90,32 @@ export class ApiClient {
             }
           } catch (refreshError) {
             this.logger?.error('api.token_refresh_failed', { error: refreshError });
-            // If refresh fails, reject with original error
+            
+            // If refresh fails and we've exhausted retries, trigger logout
+            if (retryCount >= maxRetries - 1) {
+              // Call onSessionExpired callback if provided
+              if (this.tokenProvider.onSessionExpired) {
+                this.tokenProvider.onSessionExpired();
+              }
+            }
+          }
+        } else if (error?.response?.status === 401 && retryCount >= maxRetries) {
+          // Max retries exceeded, trigger logout
+          if (this.tokenProvider.onSessionExpired) {
+            this.tokenProvider.onSessionExpired();
           }
         }
 
+        // Clear retry count on final failure
+        this.retryCountMap.delete(requestKey);
         return Promise.reject(error);
       }
     );
+  }
+
+  private getRequestKey(config: any): string {
+    // Create a unique key for the request based on method and URL
+    return `${config.method}:${config.url}`;
   }
 
   async request<T>(req: ApiRequest): Promise<T> {
@@ -84,6 +131,7 @@ export class ApiClient {
       method: req.method as Method,
       params: req.query,
       data: req.body,
+      signal: req.signal, // Add signal support for request cancellation
       // Token is set by request interceptor, but include it here as fallback
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     };
@@ -103,6 +151,15 @@ export class ApiClient {
       });
       return res.data;
     } catch (err: any) {
+      // Don't log cancellation errors as errors
+      if (err?.name === 'AbortError' || err?.code === 'ERR_CANCELED') {
+        this.logger?.debug('api.request_cancelled', {
+          method: req.method,
+          path: req.path,
+        });
+        throw err;
+      }
+
       const status = err?.response?.status ?? 0;
       const body = err?.response?.data ?? err?.message ?? String(err);
 

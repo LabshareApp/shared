@@ -29,6 +29,12 @@ export interface SupabaseAuthAdapter {
     signOut(): Promise<{
         error: unknown | null;
     }>;
+    refreshSession?(): Promise<{
+        data: {
+            session: unknown | null;
+        };
+        error: unknown | null;
+    }>;
     onAuthStateChange(callback: (event: string, session: unknown | null) => void): {
         data: {
             subscription: {

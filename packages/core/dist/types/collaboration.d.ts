@@ -62,4 +62,5 @@ export interface CollaboratorSearchParams {
     labId?: string;
     labIds?: string[];
 }
+export type { SearchRequest } from './inventory';
 //# sourceMappingURL=collaboration.d.ts.map

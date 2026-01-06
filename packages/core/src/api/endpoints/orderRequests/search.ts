@@ -20,7 +20,8 @@ export async function searchOrderRequests(
   page: number = 1,
   limit: number = 20,
   sortBy: 'name' | 'date' | string = 'name',
-  sortDirection: 'asc' | 'desc' = 'asc'
+  sortDirection: 'asc' | 'desc' = 'asc',
+  signal?: AbortSignal
 ): Promise<{ items: OrderRequestItem[]; totalCount: number }> {
   const queryParams = {
     page,
@@ -34,11 +35,13 @@ export async function searchOrderRequests(
     path: '/search-requests',
     body: searchRequest,
     query: queryParams,
+    signal, // Add signal support
   });
 
   const validated = validatePaginatedResponse(response, 'searchOrderRequests') as any;
   return { items: (validated.items ?? []).map(normalize), totalCount: validated.totalCount };
 }
+
 
 
 

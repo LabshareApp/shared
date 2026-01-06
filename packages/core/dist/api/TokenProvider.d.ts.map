@@ -1,1 +1,1 @@
-{"version":3,"file":"TokenProvider.d.ts","sourceRoot":"","sources":["../../src/api/TokenProvider.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,cAAc,IAAI,OAAO,CAAC,MAAM,GAAG,IAAI,CAAC,CAAC;IACzC,cAAc,CAAC,IAAI,OAAO,CAAC,MAAM,GAAG,IAAI,CAAC,CAAC;CAC3C"}
+{"version":3,"file":"TokenProvider.d.ts","sourceRoot":"","sources":["../../src/api/TokenProvider.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,cAAc,IAAI,OAAO,CAAC,MAAM,GAAG,IAAI,CAAC,CAAC;IACzC,cAAc,CAAC,IAAI,OAAO,CAAC,MAAM,GAAG,IAAI,CAAC,CAAC;IAC1C,gBAAgB,CAAC,IAAI,IAAI,CAAC;CAC3B"}

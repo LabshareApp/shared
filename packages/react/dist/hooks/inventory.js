@@ -16,7 +16,8 @@ function useAllTags(client, options) {
         queryKey: inventory_1.inventoryKeys.tagsAll(),
         queryFn: async () => (0, shared_core_1.fetchTags)(client),
         enabled: (_a = options === null || options === void 0 ? void 0 : options.enabled) !== null && _a !== void 0 ? _a : true,
-        staleTime: 15 * 60 * 1000,
+        staleTime: 30 * 60 * 1000, // 30 minutes (tags change infrequently)
+        gcTime: 60 * 60 * 1000, // 1 hour
     });
 }
 function useTagsByCategory(client, params) {
@@ -29,7 +30,8 @@ function useTagsByCategory(client, params) {
             return (0, shared_core_1.fetchTagsByCategory)(client, params.category, params.labId);
         },
         enabled: (_a = params.enabled) !== null && _a !== void 0 ? _a : (!!params.category && !!params.labId),
-        staleTime: 60 * 1000,
+        staleTime: 15 * 60 * 1000, // 15 minutes (tags change infrequently)
+        gcTime: 30 * 60 * 1000, // 30 minutes
     });
 }
 function useCustomGroups(client, options) {
@@ -38,7 +40,8 @@ function useCustomGroups(client, options) {
         queryKey: inventory_1.inventoryKeys.customGroupsAll(options === null || options === void 0 ? void 0 : options.labId),
         queryFn: async () => (0, shared_core_1.fetchCustomGroups)(client),
         enabled: (_a = options === null || options === void 0 ? void 0 : options.enabled) !== null && _a !== void 0 ? _a : true,
-        staleTime: 10 * 60 * 1000,
+        staleTime: 30 * 60 * 1000, // 30 minutes (custom groups change infrequently)
+        gcTime: 60 * 60 * 1000, // 1 hour
     });
 }
 function useSpecificCustomGroup(client, params) {
@@ -60,7 +63,8 @@ function useSpecificCustomGroup(client, params) {
             }
         },
         enabled: (_a = params.enabled) !== null && _a !== void 0 ? _a : (!!normalizedId && !isDefaultGroup),
-        staleTime: 5 * 60 * 1000,
+        staleTime: 15 * 60 * 1000, // 15 minutes
+        gcTime: 30 * 60 * 1000, // 30 minutes
     });
 }
 function useInventoryItem(client, params) {
@@ -88,7 +92,7 @@ function useInventorySearch(client, params) {
     var _a;
     return (0, react_query_1.useInfiniteQuery)({
         queryKey: inventory_1.inventoryKeys.search(params.queryKeyArgs),
-        queryFn: async ({ pageParam = 1 }) => (0, shared_core_1.searchInventory)(client, params.searchRequest, pageParam, params.pageSize, params.sortBy, params.sortDirection),
+        queryFn: async ({ pageParam = 1, signal }) => (0, shared_core_1.searchInventory)(client, params.searchRequest, pageParam, params.pageSize, params.sortBy, params.sortDirection, signal),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) => {
             const totalFetched = allPages.reduce((acc, page) => { var _a; return acc + (((_a = page.items) === null || _a === void 0 ? void 0 : _a.length) || 0); }, 0);
@@ -97,8 +101,19 @@ function useInventorySearch(client, params) {
             }
             return undefined;
         },
-        placeholderData: (previousData) => previousData,
+        placeholderData: (previousData) => {
+            // Return previous data if it exists and query key structure matches
+            // This provides optimistic updates when filters change slightly
+            if (previousData && previousData.pages && previousData.pages.length > 0) {
+                return previousData;
+            }
+            return undefined;
+        },
         enabled: (_a = params.enabled) !== null && _a !== void 0 ? _a : true,
+        staleTime: 60 * 1000, // Cache for 1 minute (good balance for inventory data)
+        gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+        refetchOnWindowFocus: false, // Don't refetch on window focus
+        refetchOnMount: false, // Don't refetch on mount if data is fresh
     });
 }
 function useInventoryMutations(client) {

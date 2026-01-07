@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   ApiClient,
   CreateGrantRequest,
@@ -90,26 +90,56 @@ export function useGrantTransactions(
 }
 
 export function useGrantMutations(client: ApiClient) {
+  const queryClient = useQueryClient();
+
   const createGrantMutation = useMutation({
     mutationFn: (payload: CreateGrantRequest) => createGrant(client, payload),
+    onSuccess: () => {
+      // Invalidate grants list to show the new grant
+      queryClient.invalidateQueries({ queryKey: grantsList(null, null) });
+    },
   });
 
   const updateGrantMutation = useMutation({
     mutationFn: ({ grantId, grantData }: { grantId: string; grantData: UpdateGrantData }) =>
       updateGrant(client, grantId, grantData),
+    onSuccess: (_data, variables) => {
+      // Invalidate the specific grant item and grants list
+      queryClient.invalidateQueries({ queryKey: grantItem(variables.grantId) });
+      queryClient.invalidateQueries({ queryKey: grantsList(null, null) });
+    },
   });
 
   const deleteGrantMutation = useMutation({
     mutationFn: (grantId: string) => deleteGrant(client, grantId),
+    onSuccess: (_data, grantId) => {
+      // Remove the deleted grant from cache and invalidate grants list
+      queryClient.removeQueries({ queryKey: grantItem(grantId) });
+      queryClient.invalidateQueries({ queryKey: grantsList(null, null) });
+      // Also invalidate any transactions for this grant
+      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId, type: null, page: null, limit: null }) });
+    },
   });
 
   const createGrantTransactionMutation = useMutation({
     mutationFn: (args: { grantId: string; payload: CreateGrantTransactionRequest }) =>
       createGrantTransaction(client, args),
+    onSuccess: (_data, variables) => {
+      // Invalidate grant transactions and grant item (to update spent amount)
+      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: variables.grantId, type: null, page: null, limit: null }) });
+      queryClient.invalidateQueries({ queryKey: grantItem(variables.grantId) });
+    },
   });
 
   const moveGrantTransactionMutation = useMutation({
     mutationFn: (payload: MoveGrantTransactionRequest) => moveGrantTransaction(client, payload),
+    onSuccess: (_data, variables) => {
+      // Invalidate transactions for both old and new grants, and the grant items themselves
+      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: variables.oldGrantId, type: null, page: null, limit: null }) });
+      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: variables.targetGrantId, type: null, page: null, limit: null }) });
+      queryClient.invalidateQueries({ queryKey: grantItem(variables.oldGrantId) });
+      queryClient.invalidateQueries({ queryKey: grantItem(variables.targetGrantId) });
+    },
   });
 
   return {

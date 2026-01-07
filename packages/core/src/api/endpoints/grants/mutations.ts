@@ -41,15 +41,16 @@ export async function updateGrant(
   if (!grantId) {
     throw new Error('Grant ID is required');
   }
-  const response = await client.request<{ grant: NormalizedGrant }>({
+  const response = await client.request<NormalizedGrant | { grant: NormalizedGrant }>({
     method: 'PUT',
     path: '/update-grant',
     query: { id: String(grantId) },
     body: grantData,
   });
 
-  const validated = validateObjectResponse(response, 'updateGrant', ['grant'] as any) as any;
-  return normalizeGrant(validated.grant);
+  // Handle both response formats: wrapped { grant: ... } or direct grant object
+  const grant = (response as any).grant || response;
+  return normalizeGrant(grant as NormalizedGrant);
 }
 
 export async function deleteGrant(

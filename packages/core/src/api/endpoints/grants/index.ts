@@ -125,14 +125,16 @@ export async function updateGrant(
   if (!grantId) {
     throw new Error('Grant ID is required');
   }
-  const response = await client.request<{ grant: Grant }>({
+  const response = await client.request<Grant | { grant: Grant }>({
     method: 'PUT',
     path: '/update-grant',
     query: { id: String(grantId) },
     body: grantData,
   });
-  const validated = validateObjectResponse(response, 'updateGrant', ['grant'] as any) as any;
-  return validated.grant;
+  
+  // Handle both response formats: wrapped { grant: ... } or direct grant object
+  const grant = (response as any).grant || response;
+  return validateObjectResponse(grant, 'updateGrant', ['_id'] as any) as Grant;
 }
 
 export async function deleteGrant(client: ApiClient, grantId: string): Promise<void> {

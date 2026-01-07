@@ -33,8 +33,9 @@ async function updateGrant(client, grantId, grantData) {
         query: { id: String(grantId) },
         body: grantData,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'updateGrant', ['grant']);
-    return normalizeGrant(validated.grant);
+    // Handle both response formats: wrapped { grant: ... } or direct grant object
+    const grant = response.grant || response;
+    return normalizeGrant(grant);
 }
 async function deleteGrant(client, grantId) {
     if (!grantId) {

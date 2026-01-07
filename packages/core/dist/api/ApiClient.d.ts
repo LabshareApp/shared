@@ -20,8 +20,10 @@ export declare class ApiClient {
     private readonly tokenProvider;
     private readonly logger?;
     private retryCountMap;
+    private readonly maxRetryMapSize;
     constructor(config: ApiClientConfig);
     private getRequestKey;
+    private cleanupRetryCountMap;
     request<T>(req: ApiRequest): Promise<T>;
 }
 //# sourceMappingURL=ApiClient.d.ts.map

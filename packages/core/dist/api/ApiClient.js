@@ -10,6 +10,7 @@ class ApiClient {
     constructor(config) {
         var _a, _b;
         this.retryCountMap = new Map(); // Track retry counts per request
+        this.maxRetryMapSize = 1000; // Limit map size to prevent memory leaks
         this.repositoryPrefix = (_a = config.repositoryPrefix) !== null && _a !== void 0 ? _a : '/repository';
         this.tokenProvider = config.tokenProvider;
         this.logger = config.logger;
@@ -58,10 +59,15 @@ class ApiClient {
                         // Remove the old Authorization header so the request interceptor sets a fresh one
                         (_b = originalRequest.headers) === null || _b === void 0 ? true : delete _b.Authorization;
                         // Retry the request - the request interceptor will add the fresh token
-                        return this.axios.request(originalRequest);
+                        const retryResponse = await this.axios.request(originalRequest);
+                        // Clear retry count on successful retry
+                        this.retryCountMap.delete(requestKey);
+                        return retryResponse;
                     }
                     // If refresh returned null, session has expired
                     (_c = this.logger) === null || _c === void 0 ? void 0 : _c.error('api.token_refresh_returned_null', {});
+                    // Clear retry count before calling onSessionExpired
+                    this.retryCountMap.delete(requestKey);
                     // Call onSessionExpired callback if provided
                     if (this.tokenProvider.onSessionExpired) {
                         this.tokenProvider.onSessionExpired();
@@ -70,6 +76,8 @@ class ApiClient {
                 }
                 catch (refreshError) {
                     (_d = this.logger) === null || _d === void 0 ? void 0 : _d.error('api.token_refresh_failed', { error: refreshError });
+                    // Clear retry count before calling onSessionExpired
+                    this.retryCountMap.delete(requestKey);
                     // If refresh throws an error, trigger logout immediately
                     // Call onSessionExpired callback if provided
                     if (this.tokenProvider.onSessionExpired) {
@@ -81,21 +89,41 @@ class ApiClient {
             else if (((_e = error === null || error === void 0 ? void 0 : error.response) === null || _e === void 0 ? void 0 : _e.status) === 401 &&
                 !this.tokenProvider.refreshSession) {
                 // 401 but no refresh method available - session expired
+                this.retryCountMap.delete(requestKey);
                 if (this.tokenProvider.onSessionExpired) {
                     this.tokenProvider.onSessionExpired();
                 }
             }
             // Clear retry count on final failure
             this.retryCountMap.delete(requestKey);
+            // Periodic cleanup to prevent memory leaks
+            this.cleanupRetryCountMap();
             return Promise.reject(error);
         });
     }
     getRequestKey(config) {
-        // Create a unique key for the request based on method and URL
-        return `${config.method}:${config.url}`;
+        // Create a unique key for the request based on method, URL, and query params
+        const queryString = config.params
+            ? new URLSearchParams(config.params).toString()
+            : '';
+        const url = config.url || '';
+        const method = config.method || 'GET';
+        return `${method}:${url}${queryString ? `?${queryString}` : ''}`;
+    }
+    cleanupRetryCountMap() {
+        // If map gets too large, clear old entries (keep most recent 500)
+        if (this.retryCountMap.size > this.maxRetryMapSize) {
+            const entries = Array.from(this.retryCountMap.entries());
+            // Keep the most recent entries
+            const toKeep = entries.slice(-500);
+            this.retryCountMap.clear();
+            toKeep.forEach(([key, value]) => {
+                this.retryCountMap.set(key, value);
+            });
+        }
     }
     async request(req) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
         const startedAt = Date.now();
         const url = `${this.repositoryPrefix}${req.path}`;
         // Token will be added by request interceptor, but we still get it here
@@ -133,16 +161,65 @@ class ApiClient {
                 });
                 throw err;
             }
-            const status = (_e = (_d = err === null || err === void 0 ? void 0 : err.response) === null || _d === void 0 ? void 0 : _d.status) !== null && _e !== void 0 ? _e : 0;
-            const body = (_h = (_g = (_f = err === null || err === void 0 ? void 0 : err.response) === null || _f === void 0 ? void 0 : _f.data) !== null && _g !== void 0 ? _g : err === null || err === void 0 ? void 0 : err.message) !== null && _h !== void 0 ? _h : String(err);
-            (_j = this.logger) === null || _j === void 0 ? void 0 : _j.error('api.error', {
+            // Check for network errors (no internet connection)
+            // This includes timeout errors, connection refused, and other network-related failures
+            const isNetworkError = !(err === null || err === void 0 ? void 0 : err.response) && // No response means request never reached server
+                ((err === null || err === void 0 ? void 0 : err.code) === 'ERR_NETWORK' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'ECONNABORTED' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'ETIMEDOUT' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'ENOTFOUND' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'ECONNREFUSED' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'EHOSTUNREACH' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'ENETUNREACH' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'EAI_AGAIN' ||
+                    (err === null || err === void 0 ? void 0 : err.code) === 'TIMEOUT' ||
+                    ((_d = err === null || err === void 0 ? void 0 : err.message) === null || _d === void 0 ? void 0 : _d.toLowerCase().includes('network')) ||
+                    ((_e = err === null || err === void 0 ? void 0 : err.message) === null || _e === void 0 ? void 0 : _e.toLowerCase().includes('connection')) ||
+                    ((_f = err === null || err === void 0 ? void 0 : err.message) === null || _f === void 0 ? void 0 : _f.toLowerCase().includes('timeout')) ||
+                    ((_g = err === null || err === void 0 ? void 0 : err.message) === null || _g === void 0 ? void 0 : _g.toLowerCase().includes('failed to connect')) ||
+                    ((_h = err === null || err === void 0 ? void 0 : err.message) === null || _h === void 0 ? void 0 : _h.toLowerCase().includes('network request failed')));
+            if (isNetworkError) {
+                (_j = this.logger) === null || _j === void 0 ? void 0 : _j.error('api.network_error', {
+                    method: req.method,
+                    path: req.path,
+                    code: err === null || err === void 0 ? void 0 : err.code,
+                    message: err === null || err === void 0 ? void 0 : err.message,
+                    ms: Date.now() - startedAt,
+                });
+                throw new ApiError_1.ApiError('Network Error', 0, 'Unable to connect to the server. Please check your internet connection and try again.');
+            }
+            const status = (_l = (_k = err === null || err === void 0 ? void 0 : err.response) === null || _k === void 0 ? void 0 : _k.status) !== null && _l !== void 0 ? _l : 0;
+            const rawBody = (_p = (_o = (_m = err === null || err === void 0 ? void 0 : err.response) === null || _m === void 0 ? void 0 : _m.data) !== null && _o !== void 0 ? _o : err === null || err === void 0 ? void 0 : err.message) !== null && _p !== void 0 ? _p : String(err);
+            // Sanitize error message to prevent leaking internal details
+            let userMessage;
+            if (typeof rawBody === 'string') {
+                // Remove potential stack traces, file paths, etc.
+                userMessage = rawBody
+                    .split('\n')[0] // Take only first line
+                    .replace(/at\s+.*/gi, '') // Remove stack trace patterns
+                    .replace(/file:\/\/.*/gi, '') // Remove file paths
+                    .trim();
+            }
+            else if (typeof rawBody === 'object' && rawBody !== null) {
+                // If it's an object, try to extract a user-friendly message
+                const bodyObj = rawBody;
+                userMessage = bodyObj.message || bodyObj.error || 'An error occurred';
+            }
+            else {
+                userMessage = String(rawBody);
+            }
+            // Limit message length
+            if (userMessage.length > 200) {
+                userMessage = userMessage.substring(0, 200) + '...';
+            }
+            (_q = this.logger) === null || _q === void 0 ? void 0 : _q.error('api.error', {
                 method: req.method,
                 path: req.path,
                 status,
                 ms: Date.now() - startedAt,
             });
-            // User-facing message should not leak HTTP details.
-            throw new ApiError_1.ApiError('An error occurred', status, body);
+            // User-facing message should not leak HTTP details
+            throw new ApiError_1.ApiError('An error occurred', status, userMessage);
         }
     }
 }

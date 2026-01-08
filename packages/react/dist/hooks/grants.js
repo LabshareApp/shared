@@ -65,20 +65,50 @@ function useGrantTransactions(client, params) {
     });
 }
 function useGrantMutations(client) {
+    const queryClient = (0, react_query_1.useQueryClient)();
     const createGrantMutation = (0, react_query_1.useMutation)({
         mutationFn: (payload) => (0, shared_core_1.createGrant)(client, payload),
+        onSuccess: () => {
+            // Invalidate grants list to show the new grant
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantsList)(null, null) });
+        },
     });
     const updateGrantMutation = (0, react_query_1.useMutation)({
         mutationFn: ({ grantId, grantData }) => (0, shared_core_1.updateGrant)(client, grantId, grantData),
+        onSuccess: (_data, variables) => {
+            // Invalidate the specific grant item and grants list
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantItem)(variables.grantId) });
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantsList)(null, null) });
+        },
     });
     const deleteGrantMutation = (0, react_query_1.useMutation)({
         mutationFn: (grantId) => (0, shared_core_1.deleteGrant)(client, grantId),
+        onSuccess: (_data, grantId) => {
+            // Remove the deleted grant from cache and invalidate grants list
+            queryClient.removeQueries({ queryKey: (0, grants_1.grantItem)(grantId) });
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantsList)(null, null) });
+            // Also invalidate any transactions for this grant
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantTransactions)({ grantId, type: null, page: null, limit: null }) });
+        },
     });
     const createGrantTransactionMutation = (0, react_query_1.useMutation)({
         mutationFn: (args) => (0, shared_core_1.createGrantTransaction)(client, args),
+        onSuccess: (_data, variables) => {
+            // Invalidate grant transactions and grant item (to update spent amount)
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantTransactions)({ grantId: variables.grantId, type: null, page: null, limit: null }) });
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantItem)(variables.grantId) });
+        },
     });
     const moveGrantTransactionMutation = (0, react_query_1.useMutation)({
         mutationFn: (payload) => (0, shared_core_1.moveGrantTransaction)(client, payload),
+        onSuccess: (data, variables) => {
+            // Invalidate transactions for both old and new grants, and the grant items themselves
+            // data contains fromGrantId and toGrantId from the response
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantTransactions)({ grantId: data.fromGrantId, type: null, page: null, limit: null }) });
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantTransactions)({ grantId: data.toGrantId, type: null, page: null, limit: null }) });
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantItem)(data.fromGrantId) });
+            queryClient.invalidateQueries({ queryKey: (0, grants_1.grantItem)(data.toGrantId) });
+        },
     });
     return {
         createGrantMutation,

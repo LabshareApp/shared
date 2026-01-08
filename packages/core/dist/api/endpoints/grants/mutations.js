@@ -27,15 +27,14 @@ async function updateGrant(client, grantId, grantData) {
     if (!grantId) {
         throw new Error('Grant ID is required');
     }
+    // Server returns the grant object directly (not wrapped in { grant: ... })
     const response = await client.request({
         method: 'PUT',
         path: '/update-grant',
         query: { id: String(grantId) },
         body: grantData,
     });
-    // Handle both response formats: wrapped { grant: ... } or direct grant object
-    const grant = response.grant || response;
-    return normalizeGrant(grant);
+    return normalizeGrant(response);
 }
 async function deleteGrant(client, grantId) {
     if (!grantId) {

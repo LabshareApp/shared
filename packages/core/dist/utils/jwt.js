@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decodeJWT = decodeJWT;
 exports.isTokenExpired = isTokenExpired;
+exports.isTokenExpiringSoon = isTokenExpiringSoon;
 exports.getTokenLabId = getTokenLabId;
 exports.getTokenUserId = getTokenUserId;
 function base64UrlDecode(input) {
@@ -33,6 +34,22 @@ function isTokenExpired(token) {
     if (!exp)
         return true;
     return Date.now() / 1000 > exp;
+}
+/**
+ * Checks if a token is expiring soon (within the specified buffer time).
+ * This is useful for proactive token refresh to avoid 401 errors.
+ *
+ * @param token - The JWT token to check
+ * @param bufferSeconds - Number of seconds before expiration to consider "soon" (default: 300 = 5 minutes)
+ * @returns true if token is expiring within the buffer time or already expired
+ */
+function isTokenExpiringSoon(token, bufferSeconds = 300) {
+    const payload = decodeJWT(token);
+    const exp = payload === null || payload === void 0 ? void 0 : payload.exp;
+    if (!exp)
+        return true; // If no expiration, treat as expiring soon
+    const now = Date.now() / 1000;
+    return now > (exp - bufferSeconds);
 }
 function getTokenLabId(token) {
     const payload = decodeJWT(token);

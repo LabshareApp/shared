@@ -36,6 +36,22 @@ export function isTokenExpired(token: string): boolean {
   return Date.now() / 1000 > exp;
 }
 
+/**
+ * Checks if a token is expiring soon (within the specified buffer time).
+ * This is useful for proactive token refresh to avoid 401 errors.
+ * 
+ * @param token - The JWT token to check
+ * @param bufferSeconds - Number of seconds before expiration to consider "soon" (default: 300 = 5 minutes)
+ * @returns true if token is expiring within the buffer time or already expired
+ */
+export function isTokenExpiringSoon(token: string, bufferSeconds: number = 300): boolean {
+  const payload = decodeJWT(token);
+  const exp = payload?.exp;
+  if (!exp) return true; // If no expiration, treat as expiring soon
+  const now = Date.now() / 1000;
+  return now > (exp - bufferSeconds);
+}
+
 export function getTokenLabId(token: string): string | null {
   const payload = decodeJWT(token);
   if (!payload) return null;

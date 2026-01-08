@@ -133,12 +133,13 @@ export function useGrantMutations(client: ApiClient) {
 
   const moveGrantTransactionMutation = useMutation({
     mutationFn: (payload: MoveGrantTransactionRequest) => moveGrantTransaction(client, payload),
-    onSuccess: (_data, variables) => {
+    onSuccess: (data, variables) => {
       // Invalidate transactions for both old and new grants, and the grant items themselves
-      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: variables.oldGrantId, type: null, page: null, limit: null }) });
-      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: variables.targetGrantId, type: null, page: null, limit: null }) });
-      queryClient.invalidateQueries({ queryKey: grantItem(variables.oldGrantId) });
-      queryClient.invalidateQueries({ queryKey: grantItem(variables.targetGrantId) });
+      // data contains fromGrantId and toGrantId from the response
+      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: data.fromGrantId, type: null, page: null, limit: null }) });
+      queryClient.invalidateQueries({ queryKey: grantTransactions({ grantId: data.toGrantId, type: null, page: null, limit: null }) });
+      queryClient.invalidateQueries({ queryKey: grantItem(data.fromGrantId) });
+      queryClient.invalidateQueries({ queryKey: grantItem(data.toGrantId) });
     },
   });
 

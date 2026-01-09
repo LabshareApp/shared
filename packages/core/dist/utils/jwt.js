@@ -49,7 +49,9 @@ function isTokenExpiringSoon(token, bufferSeconds = 300) {
     if (!exp)
         return true; // If no expiration, treat as expiring soon
     const now = Date.now() / 1000;
-    return now > (exp - bufferSeconds);
+    // Check if token expires within buffer time: timeUntilExpiry <= bufferSeconds
+    // Which is equivalent to: now >= (exp - bufferSeconds)
+    return now >= (exp - bufferSeconds);
 }
 function getTokenLabId(token) {
     const payload = decodeJWT(token);

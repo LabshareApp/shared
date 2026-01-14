@@ -5,6 +5,9 @@ exports.fetchOrderRequest = fetchOrderRequest;
 exports.fetchArchivedOrderRequest = fetchArchivedOrderRequest;
 exports.fetchArchivedOrderRequests = fetchArchivedOrderRequests;
 exports.reRequestArchivedOrder = reRequestArchivedOrder;
+exports.generateQuotePresignedUrl = generateQuotePresignedUrl;
+exports.updateOrderRequestQuote = updateOrderRequestQuote;
+exports.getQuoteViewUrl = getQuoteViewUrl;
 const responseValidation_1 = require("../../responseValidation");
 function normalizeOrderRequest(item) {
     const idValue = (item === null || item === void 0 ? void 0 : item._id) || (item === null || item === void 0 ? void 0 : item.id);
@@ -56,5 +59,40 @@ async function reRequestArchivedOrder(client, payload) {
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'reRequestArchivedOrder', ['id']);
+}
+/**
+ * Generate a presigned URL for uploading a quote PDF to S3.
+ * This uses the OCR server (port 8080) endpoint.
+ */
+async function generateQuotePresignedUrl(client, itemType = 'order-request') {
+    const response = await client.request({
+        method: 'GET',
+        path: '/generate-presigned-url/quote',
+        query: { itemType },
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'generateQuotePresignedUrl', ['url', 'object_key']);
+}
+/**
+ * Update an order request with a quote URL after uploading the PDF to S3.
+ */
+async function updateOrderRequestQuote(client, orderRequestId, quoteUrl) {
+    const response = await client.request({
+        method: 'POST',
+        path: '/update-order-request-quote',
+        body: { orderRequestId, quoteUrl },
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'updateOrderRequestQuote', ['message', 'id']);
+}
+/**
+ * Get a presigned URL for viewing/downloading a quote PDF from S3.
+ * The returned URL is valid for 15 minutes.
+ */
+async function getQuoteViewUrl(client, s3Url) {
+    const response = await client.request({
+        method: 'POST',
+        path: '/get-quote-view-url',
+        body: { s3Url },
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getQuoteViewUrl', ['url', 'expiresAt']);
 }
 //# sourceMappingURL=requests.js.map

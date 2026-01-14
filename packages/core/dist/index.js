@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./api/ApiClient"), exports);
 __exportStar(require("./api/ApiError"), exports);
 __exportStar(require("./api/TokenProvider"), exports);
+__exportStar(require("./api/SessionCoordinator"), exports);
 __exportStar(require("./api/responseValidation"), exports);
 __exportStar(require("./api/endpoints/inventory"), exports);
 __exportStar(require("./api/endpoints/orderRequests"), exports);

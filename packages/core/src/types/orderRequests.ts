@@ -67,6 +67,7 @@ export interface OrderRequestItem {
   approvedBy?: string;
   approvedAt?: string;
   sourceFileKey?: string;
+  quote?: string; // S3 URL to quote PDF
 
   [key: string]: any;
 }

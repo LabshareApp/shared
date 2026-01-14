@@ -136,7 +136,6 @@ function createAuthStore(adapters) {
                 return;
             }
             isSigningOut = true;
-            set({ isLoading: true });
             try {
                 // Deregister device if needed
                 const token = get().getAccessToken();
@@ -200,7 +199,6 @@ function createAuthStore(adapters) {
                 throw error;
             }
             finally {
-                set({ isLoading: false });
                 isSigningOut = false;
             }
         },

@@ -99,9 +99,14 @@ export class ApiClient {
             this.logger?.error('api.token_refresh_returned_null', {});
             // Clear retry count before calling onSessionExpired
             this.retryCountMap.delete(requestKey);
-            // Call onSessionExpired callback if provided
+            // Call onSessionExpired callback if provided (respecting session coordinator)
             if (this.tokenProvider.onSessionExpired) {
-              this.tokenProvider.onSessionExpired();
+              // If session coordinator is provided, check if we should skip (user-initiated logout)
+              const shouldSkip = this.tokenProvider.sessionCoordinator?.isUserInitiated() ||
+                                this.tokenProvider.sessionCoordinator?.isLogoutInProgress();
+              if (!shouldSkip) {
+                this.tokenProvider.onSessionExpired();
+              }
             }
             return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
           } catch (refreshError) {
@@ -109,9 +114,14 @@ export class ApiClient {
             // Clear retry count before calling onSessionExpired
             this.retryCountMap.delete(requestKey);
             // If refresh throws an error, trigger logout immediately
-            // Call onSessionExpired callback if provided
+            // Call onSessionExpired callback if provided (respecting session coordinator)
             if (this.tokenProvider.onSessionExpired) {
-              this.tokenProvider.onSessionExpired();
+              // If session coordinator is provided, check if we should skip (user-initiated logout)
+              const shouldSkip = this.tokenProvider.sessionCoordinator?.isUserInitiated() ||
+                                this.tokenProvider.sessionCoordinator?.isLogoutInProgress();
+              if (!shouldSkip) {
+                this.tokenProvider.onSessionExpired();
+              }
             }
             return Promise.reject(new ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
           }
@@ -122,7 +132,12 @@ export class ApiClient {
           // 401 but no refresh method available - session expired
           this.retryCountMap.delete(requestKey);
           if (this.tokenProvider.onSessionExpired) {
-            this.tokenProvider.onSessionExpired();
+            // If session coordinator is provided, check if we should skip (user-initiated logout)
+            const shouldSkip = this.tokenProvider.sessionCoordinator?.isUserInitiated() ||
+                              this.tokenProvider.sessionCoordinator?.isLogoutInProgress();
+            if (!shouldSkip) {
+              this.tokenProvider.onSessionExpired();
+            }
           }
         }
 

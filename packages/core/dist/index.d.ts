@@ -1,6 +1,7 @@
 export * from './api/ApiClient';
 export * from './api/ApiError';
 export * from './api/TokenProvider';
+export * from './api/SessionCoordinator';
 export * from './api/responseValidation';
 export * from './api/endpoints/inventory';
 export * from './api/endpoints/orderRequests';

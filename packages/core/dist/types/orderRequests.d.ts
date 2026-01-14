@@ -47,6 +47,7 @@ export interface OrderRequestItem {
     approvedBy?: string;
     approvedAt?: string;
     sourceFileKey?: string;
+    quote?: string;
     [key: string]: any;
 }
 export interface CreateOrderRequestData {

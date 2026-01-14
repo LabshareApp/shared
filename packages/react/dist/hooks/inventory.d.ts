@@ -45,7 +45,7 @@ export declare function useInventoryMutations(client: ApiClient): {
     deleteGroupMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
     updateItemMutation: import("@tanstack/react-query").UseMutationResult<void, Error, {
         itemId: string;
-        data: Partial<Pick<InventoryItem, "name" | "brands" | "totalQuantity" | "units" | "notes" | "attributes" | "customFields" | "vendorTags" | "locationTags" | "grantTags" | "labelTags">> & {
+        data: Partial<Pick<InventoryItem, "name" | "units" | "notes" | "attributes" | "customFields" | "locationTags" | "grantTags" | "labelTags" | "brands" | "totalQuantity" | "vendorTags">> & {
             catalog?: string;
         };
     }, unknown>;

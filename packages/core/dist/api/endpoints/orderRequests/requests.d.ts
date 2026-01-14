@@ -14,4 +14,27 @@ export declare function fetchArchivedOrderRequests(client: ApiClient, labId: str
 export declare function reRequestArchivedOrder(client: ApiClient, payload: ReRequestOrderPayload): Promise<{
     id: string;
 }>;
+/**
+ * Generate a presigned URL for uploading a quote PDF to S3.
+ * This uses the OCR server (port 8080) endpoint.
+ */
+export declare function generateQuotePresignedUrl(client: ApiClient, itemType?: 'order-request' | 'placed-order'): Promise<{
+    url: string;
+    object_key: string;
+}>;
+/**
+ * Update an order request with a quote URL after uploading the PDF to S3.
+ */
+export declare function updateOrderRequestQuote(client: ApiClient, orderRequestId: string, quoteUrl: string): Promise<{
+    message: string;
+    id: string;
+}>;
+/**
+ * Get a presigned URL for viewing/downloading a quote PDF from S3.
+ * The returned URL is valid for 15 minutes.
+ */
+export declare function getQuoteViewUrl(client: ApiClient, s3Url: string): Promise<{
+    url: string;
+    expiresAt: number;
+}>;
 //# sourceMappingURL=requests.d.ts.map

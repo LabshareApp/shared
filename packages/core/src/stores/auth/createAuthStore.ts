@@ -223,7 +223,6 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
       }
       
       isSigningOut = true;
-      set({ isLoading: true });
       
       try {
         // Deregister device if needed
@@ -289,7 +288,6 @@ export function createAuthStore(adapters: AuthStoreAdapters): StoreCreator<AuthS
         });
         throw error;
       } finally {
-        set({ isLoading: false });
         isSigningOut = false;
       }
     },

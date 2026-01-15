@@ -19,4 +19,5 @@ __exportStar(require("./groups"), exports);
 __exportStar(require("./items"), exports);
 __exportStar(require("./search"), exports);
 __exportStar(require("./tagging"), exports);
+__exportStar(require("./documents"), exports);
 //# sourceMappingURL=index.js.map

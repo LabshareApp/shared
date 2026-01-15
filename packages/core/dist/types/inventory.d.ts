@@ -125,6 +125,7 @@ export interface InventoryItem {
     customFields?: {
         [key: string]: any;
     };
+    documents?: string[];
     [key: string]: any;
 }
 export interface CreateItemData {

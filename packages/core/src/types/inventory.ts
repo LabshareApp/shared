@@ -141,6 +141,7 @@ export interface InventoryItem {
   totalTagsCount?: number;
 
   customFields?: { [key: string]: any };
+  documents?: string[]; // S3 URLs to attached documents (PDFs, etc.)
   [key: string]: any;
 }
 

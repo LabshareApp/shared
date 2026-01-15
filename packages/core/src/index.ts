@@ -12,6 +12,7 @@ export * from './api/endpoints/notifications';
 export * from './api/endpoints/labs';
 export * from './api/endpoints/excel';
 export * from './api/endpoints/grants';
+export * from './api/endpoints/customFields';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -29,6 +30,7 @@ export * from './types/excel';
 export * from './types/grants';
 export * from './types/api';
 export * from './types/constants';
+export * from './types/customFields';
 
 export * from './utils/logger';
 export * from './utils/jwt';

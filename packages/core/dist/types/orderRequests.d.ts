@@ -47,7 +47,8 @@ export interface OrderRequestItem {
     approvedBy?: string;
     approvedAt?: string;
     sourceFileKey?: string;
-    quote?: string;
+    quotes?: string[];
+    images?: string[];
     [key: string]: any;
 }
 export interface CreateOrderRequestData {
@@ -73,6 +74,8 @@ export interface CreateOrderRequestData {
     grantTags?: string[];
     labelTags?: string[];
     urgency?: OrderRequestUrgency;
+    quotes?: string[];
+    images?: string[];
 }
 export interface BulkOperationResult {
     successCount: number;

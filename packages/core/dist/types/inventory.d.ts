@@ -90,6 +90,12 @@ export interface BrandInfo {
         currency: string;
     };
 }
+export declare enum StateOfMatter {
+    Liquid = "liquid",
+    Gas = "gas",
+    Solid = "solid",
+    Plasma = "plasma"
+}
 export interface InventoryItem {
     _id: string;
     id?: string;
@@ -104,6 +110,8 @@ export interface InventoryItem {
     labId: string;
     createdAt: string;
     updatedAt: string;
+    casNumber?: string;
+    stateOfMatter?: StateOfMatter;
     attributes?: {
         amountAdded?: number;
         expirationDate?: string | null;
@@ -126,6 +134,8 @@ export interface InventoryItem {
         [key: string]: any;
     };
     documents?: string[];
+    quotes?: string[];
+    images?: string[];
     [key: string]: any;
 }
 export interface CreateItemData {
@@ -138,11 +148,15 @@ export interface CreateItemData {
     totalQuantity: number;
     catalog: string;
     units?: string;
+    casNumber?: string;
+    stateOfMatter?: StateOfMatter;
     attributes?: {
         expirationDate?: string | null;
         lotNumber?: string;
         amountAdded?: number;
     };
+    quotes?: string[];
+    images?: string[];
 }
 export interface CreateCustomGroupData {
     name: string;

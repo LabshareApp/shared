@@ -106,6 +106,13 @@ export interface BrandInfo {
   };
 }
 
+export enum StateOfMatter {
+  Liquid = 'liquid',
+  Gas = 'gas',
+  Solid = 'solid',
+  Plasma = 'plasma',
+}
+
 export interface InventoryItem {
   _id: string;
   id?: string;
@@ -118,6 +125,8 @@ export interface InventoryItem {
   labId: string;
   createdAt: string;
   updatedAt: string;
+  casNumber?: string;
+  stateOfMatter?: StateOfMatter;
   attributes?: {
     amountAdded?: number;
     expirationDate?: string | null;
@@ -142,6 +151,8 @@ export interface InventoryItem {
 
   customFields?: { [key: string]: any };
   documents?: string[]; // S3 URLs to attached documents (PDFs, etc.)
+  quotes?: string[]; // S3 URLs to quote PDFs (transferred from order request on fulfillment)
+  images?: string[]; // S3 URLs to attached images
   [key: string]: any;
 }
 
@@ -153,11 +164,15 @@ export interface CreateItemData {
   totalQuantity: number;
   catalog: string;
   units?: string;
+  casNumber?: string;
+  stateOfMatter?: StateOfMatter;
   attributes?: {
     expirationDate?: string | null;
     lotNumber?: string;
     amountAdded?: number;
   };
+  quotes?: string[]; // S3 URLs to quote PDFs
+  images?: string[]; // S3 URLs to attached images
 }
 
 export interface CreateCustomGroupData {

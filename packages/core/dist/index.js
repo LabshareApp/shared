@@ -28,6 +28,7 @@ __exportStar(require("./api/endpoints/labs"), exports);
 __exportStar(require("./api/endpoints/excel"), exports);
 __exportStar(require("./api/endpoints/grants"), exports);
 __exportStar(require("./api/endpoints/customFields"), exports);
+__exportStar(require("./api/endpoints/images"), exports);
 __exportStar(require("./adapters/AnalyticsAdapter"), exports);
 __exportStar(require("./adapters/StorageAdapter"), exports);
 __exportStar(require("./adapters/SupabaseAdapter"), exports);

@@ -13,6 +13,7 @@ export * from './api/endpoints/labs';
 export * from './api/endpoints/excel';
 export * from './api/endpoints/grants';
 export * from './api/endpoints/customFields';
+export * from './api/endpoints/images';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';

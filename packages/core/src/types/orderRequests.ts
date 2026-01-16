@@ -67,7 +67,8 @@ export interface OrderRequestItem {
   approvedBy?: string;
   approvedAt?: string;
   sourceFileKey?: string;
-  quote?: string; // S3 URL to quote PDF
+  quotes?: string[]; // S3 URLs to quote PDFs
+  images?: string[]; // S3 URLs to attached images
 
   [key: string]: any;
 }
@@ -94,6 +95,8 @@ export interface CreateOrderRequestData {
   grantTags?: string[];
   labelTags?: string[];
   urgency?: OrderRequestUrgency;
+  quotes?: string[]; // S3 URLs to quote PDFs
+  images?: string[]; // S3 URLs to attached images
 }
 
 export interface BulkOperationResult {

@@ -1,7 +1,7 @@
 "use strict";
 // Canonical inventory domain types for shared-core.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AttributeOperator = exports.FilterOperation = exports.TagCategory = void 0;
+exports.StateOfMatter = exports.AttributeOperator = exports.FilterOperation = exports.TagCategory = void 0;
 var TagCategory;
 (function (TagCategory) {
     TagCategory["Location"] = "location";
@@ -28,4 +28,11 @@ var AttributeOperator;
     AttributeOperator["Exists"] = "exists";
     AttributeOperator["DoesNotExist"] = "does_not_exist";
 })(AttributeOperator || (exports.AttributeOperator = AttributeOperator = {}));
+var StateOfMatter;
+(function (StateOfMatter) {
+    StateOfMatter["Liquid"] = "liquid";
+    StateOfMatter["Gas"] = "gas";
+    StateOfMatter["Solid"] = "solid";
+    StateOfMatter["Plasma"] = "plasma";
+})(StateOfMatter || (exports.StateOfMatter = StateOfMatter = {}));
 //# sourceMappingURL=inventory.js.map

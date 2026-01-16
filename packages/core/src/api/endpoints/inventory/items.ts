@@ -48,6 +48,8 @@ export async function updateInventoryItem(
       | 'locationTags'
       | 'grantTags'
       | 'labelTags'
+      | 'quotes'
+      | 'images'
     >
   > & {
     catalog?: string;

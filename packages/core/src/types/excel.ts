@@ -48,6 +48,22 @@ export interface ResetInventoryResponse {
   previousCount: number;
 }
 
+/**
+ * View types for order requests export
+ */
+export type OrderRequestExportView = 'current' | 'placed' | 'archived';
+
+/**
+ * Response from order requests export endpoint
+ */
+export interface OrderRequestsExcelExportResponse {
+  url: string;
+  filename: string;
+  expires: string; // RFC3339
+  itemCount: number;
+  message?: string;
+}
+
 
 
 

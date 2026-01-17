@@ -1,5 +1,11 @@
 import type { ApiClient } from '../../ApiClient';
-import type { ExcelImportFileExt, PresignedUploadResponse } from '../../../types/excel';
+import type {
+  ExcelImportFileExt,
+  PresignedUploadResponse,
+  ExcelBatchesResponse,
+  DeleteExcelBatchResponse,
+  ResetInventoryResponse
+} from '../../../types/excel';
 import { validateObjectResponse } from '../../responseValidation';
 
 /**
@@ -48,7 +54,57 @@ export async function getExcelImportPresignedPutUrl(
   return validateObjectResponse(response, 'getExcelImportPresignedPutUrl', ['url'] as any) as any;
 }
 
+/**
+ * Gets all Excel import batches for the current lab.
+ * Returns information about each batch including item count, upload time, and sample item names.
+ *
+ * Backend route: GET /repository/excel-batches
+ */
+export async function getExcelBatches(
+  client: ApiClient
+): Promise<ExcelBatchesResponse> {
+  const response = await client.request<ExcelBatchesResponse>({
+    method: 'GET',
+    path: '/excel-batches',
+  });
 
+  return validateObjectResponse(response, 'getExcelBatches', ['batches'] as any) as any;
+}
 
+/**
+ * Deletes all items from a specific Excel import batch.
+ *
+ * Backend route: POST /repository/bulk-delete-by-source
+ *
+ * @param sourceFileKey - The S3 key of the source Excel file (from ExcelBatchInfo.sourceFileKey)
+ */
+export async function deleteExcelBatch(
+  client: ApiClient,
+  sourceFileKey: string
+): Promise<DeleteExcelBatchResponse> {
+  const response = await client.request<DeleteExcelBatchResponse>({
+    method: 'POST',
+    path: '/bulk-delete-by-source',
+    body: { sourceFileKey },
+  });
 
+  return validateObjectResponse(response, 'deleteExcelBatch', ['deletedCount'] as any) as any;
+}
+
+/**
+ * Resets the inventory by deleting ALL items for the current lab.
+ * This is a destructive operation and should be used with caution.
+ *
+ * Backend route: POST /repository/reset-inventory
+ */
+export async function resetInventory(
+  client: ApiClient
+): Promise<ResetInventoryResponse> {
+  const response = await client.request<ResetInventoryResponse>({
+    method: 'POST',
+    path: '/reset-inventory',
+  });
+
+  return validateObjectResponse(response, 'resetInventory', ['deletedCount'] as any) as any;
+}
 

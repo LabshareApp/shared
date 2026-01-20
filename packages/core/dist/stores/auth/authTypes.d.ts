@@ -35,5 +35,18 @@ export interface RegistrationData {
     userData: UserData | null;
     labData: LabData | null;
 }
-export type RegistrationStep = 'login' | 'register' | 'joinLab' | 'setupLab' | 'finalizeSignup';
+/**
+ * Invitation data stored during the signup flow when user clicks an invite link
+ */
+export interface InvitationData {
+    inviteCode: string;
+    email: string;
+    labId: string;
+    labName: string;
+    roleId: string;
+    roleName: string;
+    displayRole: string;
+    inviterName: string;
+}
+export type RegistrationStep = 'login' | 'register' | 'joinLab' | 'setupLab' | 'verifyInvite' | 'finalizeSignup';
 //# sourceMappingURL=authTypes.d.ts.map

@@ -14,6 +14,7 @@ export * from './api/endpoints/excel';
 export * from './api/endpoints/grants';
 export * from './api/endpoints/customFields';
 export * from './api/endpoints/images';
+export * from './api/endpoints/rbac';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -32,6 +33,7 @@ export * from './types/grants';
 export * from './types/api';
 export * from './types/constants';
 export * from './types/customFields';
+export * from './types/rbac';
 
 export * from './utils/logger';
 export * from './utils/jwt';

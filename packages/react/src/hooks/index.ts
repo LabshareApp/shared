@@ -7,4 +7,5 @@ export * from './labs';
 export * from './excel';
 export * from './grants';
 export * from './rbac';
+export * from './reservations';
 

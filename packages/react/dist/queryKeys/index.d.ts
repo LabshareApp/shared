@@ -6,4 +6,5 @@ export * from './notifications';
 export * from './labs';
 export * from './grants';
 export * from './rbac';
+export * from './reservations';
 //# sourceMappingURL=index.d.ts.map

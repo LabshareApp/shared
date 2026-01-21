@@ -15,6 +15,7 @@ export * from './api/endpoints/grants';
 export * from './api/endpoints/customFields';
 export * from './api/endpoints/images';
 export * from './api/endpoints/rbac';
+export * from './api/endpoints/reservations';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -34,6 +35,7 @@ export * from './types/api';
 export * from './types/constants';
 export * from './types/customFields';
 export * from './types/rbac';
+export * from './types/reservations';
 
 export * from './utils/logger';
 export * from './utils/jwt';

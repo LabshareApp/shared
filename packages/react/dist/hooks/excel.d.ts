@@ -1,4 +1,4 @@
-import type { ApiClient, ExcelImportFileExt, InventoryExcelExportResponse, PresignedUploadResponse } from '@labshare/shared-core';
+import type { ApiClient, ExcelImportFileExt, InventoryExcelExportResponse, PresignedUploadResponse, ResetInventoryResponse } from '@labshare/shared-core';
 /**
  * Export inventory to Excel (presigned download URL).
  *
@@ -15,4 +15,11 @@ export declare function useExcelImportPresignedPutUrl(client: ApiClient): import
     itemType?: string;
     cacheBuster?: number;
 }, unknown>;
+/**
+ * Reset inventory by deleting ALL items for the current lab.
+ * This is a destructive operation and should be admin-only.
+ *
+ * Invalidates inventory queries after successful reset.
+ */
+export declare function useResetInventory(client: ApiClient): import("@tanstack/react-query").UseMutationResult<ResetInventoryResponse, Error, void, unknown>;
 //# sourceMappingURL=excel.d.ts.map

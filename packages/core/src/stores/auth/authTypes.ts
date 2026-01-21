@@ -56,6 +56,7 @@ export interface InvitationData {
 export type RegistrationStep =
   | 'login'
   | 'register'
+  | 'chooseLab'
   | 'joinLab'
   | 'setupLab'
   | 'verifyInvite'

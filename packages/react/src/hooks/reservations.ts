@@ -24,6 +24,7 @@ import type {
   MachineImagePresignedUrlResponse,
   MachineImageViewUrlRequest,
   MachineImageViewUrlResponse,
+  CheckOutReservationData,
 } from '@labshare/shared-core';
 import {
   fetchMachineTags,
@@ -315,10 +316,11 @@ export function useReservationMutations(client: ApiClient) {
   });
 
   const checkOutMutation = useMutation({
-    mutationFn: (id: string) => checkOutReservation(client, id),
+    mutationFn: ({ id, data }: { id: string; data?: CheckOutReservationData }) =>
+      checkOutReservation(client, id, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: reservationKeys.reservations });
-      queryClient.invalidateQueries({ queryKey: reservationKeys.reservationDetail(variables) });
+      queryClient.invalidateQueries({ queryKey: reservationKeys.reservationDetail(variables.id) });
     },
   });
 

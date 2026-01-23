@@ -231,10 +231,10 @@ function useReservationMutations(client) {
         },
     });
     const checkOutMutation = (0, react_query_1.useMutation)({
-        mutationFn: (id) => (0, shared_core_1.checkOutReservation)(client, id),
+        mutationFn: ({ id, data }) => (0, shared_core_1.checkOutReservation)(client, id, data),
         onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.reservations });
-            queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.reservationDetail(variables) });
+            queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.reservationDetail(variables.id) });
         },
     });
     return {

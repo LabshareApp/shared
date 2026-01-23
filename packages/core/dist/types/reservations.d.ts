@@ -4,21 +4,27 @@
  */
 export type ReservationStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'completed' | 'no_show';
 export type RecurrenceFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly';
+export type MachineTagType = 'general' | 'location';
 export interface MachineTag {
     id: string;
     labId: string;
     name: string;
+    type: MachineTagType;
     color?: string;
+    description?: string;
     createdAt: string;
     updatedAt: string;
 }
 export interface CreateMachineTagData {
     name: string;
+    type?: MachineTagType;
     color?: string;
+    description?: string;
 }
 export interface UpdateMachineTagData {
     name?: string;
     color?: string;
+    description?: string;
 }
 export interface AvailableHours {
     start: string;
@@ -30,9 +36,49 @@ export interface ReminderSettings {
     emailEnabled: boolean;
     pushEnabled: boolean;
 }
+/** Price structure for consumables (matches inventory ItemPrice) */
+export interface ConsumablePrice {
+    amount: number;
+    currency: string;
+}
+/** Consumable linked to a machine by the machine owner */
+export interface MachineConsumable {
+    itemId: string;
+    itemName: string;
+    brandName?: string;
+    pricePerUnit?: ConsumablePrice;
+    units: string;
+    required: boolean;
+    defaultAmount?: number;
+}
+/** User's estimated consumption at reservation time */
+export interface ConsumableEstimate {
+    itemId: string;
+    itemName: string;
+    brandName?: string;
+    amount: number;
+    units: string;
+}
+/** Actual consumption recorded at check-out */
+export interface ConsumableUsage {
+    itemId: string;
+    itemName: string;
+    brandName: string;
+    estimatedAmount: number;
+    actualAmount: number;
+    units: string;
+    pricePerUnit?: ConsumablePrice;
+    totalCost?: ConsumablePrice;
+    decrementedAt: string;
+}
+/** Data for check-out with consumables */
+export interface CheckOutReservationData {
+    consumableUsages: ConsumableUsage[];
+}
 export interface Machine {
     id: string;
     labId: string;
+    labName?: string;
     name: string;
     description?: string;
     location?: string;
@@ -46,7 +92,10 @@ export interface Machine {
     ownerUserId: string;
     tagIds?: string[];
     tagNames?: string[];
+    locationTagIds?: string[];
+    locationTagNames?: string[];
     reminderSettings?: ReminderSettings;
+    consumables?: MachineConsumable[];
     isActive: boolean;
     imageUrl?: string;
     createdAt: string;
@@ -65,7 +114,9 @@ export interface CreateMachineData {
     requiresApproval?: boolean;
     ownerUserId?: string;
     tagIds?: string[];
+    locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
+    consumables?: MachineConsumable[];
     imageUrl?: string;
 }
 export interface UpdateMachineData {
@@ -81,7 +132,9 @@ export interface UpdateMachineData {
     requiresApproval?: boolean;
     ownerUserId?: string;
     tagIds?: string[];
+    locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
+    consumables?: MachineConsumable[];
     isActive?: boolean;
     imageUrl?: string;
 }
@@ -101,6 +154,8 @@ export interface Reservation {
     rejectionReason?: string;
     checkedInAt?: string;
     checkedOutAt?: string;
+    consumableEstimates?: ConsumableEstimate[];
+    consumableUsages?: ConsumableUsage[];
     recurringRuleId?: string;
     googleEventId?: string;
     outlookEventId?: string;
@@ -117,6 +172,7 @@ export interface CreateReservationData {
     title?: string;
     notes?: string;
     slotIndex?: number;
+    consumableEstimates?: ConsumableEstimate[];
 }
 export interface UpdateReservationData {
     startTime?: string;
@@ -184,6 +240,7 @@ export interface CheckAvailabilityResponse {
 }
 export interface ListMachinesParams {
     activeOnly?: boolean;
+    includeCollaborators?: boolean;
 }
 export interface RejectReservationData {
     reason?: string;

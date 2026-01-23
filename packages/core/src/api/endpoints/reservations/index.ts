@@ -23,6 +23,7 @@ import type {
   MachineImagePresignedUrlResponse,
   MachineImageViewUrlRequest,
   MachineImageViewUrlResponse,
+  CheckOutReservationData,
 } from '../../../types/reservations';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
@@ -104,6 +105,7 @@ export async function deleteMachineTag(client: ApiClient, id: string): Promise<v
 
 /**
  * Fetch all machines for the authenticated lab.
+ * Set includeCollaborators=true to also include machines from accepted collaborator labs.
  */
 export async function fetchMachines(
   client: ApiClient,
@@ -112,6 +114,9 @@ export async function fetchMachines(
   const query: Record<string, string> = {};
   if (params?.activeOnly) {
     query.activeOnly = 'true';
+  }
+  if (params?.includeCollaborators) {
+    query.includeCollaborators = 'true';
   }
 
   const response = await client.request<WithMongoId<Machine>[]>({
@@ -362,12 +367,18 @@ export async function checkInReservation(client: ApiClient, id: string): Promise
 
 /**
  * Check out from a reservation.
+ * Optionally pass consumable usage data to decrement inventory.
  */
-export async function checkOutReservation(client: ApiClient, id: string): Promise<void> {
+export async function checkOutReservation(
+  client: ApiClient,
+  id: string,
+  data?: CheckOutReservationData
+): Promise<void> {
   await client.request({
     method: 'POST',
     path: '/reservations/check-out',
     query: { id },
+    body: data,
   });
 }
 

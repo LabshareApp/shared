@@ -1,4 +1,4 @@
-import type { ApiClient, Machine, MachineTag, Reservation, RecurringRule, CreateMachineData, UpdateMachineData, CreateMachineTagData, UpdateMachineTagData, CreateReservationData, UpdateReservationData, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse } from '@labshare/shared-core';
+import type { ApiClient, Machine, MachineTag, Reservation, RecurringRule, CreateMachineData, UpdateMachineData, CreateMachineTagData, UpdateMachineTagData, CreateReservationData, UpdateReservationData, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '@labshare/shared-core';
 import { type ApiError } from '@labshare/shared-core';
 export declare function useMachineTags(client: ApiClient, options?: {
     enabled?: boolean;
@@ -55,7 +55,10 @@ export declare function useReservationMutations(client: ApiClient): {
         data?: RejectReservationData;
     }, unknown>;
     checkInMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
-    checkOutMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
+    checkOutMutation: import("@tanstack/react-query").UseMutationResult<void, Error, {
+        id: string;
+        data?: CheckOutReservationData;
+    }, unknown>;
 };
 export declare function useRecurringRules(client: ApiClient, options?: {
     enabled?: boolean;

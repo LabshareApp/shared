@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { MachineTag, CreateMachineTagData, UpdateMachineTagData, Machine, CreateMachineData, UpdateMachineData, Reservation, CreateReservationData, UpdateReservationData, RecurringRule, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse } from '../../../types/reservations';
+import type { MachineTag, CreateMachineTagData, UpdateMachineTagData, Machine, CreateMachineData, UpdateMachineData, Reservation, CreateReservationData, UpdateReservationData, RecurringRule, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '../../../types/reservations';
 /**
  * Fetch all machine tags for the authenticated lab.
  */
@@ -18,6 +18,7 @@ export declare function updateMachineTag(client: ApiClient, id: string, data: Up
 export declare function deleteMachineTag(client: ApiClient, id: string): Promise<void>;
 /**
  * Fetch all machines for the authenticated lab.
+ * Set includeCollaborators=true to also include machines from accepted collaborator labs.
  */
 export declare function fetchMachines(client: ApiClient, params?: ListMachinesParams): Promise<Machine[]>;
 /**
@@ -82,8 +83,9 @@ export declare function rejectReservation(client: ApiClient, id: string, data?: 
 export declare function checkInReservation(client: ApiClient, id: string): Promise<void>;
 /**
  * Check out from a reservation.
+ * Optionally pass consumable usage data to decrement inventory.
  */
-export declare function checkOutReservation(client: ApiClient, id: string): Promise<void>;
+export declare function checkOutReservation(client: ApiClient, id: string, data?: CheckOutReservationData): Promise<void>;
 /**
  * Fetch active recurring rules for the authenticated lab.
  */

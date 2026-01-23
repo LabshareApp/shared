@@ -90,11 +90,15 @@ async function deleteMachineTag(client, id) {
 // =============================================================================
 /**
  * Fetch all machines for the authenticated lab.
+ * Set includeCollaborators=true to also include machines from accepted collaborator labs.
  */
 async function fetchMachines(client, params) {
     const query = {};
     if (params === null || params === void 0 ? void 0 : params.activeOnly) {
         query.activeOnly = 'true';
+    }
+    if (params === null || params === void 0 ? void 0 : params.includeCollaborators) {
+        query.includeCollaborators = 'true';
     }
     const response = await client.request({
         method: 'GET',
@@ -297,12 +301,14 @@ async function checkInReservation(client, id) {
 }
 /**
  * Check out from a reservation.
+ * Optionally pass consumable usage data to decrement inventory.
  */
-async function checkOutReservation(client, id) {
+async function checkOutReservation(client, id, data) {
     await client.request({
         method: 'POST',
         path: '/reservations/check-out',
         query: { id },
+        body: data,
     });
 }
 // =============================================================================

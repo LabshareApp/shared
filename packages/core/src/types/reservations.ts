@@ -183,6 +183,8 @@ export interface Reservation {
   id: string;
   labId: string;
   machineId: string;
+  machineName?: string; // Populated at runtime for display, not stored in DB
+  machineLabName?: string; // Populated at runtime for display, not stored in DB
   userId: string;
   startTime: string;
   endTime: string;

@@ -142,6 +142,8 @@ export interface Reservation {
     id: string;
     labId: string;
     machineId: string;
+    machineName?: string;
+    machineLabName?: string;
     userId: string;
     startTime: string;
     endTime: string;

@@ -136,6 +136,7 @@ export interface InventoryItem {
     documents?: string[];
     quotes?: string[];
     images?: string[];
+    displayImage?: string;
     [key: string]: any;
 }
 export interface CreateItemData {
@@ -157,6 +158,7 @@ export interface CreateItemData {
     };
     quotes?: string[];
     images?: string[];
+    displayImage?: string;
 }
 export interface CreateCustomGroupData {
     name: string;

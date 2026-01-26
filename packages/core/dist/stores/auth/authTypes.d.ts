@@ -41,6 +41,8 @@ export interface RegistrationData {
 export interface InvitationData {
     inviteCode: string;
     email: string;
+    firstName: string;
+    lastName: string;
     labId: string;
     labName: string;
     roleId: string;

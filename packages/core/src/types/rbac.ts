@@ -209,6 +209,8 @@ export type InvitationStatus = 'pending' | 'accepted' | 'expired' | 'canceled';
 export interface Invitation {
   _id: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   labId: string;
   roleId: string;
   displayRole: string;
@@ -234,6 +236,8 @@ export interface EnrichedInvitation extends Invitation {
 export interface InvitationDetails {
   id: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   labId: string;
   labName: string;
   roleId: string;
@@ -252,6 +256,8 @@ export interface InvitationDetails {
  */
 export interface CreateInvitationRequest {
   email: string;
+  firstName?: string;
+  lastName?: string;
   roleId: string;
   displayRole: string;
 }

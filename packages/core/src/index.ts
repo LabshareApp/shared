@@ -16,6 +16,7 @@ export * from './api/endpoints/customFields';
 export * from './api/endpoints/images';
 export * from './api/endpoints/rbac';
 export * from './api/endpoints/reservations';
+export * from './api/endpoints/auth';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';

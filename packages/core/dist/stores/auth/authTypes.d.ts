@@ -27,6 +27,8 @@ export interface LabData {
     country?: string;
     building_address?: string;
     floor_number?: string;
+    building?: string;
+    floorNumber?: string;
     role?: string;
 }
 export interface RegistrationData {

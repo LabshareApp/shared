@@ -31,6 +31,7 @@ __exportStar(require("./api/endpoints/customFields"), exports);
 __exportStar(require("./api/endpoints/images"), exports);
 __exportStar(require("./api/endpoints/rbac"), exports);
 __exportStar(require("./api/endpoints/reservations"), exports);
+__exportStar(require("./api/endpoints/auth"), exports);
 __exportStar(require("./adapters/AnalyticsAdapter"), exports);
 __exportStar(require("./adapters/StorageAdapter"), exports);
 __exportStar(require("./adapters/SupabaseAdapter"), exports);

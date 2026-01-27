@@ -27,8 +27,10 @@ export interface LabData {
   institution?: string;
   department?: string;
   country?: string;
-  building_address?: string;
-  floor_number?: string;
+  building_address?: string; // Legacy - kept for backwards compatibility
+  floor_number?: string;     // Legacy - kept for backwards compatibility
+  building?: string;         // New - used by server registration endpoint
+  floorNumber?: string;      // New - used by server registration endpoint
   role?: string;
 }
 

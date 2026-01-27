@@ -186,8 +186,8 @@ export interface Reservation {
   machineName?: string; // Populated at runtime for display, not stored in DB
   machineLabName?: string; // Populated at runtime for display, not stored in DB
   userId: string;
-  startTime: string;
-  endTime: string;
+  startTime: string; // ISO 8601 UTC format (e.g., "2024-01-15T10:30:00Z")
+  endTime: string;   // ISO 8601 UTC format (e.g., "2024-01-15T11:30:00Z")
   title?: string;
   notes?: string;
   slotIndex: number;
@@ -211,8 +211,8 @@ export interface Reservation {
 
 export interface CreateReservationData {
   machineId: string;
-  startTime: string;
-  endTime: string;
+  startTime: string; // ISO 8601 UTC format (e.g., "2024-01-15T10:30:00Z")
+  endTime: string;   // ISO 8601 UTC format (e.g., "2024-01-15T11:30:00Z")
   title?: string;
   notes?: string;
   slotIndex?: number;
@@ -220,8 +220,8 @@ export interface CreateReservationData {
 }
 
 export interface UpdateReservationData {
-  startTime?: string;
-  endTime?: string;
+  startTime?: string; // ISO 8601 UTC format (e.g., "2024-01-15T10:30:00Z")
+  endTime?: string;   // ISO 8601 UTC format (e.g., "2024-01-15T11:30:00Z")
   title?: string;
   notes?: string;
 }
@@ -272,8 +272,8 @@ export interface UpdateRecurringRuleData {
 
 export interface ListReservationsParams {
   machineId: string;
-  start?: string;
-  end?: string;
+  start?: string; // ISO 8601 UTC format (e.g., "2024-01-15T00:00:00Z")
+  end?: string;   // ISO 8601 UTC format (e.g., "2024-01-15T23:59:59Z")
 }
 
 export interface ListMyReservationsParams {
@@ -282,16 +282,16 @@ export interface ListMyReservationsParams {
 
 export interface CheckAvailabilityParams {
   machineId: string;
-  start: string;
-  end: string;
+  start: string;  // ISO 8601 UTC format (e.g., "2024-01-15T10:30:00Z")
+  end: string;    // ISO 8601 UTC format (e.g., "2024-01-15T11:30:00Z")
   slotIndex?: number;
 }
 
 export interface CheckAvailabilityResponse {
   available: boolean;
   machineId: string;
-  start: string;
-  end: string;
+  start: string;  // ISO 8601 UTC format
+  end: string;    // ISO 8601 UTC format
   slotIndex: number;
 }
 

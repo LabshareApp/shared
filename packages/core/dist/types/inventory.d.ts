@@ -143,6 +143,7 @@ export interface CreateItemData {
     name: string;
     userId?: string;
     description?: string;
+    notes?: string;
     brands: {
         [brandName: string]: BrandInfo;
     };
@@ -156,6 +157,7 @@ export interface CreateItemData {
         lotNumber?: string;
         amountAdded?: number;
     };
+    customFields?: Record<string, any>;
     quotes?: string[];
     images?: string[];
     displayImage?: string;

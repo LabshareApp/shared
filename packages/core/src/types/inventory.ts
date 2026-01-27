@@ -153,6 +153,7 @@ export interface InventoryItem {
   documents?: string[]; // S3 URLs to attached documents (PDFs, etc.)
   quotes?: string[]; // S3 URLs to quote PDFs (transferred from order request on fulfillment)
   images?: string[]; // S3 URLs to attached images
+  displayImage?: string; // S3 URL of the image to display as thumbnail (must be one of images[])
   [key: string]: any;
 }
 
@@ -160,6 +161,7 @@ export interface CreateItemData {
   name: string;
   userId?: string;
   description?: string;
+  notes?: string;
   brands: { [brandName: string]: BrandInfo };
   totalQuantity: number;
   catalog: string;
@@ -171,8 +173,10 @@ export interface CreateItemData {
     lotNumber?: string;
     amountAdded?: number;
   };
+  customFields?: Record<string, any>;
   quotes?: string[]; // S3 URLs to quote PDFs
   images?: string[]; // S3 URLs to attached images
+  displayImage?: string; // S3 URL of the image to display as thumbnail
 }
 
 export interface CreateCustomGroupData {

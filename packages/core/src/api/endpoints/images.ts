@@ -13,7 +13,7 @@ export async function generateImagePresignedUrl(
 ): Promise<{ url: string; object_key: string }> {
   const response = await client.request<{ url: string; object_key: string }>({
     method: 'GET',
-    path: '/generate-presigned-url/other-image',
+    path: '/generate-presigned-url/other-images',
     query: { ext: extension },
   });
   return validateObjectResponse(response, 'generateImagePresignedUrl', ['url', 'object_key'] as any) as {
@@ -32,7 +32,7 @@ export async function getImageViewUrl(
 ): Promise<{ url: string; expiresAt: number }> {
   const response = await client.request<{ url: string; expiresAt: number }>({
     method: 'POST',
-    path: '/get-other-image-view-url',
+    path: '/get-other-images-view-url',
     body: { s3Url },
   });
   return validateObjectResponse(response, 'getImageViewUrl', ['url', 'expiresAt'] as any) as {

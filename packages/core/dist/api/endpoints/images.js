@@ -20,7 +20,7 @@ const responseValidation_1 = require("../responseValidation");
 async function generateImagePresignedUrl(client, extension = 'jpg') {
     const response = await client.request({
         method: 'GET',
-        path: '/generate-presigned-url/other-image',
+        path: '/generate-presigned-url/other-images',
         query: { ext: extension },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'generateImagePresignedUrl', ['url', 'object_key']);
@@ -32,7 +32,7 @@ async function generateImagePresignedUrl(client, extension = 'jpg') {
 async function getImageViewUrl(client, s3Url) {
     const response = await client.request({
         method: 'POST',
-        path: '/get-other-image-view-url',
+        path: '/get-other-images-view-url',
         body: { s3Url },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getImageViewUrl', ['url', 'expiresAt']);

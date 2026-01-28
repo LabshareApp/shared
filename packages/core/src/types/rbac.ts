@@ -256,8 +256,8 @@ export interface InvitationDetails {
  */
 export interface CreateInvitationRequest {
   email: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   roleId: string;
   displayRole: string;
 }

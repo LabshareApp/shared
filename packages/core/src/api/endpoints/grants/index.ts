@@ -10,6 +10,7 @@ import type {
   UpdateGrantData,
   ShippingEstimateRequest,
   ShippingEstimateResponse,
+  OdcCategoriesResponse,
 } from '../../../types/grants';
 import { validateObjectResponse } from '../../responseValidation';
 
@@ -160,4 +161,10 @@ export async function estimateShipping(
   return validateObjectResponse(response, 'estimateShipping', ['estimates'] as any) as ShippingEstimateResponse;
 }
 
-
+export async function fetchOdcCategories(client: ApiClient): Promise<OdcCategoriesResponse> {
+  const response = await client.request<OdcCategoriesResponse>({
+    method: 'GET',
+    path: '/grants/odc-categories',
+  });
+  return validateObjectResponse(response, 'fetchOdcCategories', ['categories'] as any) as OdcCategoriesResponse;
+}

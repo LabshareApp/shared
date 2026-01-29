@@ -3,7 +3,33 @@
 
 export type GrantStatus = 'active' | 'closed' | 'archived';
 
-export type GrantTransactionType = 'purchase' | 'shipping' | 'adjustment';
+export type GrantTransactionType = 'purchase' | 'shipping' | 'adjustment' | 'odc';
+
+// ODC (Other Direct Costs) category types
+export type OdcCategory =
+  | 'consultant'
+  | 'subaward'
+  | 'equipment'
+  | 'travel'
+  | 'participant'
+  | 'publication'
+  | 'tuition'
+  | 'maintenance'
+  | 'software'
+  | 'subscription'
+  | 'animal_care'
+  | 'human_subjects'
+  | 'fees'
+  | 'other';
+
+export interface OdcCategoryOption {
+  value: OdcCategory;
+  label: string;
+}
+
+export interface OdcCategoriesResponse {
+  categories: OdcCategoryOption[];
+}
 
 export interface MoneyAmount {
   amount: number; // in cents
@@ -44,6 +70,12 @@ export interface GrantTransaction {
 
   shippingCost?: MoneyAmount;
   shippingMethod?: string;
+
+  // ODC-specific fields
+  odcCategory?: OdcCategory;
+  vendor?: string;
+  invoiceNumber?: string;
+  transactionDate?: string;
 
   description?: string;
   notes?: string;
@@ -95,6 +127,11 @@ export interface CreateGrantTransactionRequest {
   orderRequestId?: string;
   shippingCost?: MoneyAmount;
   shippingMethod?: string;
+  // ODC-specific fields
+  odcCategory?: OdcCategory;
+  vendor?: string;
+  invoiceNumber?: string;
+  transactionDate?: string;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { CreateGrantRequest, CreateGrantTransactionRequest, Grant, GrantListResponse, GrantTransactionsResponse, MoveGrantTransactionRequest, UpdateGrantData, ShippingEstimateRequest, ShippingEstimateResponse } from '../../../types/grants';
+import type { CreateGrantRequest, CreateGrantTransactionRequest, Grant, GrantListResponse, GrantTransactionsResponse, MoveGrantTransactionRequest, UpdateGrantData, ShippingEstimateRequest, ShippingEstimateResponse, OdcCategoriesResponse } from '../../../types/grants';
 export declare function createGrant(client: ApiClient, payload: CreateGrantRequest): Promise<Grant>;
 export declare function listGrants(client: ApiClient, params?: {
     status?: string;
@@ -26,4 +26,5 @@ export declare function moveGrantTransaction(client: ApiClient, payload: MoveGra
 export declare function updateGrant(client: ApiClient, grantId: string, grantData: UpdateGrantData): Promise<Grant>;
 export declare function deleteGrant(client: ApiClient, grantId: string): Promise<void>;
 export declare function estimateShipping(client: ApiClient, estimateRequest: ShippingEstimateRequest): Promise<ShippingEstimateResponse>;
+export declare function fetchOdcCategories(client: ApiClient): Promise<OdcCategoriesResponse>;
 //# sourceMappingURL=index.d.ts.map

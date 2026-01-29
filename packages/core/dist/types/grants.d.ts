@@ -1,5 +1,13 @@
 export type GrantStatus = 'active' | 'closed' | 'archived';
-export type GrantTransactionType = 'purchase' | 'shipping' | 'adjustment';
+export type GrantTransactionType = 'purchase' | 'shipping' | 'adjustment' | 'odc';
+export type OdcCategory = 'consultant' | 'subaward' | 'equipment' | 'travel' | 'participant' | 'publication' | 'tuition' | 'maintenance' | 'software' | 'subscription' | 'animal_care' | 'human_subjects' | 'fees' | 'other';
+export interface OdcCategoryOption {
+    value: OdcCategory;
+    label: string;
+}
+export interface OdcCategoriesResponse {
+    categories: OdcCategoryOption[];
+}
 export interface MoneyAmount {
     amount: number;
     currency: string;
@@ -30,6 +38,10 @@ export interface GrantTransaction {
     orderRequestId?: string;
     shippingCost?: MoneyAmount;
     shippingMethod?: string;
+    odcCategory?: OdcCategory;
+    vendor?: string;
+    invoiceNumber?: string;
+    transactionDate?: string;
     description?: string;
     notes?: string;
     userId?: string;
@@ -73,6 +85,10 @@ export interface CreateGrantTransactionRequest {
     orderRequestId?: string;
     shippingCost?: MoneyAmount;
     shippingMethod?: string;
+    odcCategory?: OdcCategory;
+    vendor?: string;
+    invoiceNumber?: string;
+    transactionDate?: string;
 }
 export type CreateGrantData = CreateGrantRequest;
 export interface UpdateGrantData extends Partial<CreateGrantRequest> {

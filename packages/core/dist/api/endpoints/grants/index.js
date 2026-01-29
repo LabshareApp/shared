@@ -9,6 +9,7 @@ exports.moveGrantTransaction = moveGrantTransaction;
 exports.updateGrant = updateGrant;
 exports.deleteGrant = deleteGrant;
 exports.estimateShipping = estimateShipping;
+exports.fetchOdcCategories = fetchOdcCategories;
 const responseValidation_1 = require("../../responseValidation");
 async function createGrant(client, payload) {
     const response = await client.request({
@@ -103,5 +104,12 @@ async function estimateShipping(client, estimateRequest) {
         body: estimateRequest,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'estimateShipping', ['estimates']);
+}
+async function fetchOdcCategories(client) {
+    const response = await client.request({
+        method: 'GET',
+        path: '/grants/odc-categories',
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchOdcCategories', ['categories']);
 }
 //# sourceMappingURL=index.js.map

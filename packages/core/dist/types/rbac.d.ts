@@ -10,7 +10,7 @@
  * All available permissions in the system.
  * Format: "resource:action"
  */
-export type Permission = 'inventory:view' | 'inventory:edit' | 'inventory:delete' | 'inventory:export' | 'orders:view' | 'orders:create' | 'orders:edit' | 'orders:approve' | 'orders:delete' | 'grants:view' | 'grants:edit' | 'grants:delete' | 'tags:view' | 'tags:edit' | 'tags:delete' | 'groups:view' | 'groups:create_public' | 'groups:edit_all' | 'groups:delete_all' | 'settings:view' | 'settings:edit' | 'members:view' | 'members:invite' | 'members:edit_roles' | 'members:remove';
+export type Permission = 'inventory:view' | 'inventory:edit' | 'inventory:delete' | 'inventory:export' | 'orders:view' | 'orders:create' | 'orders:edit' | 'orders:approve' | 'orders:delete' | 'grants:view' | 'grants:edit' | 'grants:delete' | 'tags:view' | 'tags:edit' | 'tags:delete' | 'groups:view' | 'groups:create_public' | 'groups:edit_all' | 'groups:delete_all' | 'settings:view' | 'settings:edit' | 'members:view' | 'members:invite' | 'members:edit_roles' | 'members:remove' | 'reservations:view' | 'reservations:create' | 'reservations:edit' | 'reservations:delete' | 'machines:manage';
 /**
  * Permission grouped by resource for UI display
  */
@@ -22,6 +22,7 @@ export interface PermissionsByResource {
     groups: Permission[];
     settings: Permission[];
     members: Permission[];
+    reservations: Permission[];
 }
 /**
  * Human-readable permission labels for UI

@@ -41,6 +41,11 @@ exports.PERMISSION_LABELS = {
     'members:invite': 'Invite new members',
     'members:edit_roles': 'Change member roles',
     'members:remove': 'Remove members from lab',
+    'reservations:view': 'View reservations and machines',
+    'reservations:create': 'Create reservations',
+    'reservations:edit': 'Edit reservations',
+    'reservations:delete': 'Delete/cancel reservations',
+    'machines:manage': 'Create and manage machines',
 };
 // ============================================================================
 // Display Role Options

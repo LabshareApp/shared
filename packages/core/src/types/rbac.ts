@@ -47,7 +47,13 @@ export type Permission =
   | 'members:view'
   | 'members:invite'
   | 'members:edit_roles'
-  | 'members:remove';
+  | 'members:remove'
+  // Reservation/machine permissions
+  | 'reservations:view'
+  | 'reservations:create'
+  | 'reservations:edit'
+  | 'reservations:delete'
+  | 'machines:manage';
 
 /**
  * Permission grouped by resource for UI display
@@ -60,6 +66,7 @@ export interface PermissionsByResource {
   groups: Permission[];
   settings: Permission[];
   members: Permission[];
+  reservations: Permission[];
 }
 
 /**
@@ -91,6 +98,11 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   'members:invite': 'Invite new members',
   'members:edit_roles': 'Change member roles',
   'members:remove': 'Remove members from lab',
+  'reservations:view': 'View reservations and machines',
+  'reservations:create': 'Create reservations',
+  'reservations:edit': 'Edit reservations',
+  'reservations:delete': 'Delete/cancel reservations',
+  'machines:manage': 'Create and manage machines',
 };
 
 // ============================================================================

@@ -71,6 +71,14 @@ export class ApiClient {
         const retryCount = this.retryCountMap.get(requestKey) || 0;
         const maxRetries = 2;
 
+        // During grace period (right after login), skip aggressive 401 handling
+        // The session may still be stabilizing - let the calling code handle errors gracefully
+        if (error?.response?.status === 401 && this.tokenProvider.isInGracePeriod?.()) {
+          this.logger?.debug('api.401_during_grace_period', { path: originalRequest.url });
+          this.retryCountMap.delete(requestKey);
+          return Promise.reject(error);
+        }
+
         // If error is 401 and we haven't exceeded max retries, try to refresh token
         if (
           error?.response?.status === 401 &&

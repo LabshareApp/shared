@@ -10,4 +10,10 @@ export interface TokenProvider {
    * If provided, onSessionExpired will check this before triggering logout.
    */
   sessionCoordinator?: SessionCoordinator;
+  /**
+   * Optional method to check if we're in a login grace period.
+   * During the grace period, 401 errors should not trigger session expiration
+   * or aggressive retry loops - the session may still be stabilizing.
+   */
+  isInGracePeriod?(): boolean;
 }

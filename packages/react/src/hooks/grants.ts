@@ -7,12 +7,14 @@ import type {
   GrantListResponse,
   GrantTransactionsResponse,
   MoveGrantTransactionRequest,
+  OdcCategoriesResponse,
   UpdateGrantData,
 } from '@labshare/shared-core';
 import {
   createGrant,
   createGrantTransaction,
   deleteGrant,
+  fetchOdcCategories,
   getGrant,
   getGrantTransactions,
   listGrants,
@@ -20,7 +22,7 @@ import {
   updateGrant,
 } from '@labshare/shared-core';
 
-import { grantsList, grantItem, grantTransactions } from '../queryKeys/grants';
+import { grantsList, grantItem, grantTransactions, odcCategories } from '../queryKeys/grants';
 
 export function useGrantsList(
   client: ApiClient,
@@ -86,6 +88,18 @@ export function useGrantTransactions(
     },
     enabled: params.enabled ?? !!normalizedId,
     staleTime: 30_000,
+  });
+}
+
+export function useODCCategories(
+  client: ApiClient,
+  params: { enabled?: boolean } = {}
+) {
+  return useQuery<OdcCategoriesResponse, Error>({
+    queryKey: odcCategories(),
+    queryFn: () => fetchOdcCategories(client),
+    enabled: params.enabled ?? true,
+    staleTime: 5 * 60 * 1000, // 5 minutes - categories rarely change
   });
 }
 

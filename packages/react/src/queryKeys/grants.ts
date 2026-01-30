@@ -21,6 +21,8 @@ export const grantTransactions = (params: {
     params.limit ?? null,
   ] as const;
 
+export const odcCategories = () => [...grantsRoot(), 'odcCategories'] as const;
+
 
 
 

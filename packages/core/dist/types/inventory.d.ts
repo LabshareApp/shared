@@ -108,6 +108,7 @@ export interface InventoryItem {
     units?: string;
     userId?: string;
     labId: string;
+    isPrivate?: boolean;
     createdAt: string;
     updatedAt: string;
     casNumber?: string;
@@ -152,6 +153,7 @@ export interface CreateItemData {
     units?: string;
     casNumber?: string;
     stateOfMatter?: StateOfMatter;
+    isPrivate?: boolean;
     attributes?: {
         expirationDate?: string | null;
         lotNumber?: string;

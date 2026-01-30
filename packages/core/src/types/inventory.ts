@@ -123,6 +123,7 @@ export interface InventoryItem {
   units?: string;
   userId?: string;
   labId: string;
+  isPrivate?: boolean; // If true, item is hidden from collaborating labs
   createdAt: string;
   updatedAt: string;
   casNumber?: string;
@@ -168,6 +169,7 @@ export interface CreateItemData {
   units?: string;
   casNumber?: string;
   stateOfMatter?: StateOfMatter;
+  isPrivate?: boolean; // If true, item is hidden from collaborating labs
   attributes?: {
     expirationDate?: string | null;
     lotNumber?: string;

@@ -53,7 +53,12 @@ export type Permission =
   | 'reservations:create'
   | 'reservations:edit'
   | 'reservations:delete'
-  | 'machines:manage';
+  | 'machines:manage'
+  // Sharing request permissions (distinct from order requests)
+  | 'sharing:view'
+  | 'sharing:create'
+  | 'sharing:edit'
+  | 'sharing:approve';
 
 /**
  * Permission grouped by resource for UI display
@@ -67,6 +72,7 @@ export interface PermissionsByResource {
   settings: Permission[];
   members: Permission[];
   reservations: Permission[];
+  sharing: Permission[];
 }
 
 /**
@@ -103,6 +109,10 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   'reservations:edit': 'Edit reservations',
   'reservations:delete': 'Delete/cancel reservations',
   'machines:manage': 'Create and manage machines',
+  'sharing:view': 'View sharing requests',
+  'sharing:create': 'Create sharing requests',
+  'sharing:edit': 'Edit sharing requests',
+  'sharing:approve': 'Approve/reject sharing requests',
 };
 
 // ============================================================================

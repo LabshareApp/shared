@@ -46,6 +46,10 @@ exports.PERMISSION_LABELS = {
     'reservations:edit': 'Edit reservations',
     'reservations:delete': 'Delete/cancel reservations',
     'machines:manage': 'Create and manage machines',
+    'sharing:view': 'View sharing requests',
+    'sharing:create': 'Create sharing requests',
+    'sharing:edit': 'Edit sharing requests',
+    'sharing:approve': 'Approve/reject sharing requests',
 };
 // ============================================================================
 // Display Role Options

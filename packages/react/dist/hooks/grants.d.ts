@@ -1,4 +1,4 @@
-import type { ApiClient, CreateGrantRequest, CreateGrantTransactionRequest, Grant, GrantListResponse, GrantTransactionsResponse, MoveGrantTransactionRequest, UpdateGrantData } from '@labshare/shared-core';
+import type { ApiClient, CreateGrantRequest, CreateGrantTransactionRequest, Grant, GrantListResponse, GrantTransactionsResponse, MoveGrantTransactionRequest, OdcCategoriesResponse, UpdateGrantData } from '@labshare/shared-core';
 export declare function useGrantsList(client: ApiClient, params: {
     labId: string | null | undefined;
     status?: string | null;
@@ -17,6 +17,9 @@ export declare function useGrantTransactions(client: ApiClient, params: {
     limit?: number;
     enabled?: boolean;
 }): import("@tanstack/react-query").UseQueryResult<GrantTransactionsResponse, Error>;
+export declare function useODCCategories(client: ApiClient, params?: {
+    enabled?: boolean;
+}): import("@tanstack/react-query").UseQueryResult<OdcCategoriesResponse, Error>;
 export declare function useGrantMutations(client: ApiClient): {
     createGrantMutation: import("@tanstack/react-query").UseMutationResult<Grant, Error, CreateGrantRequest, unknown>;
     updateGrantMutation: import("@tanstack/react-query").UseMutationResult<Grant, Error, {

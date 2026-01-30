@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.useGrantsList = useGrantsList;
 exports.useGrantItem = useGrantItem;
 exports.useGrantTransactions = useGrantTransactions;
+exports.useODCCategories = useODCCategories;
 exports.useGrantMutations = useGrantMutations;
 const react_query_1 = require("@tanstack/react-query");
 const shared_core_1 = require("@labshare/shared-core");
@@ -62,6 +63,15 @@ function useGrantTransactions(client, params) {
         },
         enabled: (_d = params.enabled) !== null && _d !== void 0 ? _d : !!normalizedId,
         staleTime: 30000,
+    });
+}
+function useODCCategories(client, params = {}) {
+    var _a;
+    return (0, react_query_1.useQuery)({
+        queryKey: (0, grants_1.odcCategories)(),
+        queryFn: () => (0, shared_core_1.fetchOdcCategories)(client),
+        enabled: (_a = params.enabled) !== null && _a !== void 0 ? _a : true,
+        staleTime: 5 * 60 * 1000, // 5 minutes - categories rarely change
     });
 }
 function useGrantMutations(client) {

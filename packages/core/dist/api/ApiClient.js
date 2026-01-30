@@ -37,7 +37,7 @@ class ApiClient {
             this.retryCountMap.delete(requestKey);
             return response;
         }, async (error) => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
             const originalRequest = error.config;
             if (!originalRequest) {
                 return Promise.reject(error);
@@ -45,8 +45,15 @@ class ApiClient {
             const requestKey = this.getRequestKey(originalRequest);
             const retryCount = this.retryCountMap.get(requestKey) || 0;
             const maxRetries = 2;
+            // During grace period (right after login), skip aggressive 401 handling
+            // The session may still be stabilizing - let the calling code handle errors gracefully
+            if (((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status) === 401 && ((_c = (_b = this.tokenProvider).isInGracePeriod) === null || _c === void 0 ? void 0 : _c.call(_b))) {
+                (_d = this.logger) === null || _d === void 0 ? void 0 : _d.debug('api.401_during_grace_period', { path: originalRequest.url });
+                this.retryCountMap.delete(requestKey);
+                return Promise.reject(error);
+            }
             // If error is 401 and we haven't exceeded max retries, try to refresh token
-            if (((_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status) === 401 &&
+            if (((_e = error === null || error === void 0 ? void 0 : error.response) === null || _e === void 0 ? void 0 : _e.status) === 401 &&
                 retryCount < maxRetries &&
                 this.tokenProvider.refreshSession &&
                 originalRequest) {
@@ -57,7 +64,7 @@ class ApiClient {
                     // If refresh succeeded and we got a new token, retry the request
                     if (newToken) {
                         // Remove the old Authorization header so the request interceptor sets a fresh one
-                        (_b = originalRequest.headers) === null || _b === void 0 ? true : delete _b.Authorization;
+                        (_f = originalRequest.headers) === null || _f === void 0 ? true : delete _f.Authorization;
                         // Retry the request - the request interceptor will add the fresh token
                         const retryResponse = await this.axios.request(originalRequest);
                         // Clear retry count on successful retry
@@ -65,14 +72,14 @@ class ApiClient {
                         return retryResponse;
                     }
                     // If refresh returned null, session has expired
-                    (_c = this.logger) === null || _c === void 0 ? void 0 : _c.error('api.token_refresh_returned_null', {});
+                    (_g = this.logger) === null || _g === void 0 ? void 0 : _g.error('api.token_refresh_returned_null', {});
                     // Clear retry count before calling onSessionExpired
                     this.retryCountMap.delete(requestKey);
                     // Call onSessionExpired callback if provided (respecting session coordinator)
                     if (this.tokenProvider.onSessionExpired) {
                         // If session coordinator is provided, check if we should skip (user-initiated logout)
-                        const shouldSkip = ((_d = this.tokenProvider.sessionCoordinator) === null || _d === void 0 ? void 0 : _d.isUserInitiated()) ||
-                            ((_e = this.tokenProvider.sessionCoordinator) === null || _e === void 0 ? void 0 : _e.isLogoutInProgress());
+                        const shouldSkip = ((_h = this.tokenProvider.sessionCoordinator) === null || _h === void 0 ? void 0 : _h.isUserInitiated()) ||
+                            ((_j = this.tokenProvider.sessionCoordinator) === null || _j === void 0 ? void 0 : _j.isLogoutInProgress());
                         if (!shouldSkip) {
                             this.tokenProvider.onSessionExpired();
                         }
@@ -80,15 +87,15 @@ class ApiClient {
                     return Promise.reject(new ApiError_1.ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
                 }
                 catch (refreshError) {
-                    (_f = this.logger) === null || _f === void 0 ? void 0 : _f.error('api.token_refresh_failed', { error: refreshError });
+                    (_k = this.logger) === null || _k === void 0 ? void 0 : _k.error('api.token_refresh_failed', { error: refreshError });
                     // Clear retry count before calling onSessionExpired
                     this.retryCountMap.delete(requestKey);
                     // If refresh throws an error, trigger logout immediately
                     // Call onSessionExpired callback if provided (respecting session coordinator)
                     if (this.tokenProvider.onSessionExpired) {
                         // If session coordinator is provided, check if we should skip (user-initiated logout)
-                        const shouldSkip = ((_g = this.tokenProvider.sessionCoordinator) === null || _g === void 0 ? void 0 : _g.isUserInitiated()) ||
-                            ((_h = this.tokenProvider.sessionCoordinator) === null || _h === void 0 ? void 0 : _h.isLogoutInProgress());
+                        const shouldSkip = ((_l = this.tokenProvider.sessionCoordinator) === null || _l === void 0 ? void 0 : _l.isUserInitiated()) ||
+                            ((_m = this.tokenProvider.sessionCoordinator) === null || _m === void 0 ? void 0 : _m.isLogoutInProgress());
                         if (!shouldSkip) {
                             this.tokenProvider.onSessionExpired();
                         }
@@ -96,14 +103,14 @@ class ApiClient {
                     return Promise.reject(new ApiError_1.ApiError('Session expired', 401, 'Your session has expired. Please sign in again.'));
                 }
             }
-            else if (((_j = error === null || error === void 0 ? void 0 : error.response) === null || _j === void 0 ? void 0 : _j.status) === 401 &&
+            else if (((_o = error === null || error === void 0 ? void 0 : error.response) === null || _o === void 0 ? void 0 : _o.status) === 401 &&
                 !this.tokenProvider.refreshSession) {
                 // 401 but no refresh method available - session expired
                 this.retryCountMap.delete(requestKey);
                 if (this.tokenProvider.onSessionExpired) {
                     // If session coordinator is provided, check if we should skip (user-initiated logout)
-                    const shouldSkip = ((_k = this.tokenProvider.sessionCoordinator) === null || _k === void 0 ? void 0 : _k.isUserInitiated()) ||
-                        ((_l = this.tokenProvider.sessionCoordinator) === null || _l === void 0 ? void 0 : _l.isLogoutInProgress());
+                    const shouldSkip = ((_p = this.tokenProvider.sessionCoordinator) === null || _p === void 0 ? void 0 : _p.isUserInitiated()) ||
+                        ((_q = this.tokenProvider.sessionCoordinator) === null || _q === void 0 ? void 0 : _q.isLogoutInProgress());
                     if (!shouldSkip) {
                         this.tokenProvider.onSessionExpired();
                     }

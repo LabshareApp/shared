@@ -90,6 +90,7 @@ export interface Machine {
     availableDays?: number[];
     requiresApproval: boolean;
     ownerUserId: string;
+    collaboratorsOnly?: boolean;
     tagIds?: string[];
     tagNames?: string[];
     locationTagIds?: string[];
@@ -113,6 +114,7 @@ export interface CreateMachineData {
     availableDays?: number[];
     requiresApproval?: boolean;
     ownerUserId?: string;
+    collaboratorsOnly?: boolean;
     tagIds?: string[];
     locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
@@ -131,6 +133,7 @@ export interface UpdateMachineData {
     availableDays?: number[];
     requiresApproval?: boolean;
     ownerUserId?: string;
+    collaboratorsOnly?: boolean;
     tagIds?: string[];
     locationTagIds?: string[];
     reminderSettings?: ReminderSettings;

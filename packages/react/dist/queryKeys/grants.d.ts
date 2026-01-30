@@ -7,4 +7,5 @@ export declare const grantTransactions: (params: {
     page?: number | null;
     limit?: number | null;
 }) => readonly ["grants", "transactions", string | null, string | null, number | null, number | null];
+export declare const odcCategories: () => readonly ["grants", "odc-categories"];
 //# sourceMappingURL=grants.d.ts.map

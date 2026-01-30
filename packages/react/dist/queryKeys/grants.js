@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.grantTransactions = exports.grantItem = exports.grantsList = exports.grantsRoot = void 0;
+exports.odcCategories = exports.grantTransactions = exports.grantItem = exports.grantsList = exports.grantsRoot = void 0;
 const grantsRoot = () => ['grants'];
 exports.grantsRoot = grantsRoot;
 const grantsList = (labId, status) => [...(0, exports.grantsRoot)(), 'list', labId !== null && labId !== void 0 ? labId : null, status !== null && status !== void 0 ? status : null];
@@ -19,4 +19,6 @@ const grantTransactions = (params) => {
     ];
 };
 exports.grantTransactions = grantTransactions;
+const odcCategories = () => [...(0, exports.grantsRoot)(), 'odc-categories'];
+exports.odcCategories = odcCategories;
 //# sourceMappingURL=grants.js.map

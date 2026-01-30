@@ -4,6 +4,7 @@ exports.useGrantsList = useGrantsList;
 exports.useGrantItem = useGrantItem;
 exports.useGrantTransactions = useGrantTransactions;
 exports.useGrantMutations = useGrantMutations;
+exports.useOdcCategories = useOdcCategories;
 const react_query_1 = require("@tanstack/react-query");
 const shared_core_1 = require("@labshare/shared-core");
 const grants_1 = require("../queryKeys/grants");
@@ -117,5 +118,14 @@ function useGrantMutations(client) {
         createGrantTransactionMutation,
         moveGrantTransactionMutation,
     };
+}
+function useOdcCategories(client, params = {}) {
+    var _a;
+    return (0, react_query_1.useQuery)({
+        queryKey: (0, grants_1.odcCategories)(),
+        queryFn: () => (0, shared_core_1.fetchOdcCategories)(client),
+        enabled: (_a = params.enabled) !== null && _a !== void 0 ? _a : true,
+        staleTime: 5 * 60 * 1000, // 5 minutes - categories rarely change
+    });
 }
 //# sourceMappingURL=grants.js.map

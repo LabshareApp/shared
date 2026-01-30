@@ -126,6 +126,7 @@ export interface Machine {
   availableDays?: number[]; // 0=Sunday, 1=Monday, etc.
   requiresApproval: boolean;
   ownerUserId: string;
+  collaboratorsOnly?: boolean; // If true, only visible to collaborating labs (not whole institution)
   tagIds?: string[];
   tagNames?: string[];
   locationTagIds?: string[];
@@ -150,6 +151,7 @@ export interface CreateMachineData {
   availableDays?: number[];
   requiresApproval?: boolean;
   ownerUserId?: string;
+  collaboratorsOnly?: boolean; // If true, only visible to collaborating labs (not whole institution)
   tagIds?: string[];
   locationTagIds?: string[];
   reminderSettings?: ReminderSettings;
@@ -169,6 +171,7 @@ export interface UpdateMachineData {
   availableDays?: number[];
   requiresApproval?: boolean;
   ownerUserId?: string;
+  collaboratorsOnly?: boolean; // If true, only visible to collaborating labs (not whole institution)
   tagIds?: string[];
   locationTagIds?: string[];
   reminderSettings?: ReminderSettings;

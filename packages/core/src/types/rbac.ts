@@ -20,6 +20,7 @@ export type Permission =
   | 'inventory:view'
   | 'inventory:edit'
   | 'inventory:delete'
+  | 'inventory:import'
   | 'inventory:export'
   // Order request permissions
   | 'orders:view'
@@ -82,6 +83,7 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   'inventory:view': 'View inventory items',
   'inventory:edit': 'Edit inventory items',
   'inventory:delete': 'Delete inventory items',
+  'inventory:import': 'Import inventory from Excel',
   'inventory:export': 'Export inventory to Excel',
   'orders:view': 'View order requests',
   'orders:create': 'Create order requests',

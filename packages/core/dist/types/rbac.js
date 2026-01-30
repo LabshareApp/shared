@@ -20,6 +20,7 @@ exports.PERMISSION_LABELS = {
     'inventory:edit': 'Edit inventory items',
     'inventory:delete': 'Delete inventory items',
     'inventory:export': 'Export inventory to Excel',
+    'inventory:import': 'Import inventory from Excel',
     'orders:view': 'View order requests',
     'orders:create': 'Create order requests',
     'orders:edit': 'Edit order requests',

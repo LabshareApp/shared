@@ -17,6 +17,7 @@ export * from './api/endpoints/images';
 export * from './api/endpoints/rbac';
 export * from './api/endpoints/reservations';
 export * from './api/endpoints/auth';
+export * from './api/endpoints/institution';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -37,6 +38,7 @@ export * from './types/constants';
 export * from './types/customFields';
 export * from './types/rbac';
 export * from './types/reservations';
+export * from './types/institution';
 
 export * from './utils/logger';
 export * from './utils/jwt';

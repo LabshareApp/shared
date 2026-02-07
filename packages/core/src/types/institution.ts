@@ -41,6 +41,7 @@ export interface Institution {
 export interface InstitutionPublicInfo {
   id: string;
   name: string;
+  institutionCode: string;
 }
 
 /**

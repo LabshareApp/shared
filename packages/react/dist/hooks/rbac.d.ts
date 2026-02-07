@@ -20,6 +20,7 @@ export declare function useDisplayRoleOptions(client: ApiClient, params?: {
 }): import("@tanstack/react-query").UseQueryResult<string[], Error>;
 /**
  * Get current user's role and permissions for the lab
+ * Includes retry logic to handle race condition after registration
  */
 export declare function useCurrentUserRole(client: ApiClient, params: {
     labId: string | null | undefined;

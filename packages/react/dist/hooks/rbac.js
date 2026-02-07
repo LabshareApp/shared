@@ -59,6 +59,7 @@ function useDisplayRoleOptions(client, params = {}) {
 }
 /**
  * Get current user's role and permissions for the lab
+ * Includes retry logic to handle race condition after registration
  */
 function useCurrentUserRole(client, params) {
     var _a, _b;
@@ -71,6 +72,23 @@ function useCurrentUserRole(client, params) {
         },
         enabled: (_b = params.enabled) !== null && _b !== void 0 ? _b : !!params.labId,
         staleTime: 30000,
+        // Retry if user has no membership (race condition after registration)
+        retry: (failureCount, error) => {
+            // Retry up to 3 times with delay
+            return failureCount < 3;
+        },
+        retryDelay: (attemptIndex) => Math.min(1000 * (attemptIndex + 1), 3000),
+        // Refetch if no membership found (data might not be ready yet)
+        refetchInterval: (query) => {
+            const data = query.state.data;
+            // If no membership, refetch every 2 seconds up to a few times
+            if (data && !data.hasMembership) {
+                const fetchCount = query.state.dataUpdateCount;
+                if (fetchCount < 5)
+                    return 2000;
+            }
+            return false;
+        },
     });
 }
 /**

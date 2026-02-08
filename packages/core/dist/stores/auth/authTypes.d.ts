@@ -52,5 +52,5 @@ export interface InvitationData {
     displayRole: string;
     inviterName: string;
 }
-export type RegistrationStep = 'login' | 'register' | 'chooseLab' | 'joinLab' | 'setupLab' | 'verifyInvite' | 'finalizeSignup';
+export type RegistrationStep = 'login' | 'register' | 'chooseLab' | 'joinLab' | 'setupLab' | 'verifyInvite' | 'forgotPassword' | 'finalizeSignup';
 //# sourceMappingURL=authTypes.d.ts.map

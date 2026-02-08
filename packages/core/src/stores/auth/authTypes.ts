@@ -64,5 +64,6 @@ export type RegistrationStep =
   | 'joinLab'
   | 'setupLab'
   | 'verifyInvite'
+  | 'forgotPassword'
   | 'finalizeSignup';
 

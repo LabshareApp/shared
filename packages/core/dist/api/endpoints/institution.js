@@ -10,6 +10,10 @@ exports.getInstitution = getInstitution;
 exports.getInstitutionByCode = getInstitutionByCode;
 exports.getInstitutionLabs = getInstitutionLabs;
 exports.getInstitutionMembers = getInstitutionMembers;
+exports.getMyInstitutionMembership = getMyInstitutionMembership;
+exports.getPendingMembers = getPendingMembers;
+exports.approvePendingMember = approvePendingMember;
+exports.rejectPendingMember = rejectPendingMember;
 exports.listDepartments = listDepartments;
 exports.createDepartment = createDepartment;
 exports.updateDepartment = updateDepartment;
@@ -84,6 +88,52 @@ async function getInstitutionMembers(client, institutionId) {
         method: 'GET',
         path: '/institution/members',
         query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Get the current user's membership for an institution
+ */
+async function getMyInstitutionMembership(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/my-membership',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Get pending members awaiting approval (admin only)
+ */
+async function getPendingMembers(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/pending-members',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Approve a pending institution member (admin only)
+ */
+async function approvePendingMember(client, institutionId, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/approve-member',
+        query: { institutionId },
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Reject a pending institution member (admin only)
+ */
+async function rejectPendingMember(client, institutionId, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/reject-member',
+        query: { institutionId },
+        body: data,
     };
     return client.request(request);
 }

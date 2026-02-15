@@ -4,7 +4,7 @@
  * Provides API client functions for institution management operations.
  */
 import { ApiClient } from '../ApiClient';
-import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo, CollaborationHistoryResponse, InstitutionOrderRequestsParams, InstitutionOrderRequestsResponse, InstitutionInventoryParams, InstitutionInventoryResponse } from '../../types/institution';
+import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, InstitutionMemberInfo, InstitutionRole, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo, CollaborationHistoryResponse, InstitutionOrderRequestsParams, InstitutionOrderRequestsResponse, InstitutionInventoryParams, InstitutionInventoryResponse } from '../../types/institution';
 /**
  * Get all institutions the current user belongs to
  */
@@ -25,7 +25,39 @@ export declare function getInstitutionLabs(client: ApiClient, institutionId: str
 /**
  * Get all members of an institution (admin only)
  */
-export declare function getInstitutionMembers(client: ApiClient, institutionId: string): Promise<InstitutionMembership[]>;
+export declare function getInstitutionMembers(client: ApiClient, institutionId: string): Promise<InstitutionMemberInfo[]>;
+/**
+ * Response from getMyInstitutionMembership
+ */
+export interface MyMembershipResponse extends InstitutionMembership {
+    role?: InstitutionRole;
+}
+/**
+ * Get the current user's membership for an institution
+ */
+export declare function getMyInstitutionMembership(client: ApiClient, institutionId: string): Promise<MyMembershipResponse>;
+/**
+ * Pending member type (alias for clarity)
+ */
+export type PendingMember = InstitutionMemberInfo;
+/**
+ * Get pending members awaiting approval (admin only)
+ */
+export declare function getPendingMembers(client: ApiClient, institutionId: string): Promise<PendingMember[]>;
+/**
+ * Request to approve/reject a pending member
+ */
+export interface MemberActionRequest {
+    membershipId: string;
+}
+/**
+ * Approve a pending institution member (admin only)
+ */
+export declare function approvePendingMember(client: ApiClient, institutionId: string, data: MemberActionRequest): Promise<void>;
+/**
+ * Reject a pending institution member (admin only)
+ */
+export declare function rejectPendingMember(client: ApiClient, institutionId: string, data: MemberActionRequest): Promise<void>;
 /**
  * Get all departments for an institution
  */

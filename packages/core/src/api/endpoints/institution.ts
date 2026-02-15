@@ -13,6 +13,8 @@ import type {
   UpdateDepartmentRequest,
   LabDepartmentRequest,
   InstitutionMembership,
+  InstitutionMemberInfo,
+  InstitutionRole,
   AllowedCollaboration,
   InstitutionCollaborationRequest,
   InstitutionCollaborationActionRequest,
@@ -98,11 +100,94 @@ export async function getInstitutionLabs(
 export async function getInstitutionMembers(
   client: ApiClient,
   institutionId: string
-): Promise<InstitutionMembership[]> {
+): Promise<InstitutionMemberInfo[]> {
   const request: ApiRequest = {
     method: 'GET',
     path: '/institution/members',
     query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Response from getMyInstitutionMembership
+ */
+export interface MyMembershipResponse extends InstitutionMembership {
+  role?: InstitutionRole;
+}
+
+/**
+ * Get the current user's membership for an institution
+ */
+export async function getMyInstitutionMembership(
+  client: ApiClient,
+  institutionId: string
+): Promise<MyMembershipResponse> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/my-membership',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Pending member type (alias for clarity)
+ */
+export type PendingMember = InstitutionMemberInfo;
+
+/**
+ * Get pending members awaiting approval (admin only)
+ */
+export async function getPendingMembers(
+  client: ApiClient,
+  institutionId: string
+): Promise<PendingMember[]> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/pending-members',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Request to approve/reject a pending member
+ */
+export interface MemberActionRequest {
+  membershipId: string;
+}
+
+/**
+ * Approve a pending institution member (admin only)
+ */
+export async function approvePendingMember(
+  client: ApiClient,
+  institutionId: string,
+  data: MemberActionRequest
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/approve-member',
+    query: { institutionId },
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * Reject a pending institution member (admin only)
+ */
+export async function rejectPendingMember(
+  client: ApiClient,
+  institutionId: string,
+  data: MemberActionRequest
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/reject-member',
+    query: { institutionId },
+    body: data,
   };
   return client.request(request);
 }

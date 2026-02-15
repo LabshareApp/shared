@@ -42,6 +42,28 @@ export async function listUserInstitutions(
 }
 
 /**
+ * Pending institution membership info
+ */
+export interface PendingInstitutionInfo {
+  institutionId: string;
+  institutionName: string;
+  status: string;
+}
+
+/**
+ * Get institutions where user has pending membership
+ */
+export async function listPendingInstitutions(
+  client: ApiClient
+): Promise<PendingInstitutionInfo[]> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institutions/pending',
+  };
+  return client.request(request);
+}
+
+/**
  * Get a single institution by ID
  */
 export async function getInstitution(

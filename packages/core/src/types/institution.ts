@@ -241,6 +241,8 @@ export interface RegisterUserWithInstitutionsResponse {
   labId: string;
   email: string;
   institutionIds?: string[];
+  pendingInstitutionIds?: string[];
+  hasPendingInstitutions?: boolean;
 }
 
 /**

@@ -299,6 +299,7 @@ export interface InstitutionOrderRequestsParams {
  */
 export interface InstitutionOrderRequest {
     _id: string;
+    id?: string;
     name: string;
     brand?: string;
     catalog?: string;
@@ -308,6 +309,14 @@ export interface InstitutionOrderRequest {
     labName?: string;
     createdAt: string;
     updatedAt?: string;
+    urgency?: 'high' | 'medium' | 'low';
+    attributes?: {
+        price?: {
+            amount: number;
+            currency: string;
+        };
+        [key: string]: unknown;
+    };
     [key: string]: unknown;
 }
 /**
@@ -331,6 +340,7 @@ export interface InstitutionInventoryParams {
  */
 export interface InstitutionInventoryItem {
     _id: string;
+    id?: string;
     name: string;
     brand?: string;
     catalog?: string;

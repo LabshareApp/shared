@@ -16,7 +16,7 @@ export async function generateImagePresignedUrl(
     path: '/generate-presigned-url/other-images',
     query: { ext: extension },
   });
-  return validateObjectResponse(response, 'generateImagePresignedUrl', ['url', 'object_key'] as any) as {
+  return validateObjectResponse(response, 'generateImagePresignedUrl', ['url', 'object_key']) as {
     url: string;
     object_key: string;
   };
@@ -35,7 +35,7 @@ export async function getImageViewUrl(
     path: '/get-other-images-view-url',
     body: { s3Url },
   });
-  return validateObjectResponse(response, 'getImageViewUrl', ['url', 'expiresAt'] as any) as {
+  return validateObjectResponse(response, 'getImageViewUrl', ['url', 'expiresAt']) as {
     url: string;
     expiresAt: number;
   };
@@ -54,7 +54,7 @@ export async function addItemImage(
     path: '/add-item-image',
     body: { itemId, imageUrl },
   });
-  return validateObjectResponse(response, 'addItemImage', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'addItemImage', ['message']) as { message: string };
 }
 
 /**
@@ -70,7 +70,7 @@ export async function removeItemImage(
     path: '/remove-item-image',
     body: { itemId, imageUrl },
   });
-  return validateObjectResponse(response, 'removeItemImage', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'removeItemImage', ['message']) as { message: string };
 }
 
 /**
@@ -86,7 +86,7 @@ export async function addOrderRequestImage(
     path: '/add-order-request-image',
     body: { orderRequestId, imageUrl },
   });
-  return validateObjectResponse(response, 'addOrderRequestImage', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'addOrderRequestImage', ['message']) as { message: string };
 }
 
 /**
@@ -102,7 +102,7 @@ export async function removeOrderRequestImage(
     path: '/remove-order-request-image',
     body: { orderRequestId, imageUrl },
   });
-  return validateObjectResponse(response, 'removeOrderRequestImage', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'removeOrderRequestImage', ['message']) as { message: string };
 }
 
 /**
@@ -118,7 +118,7 @@ export async function addItemQuote(
     path: '/add-item-quote',
     body: { itemId, quoteUrl },
   });
-  return validateObjectResponse(response, 'addItemQuote', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'addItemQuote', ['message']) as { message: string };
 }
 
 /**
@@ -134,7 +134,7 @@ export async function removeItemQuote(
     path: '/remove-item-quote',
     body: { itemId, quoteUrl },
   });
-  return validateObjectResponse(response, 'removeItemQuote', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'removeItemQuote', ['message']) as { message: string };
 }
 
 /**
@@ -150,7 +150,7 @@ export async function addOrderRequestQuote(
     path: '/add-order-request-quote',
     body: { orderRequestId, quoteUrl },
   });
-  return validateObjectResponse(response, 'addOrderRequestQuote', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'addOrderRequestQuote', ['message']) as { message: string };
 }
 
 /**
@@ -166,5 +166,5 @@ export async function removeOrderRequestQuote(
     path: '/remove-order-request-quote',
     body: { orderRequestId, quoteUrl },
   });
-  return validateObjectResponse(response, 'removeOrderRequestQuote', ['message'] as any) as { message: string };
+  return validateObjectResponse(response, 'removeOrderRequestQuote', ['message']) as { message: string };
 }

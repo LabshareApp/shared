@@ -23,4 +23,5 @@ __exportStar(require("./labs"), exports);
 __exportStar(require("./grants"), exports);
 __exportStar(require("./rbac"), exports);
 __exportStar(require("./reservations"), exports);
+__exportStar(require("./institution"), exports);
 //# sourceMappingURL=index.js.map

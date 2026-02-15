@@ -42,7 +42,7 @@ export async function bulkAddTagsToItems(
   return validateObjectResponse(
     response,
     'bulkAddTagsToItems',
-    ['matchedCount', 'updatedCount'] as any
+    ['matchedCount', 'updatedCount']
   ) as BulkTagResponse;
 }
 
@@ -61,7 +61,7 @@ export async function bulkRemoveTagsFromItems(
   return validateObjectResponse(
     response,
     'bulkRemoveTagsFromItems',
-    ['matchedCount', 'updatedCount'] as any
+    ['matchedCount', 'updatedCount']
   ) as BulkTagResponse;
 }
 

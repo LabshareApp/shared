@@ -16,7 +16,7 @@ function validateObjectResponse(response, functionName, requiredFields = []) {
     }
     for (const field of requiredFields) {
         if (!(field in response)) {
-            throw new Error(`Incomplete response from ${functionName}. Missing '${String(field)}'.`);
+            throw new Error(`Incomplete response from ${functionName}. Missing '${field}'.`);
         }
         // For array fields, ensure they're arrays (not null)
         if (field === 'items' && response[field] === null) {

@@ -17,7 +17,7 @@ export async function createOrderRequest(
     path: '/create-request',
     body: orderRequestData,
   });
-  return validateObjectResponse(response, 'createOrderRequest', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'createOrderRequest', ['id']) as { id: string };
 }
 
 type OrderRequestUpdatePayload = Partial<
@@ -49,7 +49,7 @@ export async function updateOrderRequest(
     query: { id: orderRequestId },
     body: orderRequestUpdateData,
   });
-  return validateObjectResponse(response, 'updateOrderRequest', ['orderRequest'] as any) as {
+  return validateObjectResponse(response, 'updateOrderRequest', ['orderRequest']) as {
     message: string;
     orderRequest: OrderRequestItem;
   };
@@ -73,7 +73,7 @@ export async function bulkDeleteOrderRequests(
     path: '/bulk-delete-requests',
     body: { ItemIDs: orderRequestIds },
   });
-  return validateObjectResponse(response, 'bulkDeleteOrderRequests', ['deletedCount'] as any) as {
+  return validateObjectResponse(response, 'bulkDeleteOrderRequests', ['deletedCount']) as {
     deletedCount: number;
   };
 }
@@ -92,7 +92,7 @@ export async function moveOrderRequestToInventory(
     path: '/move-request-to-inventory',
     body,
   });
-  return validateObjectResponse(response, 'moveOrderRequestToInventory', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'moveOrderRequestToInventory', ['id']) as { id: string };
 }
 
 export async function bulkMoveOrderRequestsToInventory(
@@ -108,7 +108,7 @@ export async function bulkMoveOrderRequestsToInventory(
     path: '/bulk-move-requests-to-inventory',
     body,
   });
-  return validateObjectResponse(response, 'bulkMoveOrderRequestsToInventory', ['successCount', 'failureCount', 'errors'] as any) as any;
+  return validateObjectResponse(response, 'bulkMoveOrderRequestsToInventory', ['successCount', 'failureCount', 'errors']) as any;
 }
 
 export async function placeOrderRequest(
@@ -126,7 +126,7 @@ export async function placeOrderRequest(
     path: '/place-order',
     body,
   });
-  return validateObjectResponse(response, 'placeOrderRequest', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'placeOrderRequest', ['id']) as { id: string };
 }
 
 export async function revertPlacedOrderRequest(
@@ -138,7 +138,7 @@ export async function revertPlacedOrderRequest(
     path: '/revert-placed-order',
     body: { orderRequestId },
   });
-  return validateObjectResponse(response, 'revertPlacedOrderRequest', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'revertPlacedOrderRequest', ['id']) as { id: string };
 }
 
 export async function bulkPlaceOrderRequests(
@@ -150,11 +150,11 @@ export async function bulkPlaceOrderRequests(
     path: '/bulk-place-orders',
     body: payload,
   });
-  return validateObjectResponse(
+  return validateObjectResponse<BulkOperationResult>(
     response,
     'bulkPlaceOrderRequests',
-    ['successCount', 'failureCount', 'errors'] as any
-  ) as any;
+    ['successCount', 'failureCount', 'errors']
+  );
 }
 
 

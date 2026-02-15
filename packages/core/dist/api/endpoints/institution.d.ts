@@ -4,7 +4,7 @@
  * Provides API client functions for institution management operations.
  */
 import { ApiClient } from '../ApiClient';
-import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo } from '../../types/institution';
+import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, InstitutionMemberInfo, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo } from '../../types/institution';
 /**
  * Get all institutions the current user belongs to
  */
@@ -26,6 +26,10 @@ export declare function getInstitutionLabs(client: ApiClient, institutionId: str
  * Get all members of an institution (admin only)
  */
 export declare function getInstitutionMembers(client: ApiClient, institutionId: string): Promise<InstitutionMembership[]>;
+/**
+ * Get the current user's membership for an institution (includes role)
+ */
+export declare function getMyInstitutionMembership(client: ApiClient, institutionId: string): Promise<InstitutionMemberInfo>;
 /**
  * Get all departments for an institution
  */
@@ -83,4 +87,36 @@ export declare function registerUserWithInstitutions(baseUrl: string, data: Regi
  * Returns an array of institution public info for each valid code
  */
 export declare function validateInstitutionCodes(baseUrl: string, codes: string[]): Promise<InstitutionPublicInfo[]>;
+import type { CollaborationHistoryResponse, InstitutionSearchRequestsRequest, InstitutionOrderRequestsResponse, InstitutionSearchInventoryRequest, InstitutionInventoryResponse } from '../../types/institution';
+export type { CollaborationHistoryResponse, InstitutionSearchRequestsRequest, InstitutionOrderRequestsResponse, InstitutionSearchInventoryRequest, InstitutionInventoryResponse, };
+/**
+ * Get collaboration history with statistics (admin only)
+ */
+export declare function getCollaborationHistory(client: ApiClient, institutionId: string): Promise<CollaborationHistoryResponse>;
+/**
+ * Search order requests across all institution labs (admin only)
+ */
+export declare function searchInstitutionOrderRequests(client: ApiClient, institutionId: string, data: InstitutionSearchRequestsRequest): Promise<InstitutionOrderRequestsResponse>;
+/**
+ * Search inventory across all institution labs (admin only)
+ */
+export declare function searchInstitutionInventory(client: ApiClient, institutionId: string, data: InstitutionSearchInventoryRequest): Promise<InstitutionInventoryResponse>;
+import type { PendingMember, PendingMemberActionRequest, PendingMemberActionResponse, JoinLabRequest, JoinLabResponse } from '../../types/institution';
+export type { PendingMember, PendingMemberActionRequest, PendingMemberActionResponse, JoinLabRequest, JoinLabResponse, };
+/**
+ * Get all pending members for an institution (admin only)
+ */
+export declare function getPendingMembers(client: ApiClient, institutionId: string): Promise<PendingMember[]>;
+/**
+ * Approve a pending member (admin only)
+ */
+export declare function approvePendingMember(client: ApiClient, institutionId: string, data: PendingMemberActionRequest): Promise<PendingMemberActionResponse>;
+/**
+ * Reject a pending member (admin only)
+ */
+export declare function rejectPendingMember(client: ApiClient, institutionId: string, data: PendingMemberActionRequest): Promise<PendingMemberActionResponse>;
+/**
+ * Join a lab (for institution-only users who want to add lab access)
+ */
+export declare function joinLab(client: ApiClient, data: JoinLabRequest): Promise<JoinLabResponse>;
 //# sourceMappingURL=institution.d.ts.map

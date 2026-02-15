@@ -52,7 +52,7 @@ export async function fetchCustomFieldDefinition(
     query: { id },
   });
 
-  const validated = validateObjectResponse(response, 'fetchCustomFieldDefinition', ['id', 'name', 'valueType'] as any);
+  const validated = validateObjectResponse(response, 'fetchCustomFieldDefinition', ['id', 'name', 'valueType']);
   return normalizeCustomFieldDefinition(validated as NormalizedCustomFieldDefinition);
 }
 
@@ -69,7 +69,7 @@ export async function createCustomFieldDefinition(
     body: data,
   });
 
-  const validated = validateObjectResponse(response, 'createCustomFieldDefinition', ['id', 'name', 'valueType'] as any);
+  const validated = validateObjectResponse(response, 'createCustomFieldDefinition', ['id', 'name', 'valueType']);
   return normalizeCustomFieldDefinition(validated as NormalizedCustomFieldDefinition);
 }
 
@@ -88,7 +88,7 @@ export async function updateCustomFieldDefinition(
     body: data,
   });
 
-  const validated = validateObjectResponse(response, 'updateCustomFieldDefinition', ['id', 'name', 'valueType'] as any);
+  const validated = validateObjectResponse(response, 'updateCustomFieldDefinition', ['id', 'name', 'valueType']);
   return normalizeCustomFieldDefinition(validated as NormalizedCustomFieldDefinition);
 }
 
@@ -156,7 +156,7 @@ export async function generateCustomFieldFilePresignedUrl(
     query,
   });
 
-  return validateObjectResponse(response, 'generateCustomFieldFilePresignedUrl', ['url', 'object_key'] as any) as {
+  return validateObjectResponse(response, 'generateCustomFieldFilePresignedUrl', ['url', 'object_key']) as {
     url: string;
     object_key: string;
   };
@@ -187,7 +187,7 @@ export async function getCustomFieldFileViewUrl(
     body,
   });
 
-  return validateObjectResponse(response, 'getCustomFieldFileViewUrl', ['url', 'expiresAt'] as any) as {
+  return validateObjectResponse(response, 'getCustomFieldFileViewUrl', ['url', 'expiresAt']) as {
     url: string;
     expiresAt: number;
   };

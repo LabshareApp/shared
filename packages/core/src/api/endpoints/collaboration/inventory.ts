@@ -40,7 +40,7 @@ export async function searchCollaboratorItems(
   }
 
   // Ensure items is always an array, even if backend returns null
-  const validated = validateObjectResponse(response, 'searchCollaboratorItems', ['items', 'totalCount'] as any) as any;
+  const validated = validateObjectResponse(response, 'searchCollaboratorItems', ['items', 'totalCount']) as any;
   
   // Handle null items array
   if (!validated.items || !Array.isArray(validated.items)) {
@@ -88,7 +88,7 @@ export async function searchCollaboratorItemsWithFilters(
   }
 
   // Ensure items is always an array
-  const validated = validateObjectResponse(response, 'searchCollaboratorItemsWithFilters', ['items', 'totalCount'] as any) as any;
+  const validated = validateObjectResponse(response, 'searchCollaboratorItemsWithFilters', ['items', 'totalCount']) as any;
   
   if (!validated.items || !Array.isArray(validated.items)) {
     validated.items = [];
@@ -110,7 +110,7 @@ export async function filterCollaboratorItems(
     path: '/filter-collaborator-items',
     body: request,
   });
-  return validateObjectResponse(response, 'filterCollaboratorItems', ['items'] as any) as any;
+  return validateObjectResponse(response, 'filterCollaboratorItems', ['items']) as any;
 }
 
 

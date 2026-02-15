@@ -23,7 +23,7 @@ export async function listItemRequests(
     query,
   });
 
-  return validateObjectResponse(response, 'listItemRequests', ['requests', 'total'] as any) as any;
+  return validateObjectResponse(response, 'listItemRequests', ['requests', 'total']) as any;
 }
 
 export async function createItemRequest(
@@ -35,7 +35,7 @@ export async function createItemRequest(
     path: '/create-item-request',
     body,
   });
-  return validateObjectResponse(response, 'createItemRequest', ['id'] as any) as any;
+  return validateObjectResponse(response, 'createItemRequest', ['id']) as any;
 }
 
 export async function acceptItemRequest(client: ApiClient, requestId: string): Promise<{ message: string }> {
@@ -44,7 +44,7 @@ export async function acceptItemRequest(client: ApiClient, requestId: string): P
     path: '/accept-item-request',
     body: { requestId },
   });
-  return validateObjectResponse(response, 'acceptItemRequest', ['message'] as any) as any;
+  return validateObjectResponse(response, 'acceptItemRequest', ['message']) as any;
 }
 
 export async function denyItemRequest(client: ApiClient, requestId: string): Promise<{ message: string }> {
@@ -53,7 +53,7 @@ export async function denyItemRequest(client: ApiClient, requestId: string): Pro
     path: '/deny-item-request',
     body: { requestId },
   });
-  return validateObjectResponse(response, 'denyItemRequest', ['message'] as any) as any;
+  return validateObjectResponse(response, 'denyItemRequest', ['message']) as any;
 }
 
 export async function fulfillItemRequest(client: ApiClient, requestId: string): Promise<{ message: string }> {
@@ -62,7 +62,7 @@ export async function fulfillItemRequest(client: ApiClient, requestId: string): 
     path: '/fulfill-item-request',
     body: { requestId },
   });
-  return validateObjectResponse(response, 'fulfillItemRequest', ['message'] as any) as any;
+  return validateObjectResponse(response, 'fulfillItemRequest', ['message']) as any;
 }
 
 export async function cancelItemRequest(client: ApiClient, requestId: string): Promise<{ message: string }> {
@@ -71,7 +71,7 @@ export async function cancelItemRequest(client: ApiClient, requestId: string): P
     path: '/cancel-item-request',
     body: { requestId },
   });
-  return validateObjectResponse(response, 'cancelItemRequest', ['message'] as any) as any;
+  return validateObjectResponse(response, 'cancelItemRequest', ['message']) as any;
 }
 
 

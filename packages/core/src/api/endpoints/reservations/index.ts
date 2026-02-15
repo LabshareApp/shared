@@ -68,7 +68,7 @@ export async function createMachineTag(
     path: '/reservations/create-tag',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createMachineTag', ['id', 'name'] as any);
+  const validated = validateObjectResponse(response, 'createMachineTag', ['id', 'name']);
   return normalizeId(validated as WithMongoId<MachineTag>);
 }
 
@@ -137,7 +137,7 @@ export async function fetchMachine(client: ApiClient, id: string): Promise<Machi
     path: '/reservations/machine',
     query: { id },
   });
-  const validated = validateObjectResponse(response, 'fetchMachine', ['id', 'name'] as any);
+  const validated = validateObjectResponse(response, 'fetchMachine', ['id', 'name']);
   return normalizeId(validated as WithMongoId<Machine>);
 }
 
@@ -153,7 +153,7 @@ export async function createMachine(
     path: '/reservations/create-machine',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createMachine', ['id', 'name'] as any);
+  const validated = validateObjectResponse(response, 'createMachine', ['id', 'name']);
   return normalizeId(validated as WithMongoId<Machine>);
 }
 
@@ -244,7 +244,7 @@ export async function fetchReservation(client: ApiClient, id: string): Promise<R
     path: '/reservations/reservation',
     query: { id },
   });
-  const validated = validateObjectResponse(response, 'fetchReservation', ['id', 'machineId'] as any);
+  const validated = validateObjectResponse(response, 'fetchReservation', ['id', 'machineId']);
   return normalizeId(validated as WithMongoId<Reservation>);
 }
 
@@ -269,7 +269,7 @@ export async function checkAvailability(
     path: '/reservations/check-availability',
     query,
   });
-  return validateObjectResponse(response, 'checkAvailability', ['available'] as any) as CheckAvailabilityResponse;
+  return validateObjectResponse(response, 'checkAvailability', ['available']) as CheckAvailabilityResponse;
 }
 
 /**
@@ -284,7 +284,7 @@ export async function createReservation(
     path: '/reservations/create',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createReservation', ['id', 'machineId'] as any);
+  const validated = validateObjectResponse(response, 'createReservation', ['id', 'machineId']);
   return normalizeId(validated as WithMongoId<Reservation>);
 }
 
@@ -407,7 +407,7 @@ export async function fetchRecurringRule(client: ApiClient, id: string): Promise
     path: '/reservations/recurring-rule',
     query: { id },
   });
-  const validated = validateObjectResponse(response, 'fetchRecurringRule', ['id', 'machineId'] as any);
+  const validated = validateObjectResponse(response, 'fetchRecurringRule', ['id', 'machineId']);
   return normalizeId(validated as WithMongoId<RecurringRule>);
 }
 
@@ -423,7 +423,7 @@ export async function createRecurringRule(
     path: '/reservations/create-recurring',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createRecurringRule', ['id', 'machineId'] as any);
+  const validated = validateObjectResponse(response, 'createRecurringRule', ['id', 'machineId']);
   return normalizeId(validated as WithMongoId<RecurringRule>);
 }
 
@@ -479,7 +479,7 @@ export async function generateMachineImagePresignedUrl(
     path: '/reservations/generate-presigned-url/machine-image',
     body: data,
   });
-  return validateObjectResponse(response, 'generateMachineImagePresignedUrl', ['uploadUrl', 's3Url'] as any) as MachineImagePresignedUrlResponse;
+  return validateObjectResponse(response, 'generateMachineImagePresignedUrl', ['uploadUrl', 's3Url']) as MachineImagePresignedUrlResponse;
 }
 
 /**
@@ -494,5 +494,5 @@ export async function getMachineImageViewUrl(
     path: '/reservations/get-machine-image-view-url',
     body: data,
   });
-  return validateObjectResponse(response, 'getMachineImageViewUrl', ['url', 'expiresAt'] as any) as MachineImageViewUrlResponse;
+  return validateObjectResponse(response, 'getMachineImageViewUrl', ['url', 'expiresAt']) as MachineImageViewUrlResponse;
 }

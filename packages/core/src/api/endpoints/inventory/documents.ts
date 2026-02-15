@@ -14,7 +14,7 @@ export async function generateInventoryDocumentPresignedUrl(
   return validateObjectResponse(response, 'generateInventoryDocumentPresignedUrl', [
     'url',
     'object_key',
-  ] as any) as { url: string; object_key: string };
+  ]) as { url: string; object_key: string };
 }
 
 /**
@@ -30,7 +30,7 @@ export async function getInventoryDocumentViewUrl(
     path: '/get-inventory-document-view-url',
     body: { s3Url },
   });
-  return validateObjectResponse(response, 'getInventoryDocumentViewUrl', ['url', 'expiresAt'] as any) as {
+  return validateObjectResponse(response, 'getInventoryDocumentViewUrl', ['url', 'expiresAt']) as {
     url: string;
     expiresAt: number;
   };
@@ -49,7 +49,7 @@ export async function addInventoryDocument(
     path: '/add-inventory-document',
     body: { itemId, documentUrl },
   });
-  return validateObjectResponse(response, 'addInventoryDocument', ['message', 'id'] as any) as {
+  return validateObjectResponse(response, 'addInventoryDocument', ['message', 'id']) as {
     message: string;
     id: string;
   };
@@ -68,7 +68,7 @@ export async function removeInventoryDocument(
     path: '/remove-inventory-document',
     body: { itemId, documentUrl },
   });
-  return validateObjectResponse(response, 'removeInventoryDocument', ['message', 'id'] as any) as {
+  return validateObjectResponse(response, 'removeInventoryDocument', ['message', 'id']) as {
     message: string;
     id: string;
   };

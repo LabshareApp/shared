@@ -18,7 +18,7 @@ export async function exportInventoryToExcel(client: ApiClient): Promise<Invento
     path: '/export-to-excel',
   });
 
-  return validateObjectResponse(response, 'exportInventoryToExcel', ['itemCount'] as any) as any;
+  return validateObjectResponse(response, 'exportInventoryToExcel', ['itemCount']) as any;
 }
 
 /**
@@ -42,7 +42,7 @@ export async function exportOrderRequestsToExcel(
     query: { view },
   });
 
-  return validateObjectResponse(response, 'exportOrderRequestsToExcel', ['itemCount'] as any) as any;
+  return validateObjectResponse(response, 'exportOrderRequestsToExcel', ['itemCount']) as any;
 }
 
 

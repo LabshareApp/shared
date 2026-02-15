@@ -11,7 +11,7 @@ export async function createInventoryItem(
     path: '/insert-data',
     body: itemData,
   });
-  return validateObjectResponse(response, 'createInventoryItem', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'createInventoryItem', ['id']) as { id: string };
 }
 
 export async function fetchInventoryItem(client: ApiClient, itemId: string): Promise<InventoryItem> {
@@ -80,7 +80,7 @@ export async function bulkDeleteInventoryItems(
     path: '/bulk-delete-data',
     body: { itemIds },
   });
-  return validateObjectResponse(response, 'bulkDeleteInventoryItems', ['deletedCount'] as any) as {
+  return validateObjectResponse(response, 'bulkDeleteInventoryItems', ['deletedCount']) as {
     deletedCount: number;
   };
 }

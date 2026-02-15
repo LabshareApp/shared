@@ -17,7 +17,7 @@ export async function registerDevice(client: ApiClient, registration: DeviceRegi
     path: '/notifications/register-device',
     body: registration,
   });
-  return validateObjectResponse(res, 'registerDevice', ['success'] as any) as any;
+  return validateObjectResponse(res, 'registerDevice', ['success']) as any;
 }
 
 export async function deregisterDevice(client: ApiClient, deviceId: string): Promise<ServerResponse> {
@@ -26,7 +26,7 @@ export async function deregisterDevice(client: ApiClient, deviceId: string): Pro
     path: '/notifications/deregister-device',
     body: { deviceId },
   });
-  return validateObjectResponse(res, 'deregisterDevice', ['success'] as any) as any;
+  return validateObjectResponse(res, 'deregisterDevice', ['success']) as any;
 }
 
 export async function subscribeToTopic(client: ApiClient, topicId: string): Promise<ServerResponse> {
@@ -35,7 +35,7 @@ export async function subscribeToTopic(client: ApiClient, topicId: string): Prom
     path: '/notifications/topics/subscribe',
     body: { topicId },
   });
-  return validateObjectResponse(res, 'subscribeToTopic', ['success'] as any) as any;
+  return validateObjectResponse(res, 'subscribeToTopic', ['success']) as any;
 }
 
 export async function listInventoryNotifications(
@@ -60,7 +60,7 @@ export async function markNotificationRead(
     path: `/notifications/${notificationType}/mark-read`,
     body: { notificationId },
   });
-  return validateObjectResponse(res, 'markNotificationRead', ['success'] as any) as any;
+  return validateObjectResponse(res, 'markNotificationRead', ['success']) as any;
 }
 
 export async function createInventoryNotification(
@@ -79,7 +79,7 @@ export async function createInventoryNotification(
     path: '/notifications/inventory/create',
     body: payload,
   });
-  return validateObjectResponse(res, 'createInventoryNotification', ['success'] as any) as any;
+  return validateObjectResponse(res, 'createInventoryNotification', ['success']) as any;
 }
 
 export async function getNotificationPreferences(client: ApiClient): Promise<NotificationPreferences> {
@@ -111,7 +111,7 @@ export async function createTopic(
     path: '/notifications/topics/create',
     body: topicData,
   });
-  return validateObjectResponse(res, 'createTopic', ['_id', 'name'] as any) as any;
+  return validateObjectResponse(res, 'createTopic', ['_id', 'name']) as any;
 }
 
 export async function listTopics(client: ApiClient, type?: 'inventory'): Promise<Topic[]> {
@@ -132,7 +132,7 @@ export async function sendToTopic(
     path: '/notifications/topics/send',
     body: data,
   });
-  return validateObjectResponse(res, 'sendToTopic', ['success'] as any) as any;
+  return validateObjectResponse(res, 'sendToTopic', ['success']) as any;
 }
 
 

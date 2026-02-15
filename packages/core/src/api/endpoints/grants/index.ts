@@ -11,6 +11,7 @@ import type {
   ShippingEstimateRequest,
   ShippingEstimateResponse,
   OdcCategoriesResponse,
+  ListGrantItemsResponse,
 } from '../../../types/grants';
 import { validateObjectResponse } from '../../responseValidation';
 
@@ -20,7 +21,7 @@ export async function createGrant(client: ApiClient, payload: CreateGrantRequest
     path: '/grants',
     body: payload,
   });
-  return validateObjectResponse(response, 'createGrant', ['_id'] as any) as Grant;
+  return validateObjectResponse(response, 'createGrant', ['_id']) as Grant;
 }
 
 export async function listGrants(
@@ -36,7 +37,7 @@ export async function listGrants(
       ...(params.limit ? { limit: String(params.limit) } : {}),
     },
   });
-  return validateObjectResponse(response, 'listGrants', ['grants', 'totalCount'] as any) as GrantListResponse;
+  return validateObjectResponse(response, 'listGrants', ['grants', 'totalCount']) as GrantListResponse;
 }
 
 export async function getGrant(client: ApiClient, grantId: string): Promise<Grant> {
@@ -48,7 +49,7 @@ export async function getGrant(client: ApiClient, grantId: string): Promise<Gran
     path: '/get-grant',
     query: { id: String(grantId) },
   });
-  return validateObjectResponse(response, 'getGrant', ['_id'] as any) as Grant;
+  return validateObjectResponse(response, 'getGrant', ['_id']) as Grant;
 }
 
 export async function getGrantTransactions(
@@ -68,7 +69,7 @@ export async function getGrantTransactions(
   return validateObjectResponse(
     response,
     'getGrantTransactions',
-    ['transactions', 'totalCount'] as any
+    ['transactions', 'totalCount']
   ) as GrantTransactionsResponse;
 }
 
@@ -83,7 +84,7 @@ export async function createGrantTransaction(
     body: params.payload,
   });
   // Response is the created transaction
-  return validateObjectResponse(response, 'createGrantTransaction', ['_id'] as any);
+  return validateObjectResponse(response, 'createGrantTransaction', ['_id']);
 }
 
 export async function moveGrantTransaction(
@@ -109,7 +110,7 @@ export async function moveGrantTransaction(
   return validateObjectResponse(
     response,
     'moveGrantTransaction',
-    ['message', 'transactionId', 'fromGrantId', 'toGrantId'] as any
+    ['message', 'transactionId', 'fromGrantId', 'toGrantId']
   ) as {
     message: string;
     transactionId: string;
@@ -135,7 +136,7 @@ export async function updateGrant(
   });
   
   // Validate that we have a grant object with _id
-  return validateObjectResponse(response, 'updateGrant', ['_id'] as any) as Grant;
+  return validateObjectResponse(response, 'updateGrant', ['_id']) as Grant;
 }
 
 export async function deleteGrant(client: ApiClient, grantId: string): Promise<void> {
@@ -158,7 +159,7 @@ export async function estimateShipping(
     path: '/grants/estimate-shipping',
     body: estimateRequest,
   });
-  return validateObjectResponse(response, 'estimateShipping', ['estimates'] as any) as ShippingEstimateResponse;
+  return validateObjectResponse(response, 'estimateShipping', ['estimates']) as ShippingEstimateResponse;
 }
 
 export async function fetchOdcCategories(client: ApiClient): Promise<OdcCategoriesResponse> {
@@ -166,5 +167,46 @@ export async function fetchOdcCategories(client: ApiClient): Promise<OdcCategori
     method: 'GET',
     path: '/grants/odc-categories',
   });
-  return validateObjectResponse(response, 'fetchOdcCategories', ['categories'] as any) as OdcCategoriesResponse;
+  return validateObjectResponse(response, 'fetchOdcCategories', ['categories']) as OdcCategoriesResponse;
+}
+
+export async function linkGrantTag(
+  client: ApiClient,
+  grantId: string,
+  tagId: string
+): Promise<Grant> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
+  if (!tagId) {
+    throw new Error('Tag ID is required');
+  }
+  const response = await client.request<{ grant: Grant }>({
+    method: 'POST',
+    path: '/link-grant-tag',
+    query: { grantId },
+    body: { tagId },
+  });
+  const validated = validateObjectResponse(response, 'linkGrantTag', ['grant']) as { grant: Grant };
+  return validated.grant;
+}
+
+export async function getGrantItems(
+  client: ApiClient,
+  grantId: string,
+  params?: { page?: number; limit?: number }
+): Promise<ListGrantItemsResponse> {
+  if (!grantId) {
+    throw new Error('Grant ID is required');
+  }
+  const response = await client.request<ListGrantItemsResponse>({
+    method: 'GET',
+    path: '/get-grant-items',
+    query: {
+      grantId,
+      ...(params?.page ? { page: String(params.page) } : {}),
+      ...(params?.limit ? { limit: String(params.limit) } : {}),
+    },
+  });
+  return validateObjectResponse(response, 'getGrantItems', ['items', 'totalCount']) as ListGrantItemsResponse;
 }

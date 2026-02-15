@@ -10,6 +10,7 @@ exports.getInstitution = getInstitution;
 exports.getInstitutionByCode = getInstitutionByCode;
 exports.getInstitutionLabs = getInstitutionLabs;
 exports.getInstitutionMembers = getInstitutionMembers;
+exports.getMyInstitutionMembership = getMyInstitutionMembership;
 exports.listDepartments = listDepartments;
 exports.createDepartment = createDepartment;
 exports.updateDepartment = updateDepartment;
@@ -22,6 +23,13 @@ exports.approveInstitutionCollaboration = approveInstitutionCollaboration;
 exports.rejectInstitutionCollaboration = rejectInstitutionCollaboration;
 exports.registerUserWithInstitutions = registerUserWithInstitutions;
 exports.validateInstitutionCodes = validateInstitutionCodes;
+exports.getCollaborationHistory = getCollaborationHistory;
+exports.searchInstitutionOrderRequests = searchInstitutionOrderRequests;
+exports.searchInstitutionInventory = searchInstitutionInventory;
+exports.getPendingMembers = getPendingMembers;
+exports.approvePendingMember = approvePendingMember;
+exports.rejectPendingMember = rejectPendingMember;
+exports.joinLab = joinLab;
 // --- Institution Endpoints ---
 /**
  * Get all institutions the current user belongs to
@@ -79,6 +87,17 @@ async function getInstitutionMembers(client, institutionId) {
     const request = {
         method: 'GET',
         path: '/institution/members',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Get the current user's membership for an institution (includes role)
+ */
+async function getMyInstitutionMembership(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/my-membership',
         query: { institutionId },
     };
     return client.request(request);
@@ -238,5 +257,86 @@ async function validateInstitutionCodes(baseUrl, codes) {
         }
     }
     return results;
+}
+/**
+ * Get collaboration history with statistics (admin only)
+ */
+async function getCollaborationHistory(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/collaboration-history',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Search order requests across all institution labs (admin only)
+ */
+async function searchInstitutionOrderRequests(client, institutionId, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/search-requests',
+        query: { institutionId },
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Search inventory across all institution labs (admin only)
+ */
+async function searchInstitutionInventory(client, institutionId, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/search-inventory',
+        query: { institutionId },
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Get all pending members for an institution (admin only)
+ */
+async function getPendingMembers(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/pending-members',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Approve a pending member (admin only)
+ */
+async function approvePendingMember(client, institutionId, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/approve-member',
+        query: { institutionId },
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Reject a pending member (admin only)
+ */
+async function rejectPendingMember(client, institutionId, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/reject-member',
+        query: { institutionId },
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Join a lab (for institution-only users who want to add lab access)
+ */
+async function joinLab(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/join-lab',
+        body: data,
+    };
+    return client.request(request);
 }
 //# sourceMappingURL=institution.js.map

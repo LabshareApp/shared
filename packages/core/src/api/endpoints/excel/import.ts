@@ -51,7 +51,7 @@ export async function getExcelImportPresignedPutUrl(
     },
   });
 
-  return validateObjectResponse(response, 'getExcelImportPresignedPutUrl', ['url'] as any) as any;
+  return validateObjectResponse(response, 'getExcelImportPresignedPutUrl', ['url']) as any;
 }
 
 /**
@@ -68,7 +68,7 @@ export async function getExcelBatches(
     path: '/excel-batches',
   });
 
-  return validateObjectResponse(response, 'getExcelBatches', ['batches'] as any) as any;
+  return validateObjectResponse(response, 'getExcelBatches', ['batches']) as any;
 }
 
 /**
@@ -88,7 +88,7 @@ export async function deleteExcelBatch(
     body: { sourceFileKey },
   });
 
-  return validateObjectResponse(response, 'deleteExcelBatch', ['deletedCount'] as any) as any;
+  return validateObjectResponse(response, 'deleteExcelBatch', ['deletedCount']) as any;
 }
 
 /**
@@ -105,6 +105,6 @@ export async function resetInventory(
     path: '/reset-inventory',
   });
 
-  return validateObjectResponse(response, 'resetInventory', ['deletedCount'] as any) as any;
+  return validateObjectResponse(response, 'resetInventory', ['deletedCount']) as any;
 }
 

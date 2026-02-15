@@ -19,7 +19,7 @@ export async function createTag(client: ApiClient, tagData: CreateTagData): Prom
     body: tagData,
   });
 
-  return validateObjectResponse(newTag, 'createTag', ['id', 'name', 'category'] as any);
+  return validateObjectResponse(newTag, 'createTag', ['id', 'name', 'category']);
 }
 
 export async function createSublocation(
@@ -38,7 +38,7 @@ export async function createSublocation(
     'category',
     'isSublocation',
     'parentLocationId',
-  ] as any) as any;
+  ]) as any;
 
   if (
     validated.category !== TagCategory.Location ||

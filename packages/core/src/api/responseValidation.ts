@@ -15,23 +15,23 @@ export function validateObjectResponse<T>(response: any, functionName: string): 
 export function validateObjectResponse<T>(
   response: any,
   functionName: string,
-  requiredFields: (keyof T)[]
+  requiredFields: string[]
 ): T;
 export function validateObjectResponse<T>(
   response: any,
   functionName: string,
-  requiredFields: (keyof T)[] = []
+  requiredFields: string[] = []
 ): T {
   if (typeof response !== 'object' || response === null) {
     throw new Error(`Unexpected response format from ${functionName}: Expected object.`);
   }
   for (const field of requiredFields) {
     if (!(field in response)) {
-      throw new Error(`Incomplete response from ${functionName}. Missing '${String(field)}'.`);
+      throw new Error(`Incomplete response from ${functionName}. Missing '${field}'.`);
     }
     // For array fields, ensure they're arrays (not null)
-    if (field === 'items' && response[field] === null) {
-      response[field] = [];
+    if (field === 'items' && response[field as keyof typeof response] === null) {
+      response[field as keyof typeof response] = [];
     }
   }
   return response;

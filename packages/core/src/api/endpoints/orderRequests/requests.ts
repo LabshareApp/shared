@@ -21,7 +21,7 @@ export async function fetchOrderRequests(
     query: { labId, view: view ?? null },
   });
 
-  const validated = validateObjectResponse(response, 'fetchOrderRequests', ['orderRequests', 'totalCount'] as any) as any;
+  const validated = validateObjectResponse(response, 'fetchOrderRequests', ['orderRequests', 'totalCount']) as any;
   const items = validateArrayResponse<NormalizedOrderRequest>(validated.orderRequests, 'fetchOrderRequests.orderRequests');
 
   return { orderRequests: items.map(normalizeOrderRequest), totalCount: validated.totalCount };
@@ -37,7 +37,7 @@ export async function fetchOrderRequest(
     query: { id: orderRequestId },
   });
 
-  const validated = validateObjectResponse(response, 'fetchOrderRequest', ['orderRequest'] as any) as any;
+  const validated = validateObjectResponse(response, 'fetchOrderRequest', ['orderRequest']) as any;
   return { orderRequest: normalizeOrderRequest(validated.orderRequest) };
 }
 
@@ -51,7 +51,7 @@ export async function fetchArchivedOrderRequest(
     query: { id: archivedOrderRequestId },
   });
 
-  const validated = validateObjectResponse(response, 'fetchArchivedOrderRequest', ['orderRequest'] as any) as any;
+  const validated = validateObjectResponse(response, 'fetchArchivedOrderRequest', ['orderRequest']) as any;
   return { orderRequest: normalizeOrderRequest(validated.orderRequest) };
 }
 
@@ -78,7 +78,7 @@ export async function reRequestArchivedOrder(
     path: '/re-request-order',
     body: payload,
   });
-  return validateObjectResponse(response, 'reRequestArchivedOrder', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'reRequestArchivedOrder', ['id']) as { id: string };
 }
 
 /**
@@ -94,7 +94,7 @@ export async function generateQuotePresignedUrl(
     path: '/generate-presigned-url/quote',
     query: { itemType },
   });
-  return validateObjectResponse(response, 'generateQuotePresignedUrl', ['url', 'object_key'] as any) as { url: string; object_key: string };
+  return validateObjectResponse(response, 'generateQuotePresignedUrl', ['url', 'object_key']) as { url: string; object_key: string };
 }
 
 /**
@@ -110,7 +110,7 @@ export async function updateOrderRequestQuote(
     path: '/update-order-request-quote',
     body: { orderRequestId, quoteUrl },
   });
-  return validateObjectResponse(response, 'updateOrderRequestQuote', ['message', 'id'] as any) as { message: string; id: string };
+  return validateObjectResponse(response, 'updateOrderRequestQuote', ['message', 'id']) as { message: string; id: string };
 }
 
 /**
@@ -126,7 +126,7 @@ export async function getQuoteViewUrl(
     path: '/get-quote-view-url',
     body: { s3Url },
   });
-  return validateObjectResponse(response, 'getQuoteViewUrl', ['url', 'expiresAt'] as any) as { url: string; expiresAt: number };
+  return validateObjectResponse(response, 'getQuoteViewUrl', ['url', 'expiresAt']) as { url: string; expiresAt: number };
 }
 
 

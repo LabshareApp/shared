@@ -8,4 +8,5 @@ export * from './excel';
 export * from './grants';
 export * from './rbac';
 export * from './reservations';
+export * from './institution';
 //# sourceMappingURL=index.d.ts.map

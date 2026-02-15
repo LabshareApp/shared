@@ -16,7 +16,7 @@ export async function fetchCustomGroup(client: ApiClient, groupId: string): Prom
     path: '/get-custom-group',
     query: { id: groupId },
   });
-  return validateObjectResponse(customGroup, 'fetchCustomGroup', ['id'] as any);
+  return validateObjectResponse(customGroup, 'fetchCustomGroup', ['id']);
 }
 
 export async function createCustomGroup(
@@ -28,7 +28,7 @@ export async function createCustomGroup(
     path: '/create-custom-group',
     body: groupData,
   });
-  return validateObjectResponse(response, 'createCustomGroup', ['id'] as any) as { id: string };
+  return validateObjectResponse(response, 'createCustomGroup', ['id']) as { id: string };
 }
 
 export async function deleteCustomGroup(client: ApiClient, groupId: string): Promise<void> {

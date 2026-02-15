@@ -19,7 +19,7 @@ export async function createCollaboratorRequest(
     path: '/create-collaborator-request',
     body: request,
   });
-  return validateObjectResponse(response, 'createCollaboratorRequest', ['message'] as any);
+  return validateObjectResponse(response, 'createCollaboratorRequest', ['message']);
 }
 
 export async function acceptCollaboratorRequest(
@@ -32,7 +32,7 @@ export async function acceptCollaboratorRequest(
     path: '/accept-collaborator-request',
     body: request,
   });
-  return validateObjectResponse(response, 'acceptCollaboratorRequest', ['message'] as any);
+  return validateObjectResponse(response, 'acceptCollaboratorRequest', ['message']);
 }
 
 export async function deleteCollaborator(
@@ -45,7 +45,7 @@ export async function deleteCollaborator(
     path: '/delete-collaborator',
     body: request,
   });
-  return validateObjectResponse(response, 'deleteCollaborator', ['message'] as any);
+  return validateObjectResponse(response, 'deleteCollaborator', ['message']);
 }
 
 export async function listCollaborators(client: ApiClient): Promise<Collaborator[]> {

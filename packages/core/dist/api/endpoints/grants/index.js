@@ -10,6 +10,8 @@ exports.updateGrant = updateGrant;
 exports.deleteGrant = deleteGrant;
 exports.estimateShipping = estimateShipping;
 exports.fetchOdcCategories = fetchOdcCategories;
+exports.linkGrantTag = linkGrantTag;
+exports.getGrantItems = getGrantItems;
 const responseValidation_1 = require("../../responseValidation");
 async function createGrant(client, payload) {
     const response = await client.request({
@@ -111,5 +113,36 @@ async function fetchOdcCategories(client) {
         path: '/grants/odc-categories',
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'fetchOdcCategories', ['categories']);
+}
+async function linkGrantTag(client, grantId, tagId) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
+    if (!tagId) {
+        throw new Error('Tag ID is required');
+    }
+    const response = await client.request({
+        method: 'POST',
+        path: '/link-grant-tag',
+        query: { grantId },
+        body: { tagId },
+    });
+    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'linkGrantTag', ['grant']);
+    return validated.grant;
+}
+async function getGrantItems(client, grantId, params) {
+    if (!grantId) {
+        throw new Error('Grant ID is required');
+    }
+    const response = await client.request({
+        method: 'GET',
+        path: '/get-grant-items',
+        query: {
+            grantId,
+            ...((params === null || params === void 0 ? void 0 : params.page) ? { page: String(params.page) } : {}),
+            ...((params === null || params === void 0 ? void 0 : params.limit) ? { limit: String(params.limit) } : {}),
+        },
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getGrantItems', ['items', 'totalCount']);
 }
 //# sourceMappingURL=index.js.map

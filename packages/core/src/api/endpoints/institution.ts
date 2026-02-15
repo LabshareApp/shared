@@ -17,6 +17,11 @@ import type {
   InstitutionCollaborationRequest,
   InstitutionCollaborationActionRequest,
   InstitutionLabInfo,
+  CollaborationHistoryResponse,
+  InstitutionOrderRequestsParams,
+  InstitutionOrderRequestsResponse,
+  InstitutionInventoryParams,
+  InstitutionInventoryResponse,
 } from '../../types/institution';
 
 // --- Institution Endpoints ---
@@ -324,4 +329,98 @@ export async function validateInstitutionCodes(
   }
 
   return results;
+}
+
+// --- Institution Admin Dashboard Endpoints ---
+
+/**
+ * Get collaboration history with statistics (admin only)
+ */
+export async function getCollaborationHistory(
+  client: ApiClient,
+  institutionId: string
+): Promise<CollaborationHistoryResponse> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/collaboration-history',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Search order requests across all institution labs (admin only)
+ */
+export async function searchInstitutionOrderRequests(
+  client: ApiClient,
+  institutionId: string,
+  params: InstitutionOrderRequestsParams
+): Promise<InstitutionOrderRequestsResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/search-requests',
+    query: { institutionId },
+    body: {
+      view: params.view,
+      labIds: params.labIds,
+      query: params.query,
+      page: params.page ?? 1,
+      limit: params.limit ?? 50,
+    },
+  };
+  return client.request(request);
+}
+
+/**
+ * Search inventory across all institution labs (admin only)
+ */
+export async function searchInstitutionInventory(
+  client: ApiClient,
+  institutionId: string,
+  params: InstitutionInventoryParams
+): Promise<InstitutionInventoryResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/search-inventory',
+    query: { institutionId },
+    body: {
+      labIds: params.labIds,
+      query: params.query,
+      page: params.page ?? 1,
+      limit: params.limit ?? 50,
+    },
+  };
+  return client.request(request);
+}
+
+// --- Lab Join Endpoint (for institution-only users) ---
+
+/**
+ * Request to join a lab
+ */
+export interface JoinLabRequest {
+  labId: string;
+}
+
+/**
+ * Response from joining a lab
+ */
+export interface JoinLabResponse {
+  labId: string;
+  labName: string;
+}
+
+/**
+ * Join an existing lab (for institution-only users)
+ */
+export async function joinLab(
+  client: ApiClient,
+  data: JoinLabRequest
+): Promise<JoinLabResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/join-lab',
+    body: data,
+  };
+  return client.request(request);
 }

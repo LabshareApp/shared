@@ -238,110 +238,6 @@ export interface InstitutionDashboardOverview {
     totalGrants: number;
 }
 /**
- * Statistics for collaboration requests
- */
-export interface CollaborationStats {
-    total: number;
-    approved: number;
-    pending: number;
-    rejected: number;
-    approvalRate: number;
-}
-/**
- * Collaboration with enriched institution names for display
- */
-export interface CollaborationWithInstitutions {
-    id: string;
-    institutionAId: string;
-    institutionBId: string;
-    institutionAName: string;
-    institutionBName: string;
-    status: CollaborationStatus;
-    requestedByInstitutionId: string;
-    approvedAt?: string;
-    createdAt: string;
-}
-/**
- * Response from collaboration history endpoint
- */
-export interface CollaborationHistoryResponse {
-    collaborations: CollaborationWithInstitutions[];
-    stats: CollaborationStats;
-}
-/**
- * Request to search order requests across institution labs
- */
-export interface InstitutionSearchRequestsRequest {
-    view: 'current' | 'placed' | 'archived';
-    labIds?: string[];
-    query?: string;
-    page?: number;
-    limit?: number;
-}
-/**
- * Order request with lab name for institution view
- */
-export interface InstitutionOrderRequest {
-    _id?: string;
-    id?: string;
-    name: string;
-    catalog?: string;
-    brand?: string;
-    quantity?: number;
-    units?: string;
-    urgency?: 'high' | 'medium' | 'low';
-    status?: string;
-    labId: string;
-    labName: string;
-    createdAt?: string;
-    updatedAt?: string;
-    attributes?: {
-        price?: {
-            amount: number;
-            currency: string;
-        };
-    };
-}
-/**
- * Response from institution order requests search
- */
-export interface InstitutionOrderRequestsResponse {
-    orderRequests: InstitutionOrderRequest[];
-    totalCount: number;
-}
-/**
- * Request to search inventory across institution labs
- */
-export interface InstitutionSearchInventoryRequest {
-    labIds?: string[];
-    query?: string;
-    page?: number;
-    limit?: number;
-}
-/**
- * Inventory item with lab name for institution view
- */
-export interface InstitutionInventoryItem {
-    _id?: string;
-    id?: string;
-    name: string;
-    catalog?: string;
-    brand?: string;
-    quantity?: number;
-    units?: string;
-    labId: string;
-    labName: string;
-    createdAt?: string;
-    updatedAt?: string;
-}
-/**
- * Response from institution inventory search
- */
-export interface InstitutionInventoryResponse {
-    items: InstitutionInventoryItem[];
-    totalCount: number;
-}
-/**
  * Permission check for institution-level operations
  */
 export declare function hasInstitutionPermission(membership: InstitutionMembership | null, role: InstitutionRole | null, permission: InstitutionPermission): boolean;
@@ -358,56 +254,99 @@ export declare function isDepartmentHead(membership: InstitutionMembership | nul
  */
 export declare function canApproveOrders(membership: InstitutionMembership | null, role: InstitutionRole | null): boolean;
 /**
- * Request to register as an institution-only user (no lab)
+ * Collaboration with enriched institution names
  */
-export interface RegisterInstitutionUserRequest {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber?: string;
-    institutionCode: string;
+export interface CollaborationWithInstitutions {
+    id: string;
+    institutionAId: string;
+    institutionBId: string;
+    institutionAName: string;
+    institutionBName: string;
+    status: CollaborationStatus;
+    requestedByInstitutionId: string;
+    approvedAt?: string;
+    createdAt: string;
 }
 /**
- * Response from institution-only user registration
+ * Statistics about collaborations
  */
-export interface RegisterInstitutionUserResponse {
-    userId: string;
-    institutionId: string;
-    email: string;
-    status: InstitutionMembershipStatus;
-    isFirstAdmin: boolean;
+export interface CollaborationStats {
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+    approvalRate: number;
 }
 /**
- * Request to join a lab (for institution-only users)
+ * Response from collaboration history endpoint
  */
-export interface JoinLabRequest {
+export interface CollaborationHistoryResponse {
+    collaborations: CollaborationWithInstitutions[];
+    stats: CollaborationStats;
+}
+/**
+ * Request params for searching institution order requests
+ */
+export interface InstitutionOrderRequestsParams {
+    view: 'current' | 'placed' | 'archived';
+    labIds?: string[];
+    query?: string;
+    page?: number;
+    limit?: number;
+}
+/**
+ * Order request with lab name for institution admin view
+ */
+export interface InstitutionOrderRequest {
+    _id: string;
+    name: string;
+    brand?: string;
+    catalog?: string;
+    quantity: number;
+    units?: string;
     labId: string;
+    labName?: string;
+    createdAt: string;
+    updatedAt?: string;
+    [key: string]: unknown;
 }
 /**
- * Response from joining a lab
+ * Response from institution order requests search
  */
-export interface JoinLabResponse {
-    success: boolean;
+export interface InstitutionOrderRequestsResponse {
+    orderRequests: InstitutionOrderRequest[];
+    totalCount: number;
+}
+/**
+ * Request params for searching institution inventory
+ */
+export interface InstitutionInventoryParams {
+    labIds?: string[];
+    query?: string;
+    page?: number;
+    limit?: number;
+}
+/**
+ * Inventory item with lab name for institution admin view
+ */
+export interface InstitutionInventoryItem {
+    _id: string;
+    name: string;
+    brand?: string;
+    catalog?: string;
+    quantity: number;
+    units?: string;
     labId: string;
-    membershipId: string;
+    labName?: string;
+    createdAt: string;
+    updatedAt?: string;
+    [key: string]: unknown;
 }
 /**
- * Pending member with enriched user info
+ * Response from institution inventory search
  */
-export interface PendingMember extends InstitutionMemberInfo {
-}
-/**
- * Request to approve or reject a pending member
- */
-export interface PendingMemberActionRequest {
-    membershipId: string;
-}
-/**
- * Response from approving/rejecting a pending member
- */
-export interface PendingMemberActionResponse {
-    success: boolean;
-    membershipId: string;
+export interface InstitutionInventoryResponse {
+    items: InstitutionInventoryItem[];
+    totalCount: number;
 }
 //# sourceMappingURL=institution.d.ts.map

@@ -10,7 +10,6 @@ exports.getInstitution = getInstitution;
 exports.getInstitutionByCode = getInstitutionByCode;
 exports.getInstitutionLabs = getInstitutionLabs;
 exports.getInstitutionMembers = getInstitutionMembers;
-exports.getMyInstitutionMembership = getMyInstitutionMembership;
 exports.listDepartments = listDepartments;
 exports.createDepartment = createDepartment;
 exports.updateDepartment = updateDepartment;
@@ -26,9 +25,6 @@ exports.validateInstitutionCodes = validateInstitutionCodes;
 exports.getCollaborationHistory = getCollaborationHistory;
 exports.searchInstitutionOrderRequests = searchInstitutionOrderRequests;
 exports.searchInstitutionInventory = searchInstitutionInventory;
-exports.getPendingMembers = getPendingMembers;
-exports.approvePendingMember = approvePendingMember;
-exports.rejectPendingMember = rejectPendingMember;
 exports.joinLab = joinLab;
 // --- Institution Endpoints ---
 /**
@@ -87,17 +83,6 @@ async function getInstitutionMembers(client, institutionId) {
     const request = {
         method: 'GET',
         path: '/institution/members',
-        query: { institutionId },
-    };
-    return client.request(request);
-}
-/**
- * Get the current user's membership for an institution (includes role)
- */
-async function getMyInstitutionMembership(client, institutionId) {
-    const request = {
-        method: 'GET',
-        path: '/institution/my-membership',
         query: { institutionId },
     };
     return client.request(request);
@@ -258,6 +243,7 @@ async function validateInstitutionCodes(baseUrl, codes) {
     }
     return results;
 }
+// --- Institution Admin Dashboard Endpoints ---
 /**
  * Get collaboration history with statistics (admin only)
  */
@@ -272,64 +258,42 @@ async function getCollaborationHistory(client, institutionId) {
 /**
  * Search order requests across all institution labs (admin only)
  */
-async function searchInstitutionOrderRequests(client, institutionId, data) {
+async function searchInstitutionOrderRequests(client, institutionId, params) {
+    var _a, _b;
     const request = {
         method: 'POST',
         path: '/institution/search-requests',
         query: { institutionId },
-        body: data,
+        body: {
+            view: params.view,
+            labIds: params.labIds,
+            query: params.query,
+            page: (_a = params.page) !== null && _a !== void 0 ? _a : 1,
+            limit: (_b = params.limit) !== null && _b !== void 0 ? _b : 50,
+        },
     };
     return client.request(request);
 }
 /**
  * Search inventory across all institution labs (admin only)
  */
-async function searchInstitutionInventory(client, institutionId, data) {
+async function searchInstitutionInventory(client, institutionId, params) {
+    var _a, _b;
     const request = {
         method: 'POST',
         path: '/institution/search-inventory',
         query: { institutionId },
-        body: data,
+        body: {
+            labIds: params.labIds,
+            query: params.query,
+            page: (_a = params.page) !== null && _a !== void 0 ? _a : 1,
+            limit: (_b = params.limit) !== null && _b !== void 0 ? _b : 50,
+        },
     };
     return client.request(request);
 }
 /**
- * Get all pending members for an institution (admin only)
- */
-async function getPendingMembers(client, institutionId) {
-    const request = {
-        method: 'GET',
-        path: '/institution/pending-members',
-        query: { institutionId },
-    };
-    return client.request(request);
-}
-/**
- * Approve a pending member (admin only)
- */
-async function approvePendingMember(client, institutionId, data) {
-    const request = {
-        method: 'POST',
-        path: '/institution/approve-member',
-        query: { institutionId },
-        body: data,
-    };
-    return client.request(request);
-}
-/**
- * Reject a pending member (admin only)
- */
-async function rejectPendingMember(client, institutionId, data) {
-    const request = {
-        method: 'POST',
-        path: '/institution/reject-member',
-        query: { institutionId },
-        body: data,
-    };
-    return client.request(request);
-}
-/**
- * Join a lab (for institution-only users who want to add lab access)
+ * Join an existing lab (for institution-only users)
  */
 async function joinLab(client, data) {
     const request = {

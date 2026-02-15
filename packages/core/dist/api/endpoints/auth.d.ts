@@ -32,15 +32,4 @@ export interface RegisterUserResponse {
  * @returns The registration response with userId, labId, and email
  */
 export declare function registerUser(baseUrl: string, data: RegisterUserRequest): Promise<RegisterUserResponse>;
-import type { RegisterInstitutionUserRequest, RegisterInstitutionUserResponse } from '../../types/institution';
-/**
- * Register a new institution-only user (without a lab).
- * First user with an institution code becomes admin with active status.
- * Subsequent users get observer role with pending status (require admin approval).
- *
- * @param baseUrl - The base URL of the API server (e.g., 'http://localhost:8082')
- * @param data - The registration data including institution code
- * @returns The registration response with userId, institutionId, status, and isFirstAdmin
- */
-export declare function registerInstitutionUser(baseUrl: string, data: RegisterInstitutionUserRequest): Promise<RegisterInstitutionUserResponse>;
 //# sourceMappingURL=auth.d.ts.map

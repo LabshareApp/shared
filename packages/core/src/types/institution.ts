@@ -326,3 +326,110 @@ export function canApproveOrders(
 ): boolean {
   return hasInstitutionPermission(membership, role, 'department:approve_orders');
 }
+
+// --- Institution Admin Dashboard Types ---
+
+/**
+ * Collaboration with enriched institution names
+ */
+export interface CollaborationWithInstitutions {
+  id: string;
+  institutionAId: string;
+  institutionBId: string;
+  institutionAName: string;
+  institutionBName: string;
+  status: CollaborationStatus;
+  requestedByInstitutionId: string;
+  approvedAt?: string;
+  createdAt: string;
+}
+
+/**
+ * Statistics about collaborations
+ */
+export interface CollaborationStats {
+  total: number;
+  approved: number;
+  pending: number;
+  rejected: number;
+  approvalRate: number;
+}
+
+/**
+ * Response from collaboration history endpoint
+ */
+export interface CollaborationHistoryResponse {
+  collaborations: CollaborationWithInstitutions[];
+  stats: CollaborationStats;
+}
+
+/**
+ * Request params for searching institution order requests
+ */
+export interface InstitutionOrderRequestsParams {
+  view: 'current' | 'placed' | 'archived';
+  labIds?: string[];
+  query?: string;
+  page?: number;
+  limit?: number;
+}
+
+/**
+ * Order request with lab name for institution admin view
+ */
+export interface InstitutionOrderRequest {
+  _id: string;
+  name: string;
+  brand?: string;
+  catalog?: string;
+  quantity: number;
+  units?: string;
+  labId: string;
+  labName?: string;
+  createdAt: string;
+  updatedAt?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Response from institution order requests search
+ */
+export interface InstitutionOrderRequestsResponse {
+  orderRequests: InstitutionOrderRequest[];
+  totalCount: number;
+}
+
+/**
+ * Request params for searching institution inventory
+ */
+export interface InstitutionInventoryParams {
+  labIds?: string[];
+  query?: string;
+  page?: number;
+  limit?: number;
+}
+
+/**
+ * Inventory item with lab name for institution admin view
+ */
+export interface InstitutionInventoryItem {
+  _id: string;
+  name: string;
+  brand?: string;
+  catalog?: string;
+  quantity: number;
+  units?: string;
+  labId: string;
+  labName?: string;
+  createdAt: string;
+  updatedAt?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Response from institution inventory search
+ */
+export interface InstitutionInventoryResponse {
+  items: InstitutionInventoryItem[];
+  totalCount: number;
+}

@@ -92,11 +92,14 @@ export interface LabMembership {
     updatedAt: string;
 }
 /**
- * Enriched membership with role details
+ * Enriched membership with role and profile details
  */
 export interface EnrichedMembership extends LabMembership {
     roleName: string;
     isAdmin: boolean;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
 }
 /**
  * Request payload for updating a member's role

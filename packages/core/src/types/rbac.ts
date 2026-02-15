@@ -195,11 +195,14 @@ export interface LabMembership {
 }
 
 /**
- * Enriched membership with role details
+ * Enriched membership with role and profile details
  */
 export interface EnrichedMembership extends LabMembership {
   roleName: string;
   isAdmin: boolean;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
 }
 
 /**

@@ -1,0 +1,52 @@
+import type { ApiClient } from '../../ApiClient';
+import type { Tool, ToolCheckout, CreateToolData, UpdateToolData, CheckoutToolData, ReturnToolData, LogAccessData, ToolListResponse, CheckoutListResponse, MyCheckoutsResponse, ListToolsParams, ListCheckoutsParams } from '../../../types/tools';
+/**
+ * Fetch all tools for the authenticated lab.
+ */
+export declare function fetchTools(client: ApiClient, params?: ListToolsParams): Promise<ToolListResponse>;
+/**
+ * Fetch a single tool by ID.
+ */
+export declare function getTool(client: ApiClient, id: string): Promise<Tool>;
+/**
+ * Create a new tool.
+ */
+export declare function createTool(client: ApiClient, data: CreateToolData): Promise<Tool>;
+/**
+ * Update a tool.
+ */
+export declare function updateTool(client: ApiClient, id: string, data: UpdateToolData): Promise<Tool>;
+/**
+ * Delete a tool.
+ */
+export declare function deleteTool(client: ApiClient, id: string): Promise<void>;
+/**
+ * Checkout a tool.
+ */
+export declare function checkoutTool(client: ApiClient, id: string, data?: CheckoutToolData): Promise<ToolCheckout>;
+/**
+ * Return a checked out tool.
+ */
+export declare function returnTool(client: ApiClient, id: string, data?: ReturnToolData): Promise<ToolCheckout>;
+/**
+ * Get checkout history for a tool.
+ */
+export declare function getToolCheckouts(client: ApiClient, id: string, params?: ListCheckoutsParams): Promise<CheckoutListResponse>;
+/**
+ * Get tools available to borrow from other labs.
+ */
+export declare function getAvailableTools(client: ApiClient, params?: {
+    page?: number;
+    limit?: number;
+}): Promise<ToolListResponse>;
+/**
+ * Get current user's active checkouts.
+ */
+export declare function getMyCheckouts(client: ApiClient, params?: {
+    allLabs?: boolean;
+}): Promise<MyCheckoutsResponse>;
+/**
+ * Log an access event for a tool (ID swipe, view).
+ */
+export declare function logToolAccess(client: ApiClient, id: string, data: LogAccessData): Promise<void>;
+//# sourceMappingURL=index.d.ts.map

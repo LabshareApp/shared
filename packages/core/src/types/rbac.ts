@@ -55,11 +55,20 @@ export type Permission =
   | 'reservations:edit'
   | 'reservations:delete'
   | 'machines:manage'
+  // Tools permissions
+  | 'tools:view'
+  | 'tools:checkout'
+  | 'tools:manage'
   // Sharing request permissions (distinct from order requests)
   | 'sharing:view'
   | 'sharing:create'
   | 'sharing:edit'
-  | 'sharing:approve';
+  | 'sharing:approve'
+  // Invoice permissions
+  | 'invoices:view'
+  | 'invoices:create'
+  | 'invoices:send'
+  | 'invoices:delete';
 
 /**
  * Permission grouped by resource for UI display
@@ -73,7 +82,9 @@ export interface PermissionsByResource {
   settings: Permission[];
   members: Permission[];
   reservations: Permission[];
+  tools: Permission[];
   sharing: Permission[];
+  invoices: Permission[];
 }
 
 /**
@@ -111,10 +122,17 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   'reservations:edit': 'Edit reservations',
   'reservations:delete': 'Delete/cancel reservations',
   'machines:manage': 'Create and manage machines',
+  'tools:view': 'View lab tools',
+  'tools:checkout': 'Checkout and return tools',
+  'tools:manage': 'Create and manage tools',
   'sharing:view': 'View sharing requests',
   'sharing:create': 'Create sharing requests',
   'sharing:edit': 'Edit sharing requests',
   'sharing:approve': 'Approve/reject sharing requests',
+  'invoices:view': 'View invoices',
+  'invoices:create': 'Create invoices',
+  'invoices:send': 'Send invoices',
+  'invoices:delete': 'Delete invoices',
 };
 
 // ============================================================================

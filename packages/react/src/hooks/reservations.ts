@@ -19,6 +19,10 @@ import type {
   CheckAvailabilityResponse,
   ListMachinesParams,
   RejectReservationData,
+  SetMachineApproversData,
+  SetMachineApproversResponse,
+  ApproveReservationData,
+  ApproveReservationResponse,
   DeactivateRecurringRuleParams,
   MachineImagePresignedUrlRequest,
   MachineImagePresignedUrlResponse,
@@ -36,6 +40,7 @@ import {
   createMachine,
   updateMachine,
   deleteMachine,
+  setMachineApprovers,
   fetchReservations,
   fetchMyReservations,
   fetchReservation,
@@ -172,10 +177,23 @@ export function useMachineMutations(client: ApiClient) {
     },
   });
 
+  const setApproversMutation = useMutation<
+    SetMachineApproversResponse,
+    Error,
+    { id: string; data: SetMachineApproversData }
+  >({
+    mutationFn: ({ id, data }) => setMachineApprovers(client, id, data),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: reservationKeys.machines });
+      queryClient.invalidateQueries({ queryKey: reservationKeys.machineDetail(variables.id) });
+    },
+  });
+
   return {
     createMachineMutation,
     updateMachineMutation,
     deleteMachineMutation,
+    setApproversMutation,
   };
 }
 
@@ -288,11 +306,15 @@ export function useReservationMutations(client: ApiClient) {
     },
   });
 
-  const approveReservationMutation = useMutation({
-    mutationFn: (id: string) => approveReservation(client, id),
+  const approveReservationMutation = useMutation<
+    ApproveReservationResponse,
+    Error,
+    { id: string; data?: ApproveReservationData }
+  >({
+    mutationFn: ({ id, data }) => approveReservation(client, id, data),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: reservationKeys.reservations });
-      queryClient.invalidateQueries({ queryKey: reservationKeys.reservationDetail(variables) });
+      queryClient.invalidateQueries({ queryKey: reservationKeys.reservationDetail(variables.id) });
       queryClient.invalidateQueries({ queryKey: reservationKeys.pendingApprovals() });
     },
   });

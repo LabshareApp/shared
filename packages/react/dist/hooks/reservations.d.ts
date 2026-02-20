@@ -1,4 +1,4 @@
-import type { ApiClient, Machine, MachineTag, Reservation, RecurringRule, CreateMachineData, UpdateMachineData, CreateMachineTagData, UpdateMachineTagData, CreateReservationData, UpdateReservationData, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '@labshare/shared-core';
+import type { ApiClient, Machine, MachineTag, Reservation, RecurringRule, CreateMachineData, UpdateMachineData, CreateMachineTagData, UpdateMachineTagData, CreateReservationData, UpdateReservationData, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, SetMachineApproversData, SetMachineApproversResponse, ApproveReservationData, ApproveReservationResponse, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '@labshare/shared-core';
 import { type ApiError } from '@labshare/shared-core';
 export declare function useMachineTags(client: ApiClient, options?: {
     enabled?: boolean;
@@ -25,6 +25,10 @@ export declare function useMachineMutations(client: ApiClient): {
         data: UpdateMachineData;
     }, unknown>;
     deleteMachineMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
+    setApproversMutation: import("@tanstack/react-query").UseMutationResult<SetMachineApproversResponse, Error, {
+        id: string;
+        data: SetMachineApproversData;
+    }, unknown>;
 };
 export declare function useReservations(client: ApiClient, params: ListReservationsParams & {
     enabled?: boolean;
@@ -49,7 +53,10 @@ export declare function useReservationMutations(client: ApiClient): {
         data: UpdateReservationData;
     }, unknown>;
     cancelReservationMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
-    approveReservationMutation: import("@tanstack/react-query").UseMutationResult<void, Error, string, unknown>;
+    approveReservationMutation: import("@tanstack/react-query").UseMutationResult<ApproveReservationResponse, Error, {
+        id: string;
+        data?: ApproveReservationData;
+    }, unknown>;
     rejectReservationMutation: import("@tanstack/react-query").UseMutationResult<void, Error, {
         id: string;
         data?: RejectReservationData;

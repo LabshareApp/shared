@@ -18,6 +18,10 @@ export * from './api/endpoints/rbac';
 export * from './api/endpoints/reservations';
 export * from './api/endpoints/auth';
 export * from './api/endpoints/institution';
+export * from './api/endpoints/audit';
+export * from './api/endpoints/tools';
+export * from './api/endpoints/invoices';
+export * from './api/endpoints/slack';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -39,6 +43,10 @@ export * from './types/customFields';
 export * from './types/rbac';
 export * from './types/reservations';
 export * from './types/institution';
+export * from './types/audit';
+export * from './types/tools';
+export * from './types/invoice';
+export * from './types/slack';
 
 export * from './utils/logger';
 export * from './utils/jwt';

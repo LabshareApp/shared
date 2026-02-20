@@ -9,6 +9,7 @@ exports.fetchMachine = fetchMachine;
 exports.createMachine = createMachine;
 exports.updateMachine = updateMachine;
 exports.deleteMachine = deleteMachine;
+exports.setMachineApprovers = setMachineApprovers;
 exports.fetchReservations = fetchReservations;
 exports.fetchMyReservations = fetchMyReservations;
 exports.fetchReservation = fetchReservation;
@@ -153,6 +154,19 @@ async function deleteMachine(client, id) {
         query: { id },
     });
 }
+/**
+ * Set approvers for a machine.
+ * Only the machine owner can set approvers.
+ */
+async function setMachineApprovers(client, id, data) {
+    const response = await client.request({
+        method: 'PUT',
+        path: '/reservations/machine-approvers',
+        query: { id },
+        body: data,
+    });
+    return response;
+}
 // =============================================================================
 // Reservations
 // =============================================================================
@@ -270,13 +284,16 @@ async function fetchPendingApprovals(client) {
 }
 /**
  * Approve a reservation request.
+ * For multi-approver machines, this may return approval progress.
  */
-async function approveReservation(client, id) {
-    await client.request({
+async function approveReservation(client, id, data) {
+    const response = await client.request({
         method: 'POST',
         path: '/reservations/approve',
         query: { id },
+        body: data,
     });
+    return response;
 }
 /**
  * Reject a reservation request.

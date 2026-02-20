@@ -46,7 +46,7 @@ export declare function useOrderRequestMutations(client: ApiClient): {
         orderRequest: OrderRequestItem;
     }, Error, {
         orderRequestId: string;
-        data: Partial<Pick<OrderRequestItem, "name" | "units" | "notes" | "attributes" | "customFields" | "locationTags" | "grantTags" | "labelTags" | "description" | "brand" | "quantity" | "uploadedByTags">>;
+        data: Partial<Pick<OrderRequestItem, "name" | "description" | "brand" | "quantity" | "units" | "notes" | "attributes" | "customFields" | "locationTags" | "grantTags" | "labelTags" | "uploadedByTags">>;
     }, unknown>;
     placeOrderRequestMutation: import("@tanstack/react-query").UseMutationResult<{
         id: string;

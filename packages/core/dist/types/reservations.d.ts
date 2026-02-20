@@ -75,6 +75,13 @@ export interface ConsumableUsage {
 export interface CheckOutReservationData {
     consumableUsages: ConsumableUsage[];
 }
+export type ApprovalMode = 'any' | 'all';
+export interface ApprovalRecord {
+    userId: string;
+    status: 'pending' | 'approved' | 'rejected';
+    timestamp?: string;
+    notes?: string;
+}
 export interface Machine {
     id: string;
     labId: string;
@@ -90,6 +97,8 @@ export interface Machine {
     availableDays?: number[];
     requiresApproval: boolean;
     ownerUserId: string;
+    approverUserIds?: string[];
+    approvalMode?: ApprovalMode;
     collaboratorsOnly?: boolean;
     tagIds?: string[];
     tagNames?: string[];
@@ -114,6 +123,8 @@ export interface CreateMachineData {
     availableDays?: number[];
     requiresApproval?: boolean;
     ownerUserId?: string;
+    approverUserIds?: string[];
+    approvalMode?: ApprovalMode;
     collaboratorsOnly?: boolean;
     tagIds?: string[];
     locationTagIds?: string[];
@@ -133,6 +144,8 @@ export interface UpdateMachineData {
     availableDays?: number[];
     requiresApproval?: boolean;
     ownerUserId?: string;
+    approverUserIds?: string[];
+    approvalMode?: ApprovalMode;
     collaboratorsOnly?: boolean;
     tagIds?: string[];
     locationTagIds?: string[];
@@ -157,6 +170,7 @@ export interface Reservation {
     approvedBy?: string;
     approvedAt?: string;
     rejectionReason?: string;
+    approvals?: ApprovalRecord[];
     checkedInAt?: string;
     checkedOutAt?: string;
     consumableEstimates?: ConsumableEstimate[];
@@ -249,6 +263,24 @@ export interface ListMachinesParams {
 }
 export interface RejectReservationData {
     reason?: string;
+}
+export interface SetMachineApproversData {
+    approverUserIds: string[];
+    approvalMode: ApprovalMode;
+}
+export interface SetMachineApproversResponse {
+    message: string;
+    approverUserIds: string[];
+    approvalMode: string;
+}
+export interface ApproveReservationData {
+    notes?: string;
+}
+export interface ApproveReservationResponse {
+    message: string;
+    approvedCount?: number;
+    requiredCount?: number;
+    status?: 'pending' | 'approved';
 }
 export interface DeactivateRecurringRuleParams {
     deleteFuture?: boolean;

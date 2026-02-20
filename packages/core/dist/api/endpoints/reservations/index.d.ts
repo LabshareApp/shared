@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { MachineTag, CreateMachineTagData, UpdateMachineTagData, Machine, CreateMachineData, UpdateMachineData, Reservation, CreateReservationData, UpdateReservationData, RecurringRule, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '../../../types/reservations';
+import type { MachineTag, CreateMachineTagData, UpdateMachineTagData, Machine, CreateMachineData, UpdateMachineData, Reservation, CreateReservationData, UpdateReservationData, RecurringRule, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, SetMachineApproversData, SetMachineApproversResponse, ApproveReservationData, ApproveReservationResponse, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '../../../types/reservations';
 /**
  * Fetch all machine tags for the authenticated lab.
  */
@@ -38,6 +38,11 @@ export declare function updateMachine(client: ApiClient, id: string, data: Updat
  */
 export declare function deleteMachine(client: ApiClient, id: string): Promise<void>;
 /**
+ * Set approvers for a machine.
+ * Only the machine owner can set approvers.
+ */
+export declare function setMachineApprovers(client: ApiClient, id: string, data: SetMachineApproversData): Promise<SetMachineApproversResponse>;
+/**
  * Fetch reservations for a machine within a date range.
  */
 export declare function fetchReservations(client: ApiClient, params: ListReservationsParams): Promise<Reservation[]>;
@@ -71,8 +76,9 @@ export declare function cancelReservation(client: ApiClient, id: string): Promis
 export declare function fetchPendingApprovals(client: ApiClient): Promise<Reservation[]>;
 /**
  * Approve a reservation request.
+ * For multi-approver machines, this may return approval progress.
  */
-export declare function approveReservation(client: ApiClient, id: string): Promise<void>;
+export declare function approveReservation(client: ApiClient, id: string, data?: ApproveReservationData): Promise<ApproveReservationResponse>;
 /**
  * Reject a reservation request.
  */

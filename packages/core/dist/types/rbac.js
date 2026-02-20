@@ -47,10 +47,17 @@ exports.PERMISSION_LABELS = {
     'reservations:edit': 'Edit reservations',
     'reservations:delete': 'Delete/cancel reservations',
     'machines:manage': 'Create and manage machines',
+    'tools:view': 'View lab tools',
+    'tools:checkout': 'Checkout and return tools',
+    'tools:manage': 'Create and manage tools',
     'sharing:view': 'View sharing requests',
     'sharing:create': 'Create sharing requests',
     'sharing:edit': 'Edit sharing requests',
     'sharing:approve': 'Approve/reject sharing requests',
+    'invoices:view': 'View invoices',
+    'invoices:create': 'Create invoices',
+    'invoices:send': 'Send invoices',
+    'invoices:delete': 'Delete invoices',
 };
 // ============================================================================
 // Display Role Options

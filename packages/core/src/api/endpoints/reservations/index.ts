@@ -18,6 +18,10 @@ import type {
   CheckAvailabilityResponse,
   ListMachinesParams,
   RejectReservationData,
+  SetMachineApproversData,
+  SetMachineApproversResponse,
+  ApproveReservationData,
+  ApproveReservationResponse,
   DeactivateRecurringRuleParams,
   MachineImagePresignedUrlRequest,
   MachineImagePresignedUrlResponse,
@@ -184,6 +188,24 @@ export async function deleteMachine(client: ApiClient, id: string): Promise<void
   });
 }
 
+/**
+ * Set approvers for a machine.
+ * Only the machine owner can set approvers.
+ */
+export async function setMachineApprovers(
+  client: ApiClient,
+  id: string,
+  data: SetMachineApproversData
+): Promise<SetMachineApproversResponse> {
+  const response = await client.request<SetMachineApproversResponse>({
+    method: 'PUT',
+    path: '/reservations/machine-approvers',
+    query: { id },
+    body: data,
+  });
+  return response;
+}
+
 // =============================================================================
 // Reservations
 // =============================================================================
@@ -329,13 +351,20 @@ export async function fetchPendingApprovals(client: ApiClient): Promise<Reservat
 
 /**
  * Approve a reservation request.
+ * For multi-approver machines, this may return approval progress.
  */
-export async function approveReservation(client: ApiClient, id: string): Promise<void> {
-  await client.request({
+export async function approveReservation(
+  client: ApiClient,
+  id: string,
+  data?: ApproveReservationData
+): Promise<ApproveReservationResponse> {
+  const response = await client.request<ApproveReservationResponse>({
     method: 'POST',
     path: '/reservations/approve',
     query: { id },
+    body: data,
   });
+  return response;
 }
 
 /**

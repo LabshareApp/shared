@@ -113,10 +113,18 @@ function useMachineMutations(client) {
             queryClient.removeQueries({ queryKey: reservations_1.reservationKeys.machineDetail(variables) });
         },
     });
+    const setApproversMutation = (0, react_query_1.useMutation)({
+        mutationFn: ({ id, data }) => (0, shared_core_1.setMachineApprovers)(client, id, data),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.machines });
+            queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.machineDetail(variables.id) });
+        },
+    });
     return {
         createMachineMutation,
         updateMachineMutation,
         deleteMachineMutation,
+        setApproversMutation,
     };
 }
 // =============================================================================
@@ -208,10 +216,10 @@ function useReservationMutations(client) {
         },
     });
     const approveReservationMutation = (0, react_query_1.useMutation)({
-        mutationFn: (id) => (0, shared_core_1.approveReservation)(client, id),
+        mutationFn: ({ id, data }) => (0, shared_core_1.approveReservation)(client, id, data),
         onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.reservations });
-            queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.reservationDetail(variables) });
+            queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.reservationDetail(variables.id) });
             queryClient.invalidateQueries({ queryKey: reservations_1.reservationKeys.pendingApprovals() });
         },
     });

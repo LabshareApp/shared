@@ -8,4 +8,6 @@ export * from './grants';
 export * from './rbac';
 export * from './reservations';
 export * from './institution';
+export * from './audit';
+export * from './slack';
 

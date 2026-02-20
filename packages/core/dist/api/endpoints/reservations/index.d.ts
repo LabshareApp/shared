@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { MachineTag, CreateMachineTagData, UpdateMachineTagData, Machine, CreateMachineData, UpdateMachineData, Reservation, CreateReservationData, UpdateReservationData, RecurringRule, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, SetMachineApproversData, SetMachineApproversResponse, ApproveReservationData, ApproveReservationResponse, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData } from '../../../types/reservations';
+import type { MachineTag, CreateMachineTagData, UpdateMachineTagData, Machine, CreateMachineData, UpdateMachineData, Reservation, CreateReservationData, UpdateReservationData, RecurringRule, CreateRecurringRuleData, UpdateRecurringRuleData, ListReservationsParams, ListMyReservationsParams, CheckAvailabilityParams, CheckAvailabilityResponse, ListMachinesParams, RejectReservationData, SetMachineApproversData, SetMachineApproversResponse, ApproveReservationData, ApproveReservationResponse, DeactivateRecurringRuleParams, MachineImagePresignedUrlRequest, MachineImagePresignedUrlResponse, MachineImageViewUrlRequest, MachineImageViewUrlResponse, CheckOutReservationData, SlotColors } from '../../../types/reservations';
 /**
  * Fetch all machine tags for the authenticated lab.
  */
@@ -120,4 +120,13 @@ export declare function generateMachineImagePresignedUrl(client: ApiClient, data
  * Get a presigned URL for viewing a machine image.
  */
 export declare function getMachineImageViewUrl(client: ApiClient, data: MachineImageViewUrlRequest): Promise<MachineImageViewUrlResponse>;
+/**
+ * Fetch the user's slot color preferences.
+ * Returns default colors if no preferences are saved.
+ */
+export declare function fetchSlotColors(client: ApiClient): Promise<SlotColors>;
+/**
+ * Update the user's slot color preferences.
+ */
+export declare function updateSlotColors(client: ApiClient, colors: SlotColors): Promise<void>;
 //# sourceMappingURL=index.d.ts.map

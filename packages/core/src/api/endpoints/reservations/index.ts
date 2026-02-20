@@ -28,7 +28,9 @@ import type {
   MachineImageViewUrlRequest,
   MachineImageViewUrlResponse,
   CheckOutReservationData,
+  SlotColors,
 } from '../../../types/reservations';
+import { DEFAULT_SLOT_COLORS } from '../../../types/reservations';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
 // Helper to normalize MongoDB _id to id
@@ -524,4 +526,39 @@ export async function getMachineImageViewUrl(
     body: data,
   });
   return validateObjectResponse(response, 'getMachineImageViewUrl', ['url', 'expiresAt']) as MachineImageViewUrlResponse;
+}
+
+// =============================================================================
+// Slot Colors (User Preferences)
+// =============================================================================
+
+/**
+ * Fetch the user's slot color preferences.
+ * Returns default colors if no preferences are saved.
+ */
+export async function fetchSlotColors(client: ApiClient): Promise<SlotColors> {
+  try {
+    const response = await client.request<{ slotColors?: SlotColors }>({
+      method: 'GET',
+      path: '/preferences/slot-colors',
+    });
+    return response?.slotColors ?? DEFAULT_SLOT_COLORS;
+  } catch {
+    // Return defaults if endpoint doesn't exist or fails
+    return DEFAULT_SLOT_COLORS;
+  }
+}
+
+/**
+ * Update the user's slot color preferences.
+ */
+export async function updateSlotColors(
+  client: ApiClient,
+  colors: SlotColors
+): Promise<void> {
+  await client.request({
+    method: 'PUT',
+    path: '/preferences/slot-colors',
+    body: { slotColors: colors },
+  });
 }

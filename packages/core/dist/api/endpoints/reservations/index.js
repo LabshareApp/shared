@@ -29,6 +29,9 @@ exports.updateRecurringRule = updateRecurringRule;
 exports.deactivateRecurringRule = deactivateRecurringRule;
 exports.generateMachineImagePresignedUrl = generateMachineImagePresignedUrl;
 exports.getMachineImageViewUrl = getMachineImageViewUrl;
+exports.fetchSlotColors = fetchSlotColors;
+exports.updateSlotColors = updateSlotColors;
+const reservations_1 = require("../../../types/reservations");
 const responseValidation_1 = require("../../responseValidation");
 function normalizeId(obj) {
     const idValue = (obj === null || obj === void 0 ? void 0 : obj._id) || (obj === null || obj === void 0 ? void 0 : obj.id);
@@ -415,5 +418,36 @@ async function getMachineImageViewUrl(client, data) {
         body: data,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getMachineImageViewUrl', ['url', 'expiresAt']);
+}
+// =============================================================================
+// Slot Colors (User Preferences)
+// =============================================================================
+/**
+ * Fetch the user's slot color preferences.
+ * Returns default colors if no preferences are saved.
+ */
+async function fetchSlotColors(client) {
+    var _a;
+    try {
+        const response = await client.request({
+            method: 'GET',
+            path: '/preferences/slot-colors',
+        });
+        return (_a = response === null || response === void 0 ? void 0 : response.slotColors) !== null && _a !== void 0 ? _a : reservations_1.DEFAULT_SLOT_COLORS;
+    }
+    catch {
+        // Return defaults if endpoint doesn't exist or fails
+        return reservations_1.DEFAULT_SLOT_COLORS;
+    }
+}
+/**
+ * Update the user's slot color preferences.
+ */
+async function updateSlotColors(client, colors) {
+    await client.request({
+        method: 'PUT',
+        path: '/preferences/slot-colors',
+        body: { slotColors: colors },
+    });
 }
 //# sourceMappingURL=index.js.map

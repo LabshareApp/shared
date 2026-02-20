@@ -11,6 +11,11 @@ exports.getToolCheckouts = getToolCheckouts;
 exports.getAvailableTools = getAvailableTools;
 exports.getMyCheckouts = getMyCheckouts;
 exports.logToolAccess = logToolAccess;
+exports.createMaintenanceRequest = createMaintenanceRequest;
+exports.getMaintenanceRequest = getMaintenanceRequest;
+exports.listMaintenanceRequests = listMaintenanceRequests;
+exports.updateMaintenanceRequest = updateMaintenanceRequest;
+exports.getToolMaintenanceHistory = getToolMaintenanceHistory;
 const responseValidation_1 = require("../../responseValidation");
 function normalizeId(obj) {
     const idValue = (obj === null || obj === void 0 ? void 0 : obj._id) || (obj === null || obj === void 0 ? void 0 : obj.id);
@@ -208,5 +213,61 @@ async function logToolAccess(client, id, data) {
         query: { id },
         body: data,
     });
+}
+/**
+ * Create a maintenance request for a tool.
+ */
+async function createMaintenanceRequest(client, data) {
+    const response = await client.request({
+        method: 'POST',
+        path: '/tools/maintenance-requests',
+        body: data,
+    });
+    return response;
+}
+/**
+ * Get a maintenance request by ID.
+ */
+async function getMaintenanceRequest(client, requestId) {
+    const response = await client.request({
+        method: 'GET',
+        path: '/tools/maintenance-requests',
+        query: { id: requestId },
+    });
+    return response;
+}
+/**
+ * List maintenance requests with optional filters.
+ */
+async function listMaintenanceRequests(client, params) {
+    var _a;
+    const response = await client.request({
+        method: 'GET',
+        path: '/tools/maintenance-requests/list',
+        query: params,
+    });
+    return {
+        requests: response.requests || [],
+        totalCount: (_a = response.totalCount) !== null && _a !== void 0 ? _a : 0,
+    };
+}
+/**
+ * Update a maintenance request (change status, assign, resolve).
+ */
+async function updateMaintenanceRequest(client, requestId, data) {
+    const response = await client.request({
+        method: 'PUT',
+        path: '/tools/maintenance-requests',
+        query: { id: requestId },
+        body: data,
+    });
+    return response;
+}
+/**
+ * Get maintenance requests for a specific tool.
+ */
+async function getToolMaintenanceHistory(client, toolId) {
+    const response = await listMaintenanceRequests(client, { toolId });
+    return response.requests;
 }
 //# sourceMappingURL=index.js.map

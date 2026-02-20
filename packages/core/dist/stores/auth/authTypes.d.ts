@@ -6,6 +6,7 @@ export interface ProfileData {
     email: string;
     role: string;
     lab_id: string;
+    institution_id?: string;
     labs: {
         id: string;
         name: string;

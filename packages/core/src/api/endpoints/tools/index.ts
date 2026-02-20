@@ -273,3 +273,91 @@ export async function logToolAccess(
     body: data,
   });
 }
+
+// =============================================================================
+// Maintenance Requests
+// =============================================================================
+
+import type {
+  MaintenanceRequest,
+  CreateMaintenanceRequestData,
+  UpdateMaintenanceRequestData,
+  MaintenanceRequestListResponse,
+  ListMaintenanceRequestsParams,
+} from '../../../types/maintenance';
+
+/**
+ * Create a maintenance request for a tool.
+ */
+export async function createMaintenanceRequest(
+  client: ApiClient,
+  data: CreateMaintenanceRequestData
+): Promise<MaintenanceRequest> {
+  const response = await client.request<MaintenanceRequest>({
+    method: 'POST',
+    path: '/tools/maintenance-requests',
+    body: data,
+  });
+  return response;
+}
+
+/**
+ * Get a maintenance request by ID.
+ */
+export async function getMaintenanceRequest(
+  client: ApiClient,
+  requestId: string
+): Promise<MaintenanceRequest> {
+  const response = await client.request<MaintenanceRequest>({
+    method: 'GET',
+    path: '/tools/maintenance-requests',
+    query: { id: requestId },
+  });
+  return response;
+}
+
+/**
+ * List maintenance requests with optional filters.
+ */
+export async function listMaintenanceRequests(
+  client: ApiClient,
+  params?: ListMaintenanceRequestsParams
+): Promise<MaintenanceRequestListResponse> {
+  const response = await client.request<MaintenanceRequestListResponse>({
+    method: 'GET',
+    path: '/tools/maintenance-requests/list',
+    query: params as Record<string, string | number | undefined>,
+  });
+  return {
+    requests: response.requests || [],
+    totalCount: response.totalCount ?? 0,
+  };
+}
+
+/**
+ * Update a maintenance request (change status, assign, resolve).
+ */
+export async function updateMaintenanceRequest(
+  client: ApiClient,
+  requestId: string,
+  data: UpdateMaintenanceRequestData
+): Promise<MaintenanceRequest> {
+  const response = await client.request<MaintenanceRequest>({
+    method: 'PUT',
+    path: '/tools/maintenance-requests',
+    query: { id: requestId },
+    body: data,
+  });
+  return response;
+}
+
+/**
+ * Get maintenance requests for a specific tool.
+ */
+export async function getToolMaintenanceHistory(
+  client: ApiClient,
+  toolId: string
+): Promise<MaintenanceRequest[]> {
+  const response = await listMaintenanceRequests(client, { toolId });
+  return response.requests;
+}

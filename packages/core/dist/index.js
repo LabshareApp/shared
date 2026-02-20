@@ -59,6 +59,7 @@ __exportStar(require("./types/audit"), exports);
 __exportStar(require("./types/tools"), exports);
 __exportStar(require("./types/invoice"), exports);
 __exportStar(require("./types/slack"), exports);
+__exportStar(require("./types/maintenance"), exports);
 __exportStar(require("./utils/logger"), exports);
 __exportStar(require("./utils/jwt"), exports);
 __exportStar(require("./utils/stableStringify"), exports);

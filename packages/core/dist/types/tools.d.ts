@@ -7,6 +7,14 @@ export type ToolCheckoutStatus = 'active' | 'returned' | 'overdue';
 export type ToolCondition = 'good' | 'damaged' | 'needs_maintenance';
 export type ToolAccessAction = 'view' | 'checkout' | 'return' | 'access';
 export type ToolOwnershipLevel = 'lab' | 'department';
+export type ToolBillingType = 'hourly' | 'daily' | 'flat' | 'free';
+export interface ToolPricing {
+    billingType: ToolBillingType;
+    hourlyRate?: number;
+    dailyRate?: number;
+    flatFee?: number;
+    currency: string;
+}
 export interface CurrentCheckout {
     userId: string;
     userEmail: string;
@@ -34,6 +42,7 @@ export interface Tool {
     sharedWithInstitution: boolean;
     requiresCheckout: boolean;
     maxCheckoutDays?: number;
+    pricing?: ToolPricing;
     status: ToolStatus;
     currentCheckout?: CurrentCheckout;
     createdAt: string;
@@ -55,6 +64,11 @@ export interface ToolCheckout {
     checkoutNotes?: string;
     returnNotes?: string;
     condition?: ToolCondition;
+    billingType?: ToolBillingType;
+    duration?: number;
+    unitRate?: number;
+    totalCost?: number;
+    currency?: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -87,6 +101,7 @@ export interface CreateToolData {
     sharedWithInstitution?: boolean;
     requiresCheckout?: boolean;
     maxCheckoutDays?: number;
+    pricing?: ToolPricing;
 }
 export interface UpdateToolData {
     name?: string;
@@ -105,6 +120,7 @@ export interface UpdateToolData {
     sharedWithInstitution?: boolean;
     requiresCheckout?: boolean;
     maxCheckoutDays?: number;
+    pricing?: ToolPricing;
     status?: ToolStatus;
 }
 export interface CheckoutToolData {

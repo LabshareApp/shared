@@ -49,4 +49,25 @@ export declare function getMyCheckouts(client: ApiClient, params?: {
  * Log an access event for a tool (ID swipe, view).
  */
 export declare function logToolAccess(client: ApiClient, id: string, data: LogAccessData): Promise<void>;
+import type { MaintenanceRequest, CreateMaintenanceRequestData, UpdateMaintenanceRequestData, MaintenanceRequestListResponse, ListMaintenanceRequestsParams } from '../../../types/maintenance';
+/**
+ * Create a maintenance request for a tool.
+ */
+export declare function createMaintenanceRequest(client: ApiClient, data: CreateMaintenanceRequestData): Promise<MaintenanceRequest>;
+/**
+ * Get a maintenance request by ID.
+ */
+export declare function getMaintenanceRequest(client: ApiClient, requestId: string): Promise<MaintenanceRequest>;
+/**
+ * List maintenance requests with optional filters.
+ */
+export declare function listMaintenanceRequests(client: ApiClient, params?: ListMaintenanceRequestsParams): Promise<MaintenanceRequestListResponse>;
+/**
+ * Update a maintenance request (change status, assign, resolve).
+ */
+export declare function updateMaintenanceRequest(client: ApiClient, requestId: string, data: UpdateMaintenanceRequestData): Promise<MaintenanceRequest>;
+/**
+ * Get maintenance requests for a specific tool.
+ */
+export declare function getToolMaintenanceHistory(client: ApiClient, toolId: string): Promise<MaintenanceRequest[]>;
 //# sourceMappingURL=index.d.ts.map

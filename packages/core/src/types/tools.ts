@@ -15,6 +15,18 @@ export type ToolAccessAction = 'view' | 'checkout' | 'return' | 'access';
 
 export type ToolOwnershipLevel = 'lab' | 'department';
 
+export type ToolBillingType = 'hourly' | 'daily' | 'flat' | 'free';
+
+// --- Tool Pricing ---
+
+export interface ToolPricing {
+  billingType: ToolBillingType;
+  hourlyRate?: number;   // cents per hour
+  dailyRate?: number;    // cents per day
+  flatFee?: number;      // cents per checkout
+  currency: string;      // ISO 4217 code (e.g., "USD")
+}
+
 // --- Current Checkout ---
 
 export interface CurrentCheckout {
@@ -54,6 +66,9 @@ export interface Tool {
   requiresCheckout: boolean;
   maxCheckoutDays?: number;
 
+  // Pricing
+  pricing?: ToolPricing;
+
   // Status
   status: ToolStatus;
   currentCheckout?: CurrentCheckout;
@@ -87,6 +102,13 @@ export interface ToolCheckout {
   checkoutNotes?: string;
   returnNotes?: string;
   condition?: ToolCondition;
+
+  // Cost (calculated on return)
+  billingType?: ToolBillingType;
+  duration?: number;          // hours or days depending on billingType
+  unitRate?: number;          // rate used (cents)
+  totalCost?: number;         // calculated cost (cents)
+  currency?: string;
 
   createdAt: string;
   updatedAt: string;
@@ -128,6 +150,8 @@ export interface CreateToolData {
   sharedWithInstitution?: boolean;
   requiresCheckout?: boolean;
   maxCheckoutDays?: number;
+  // Pricing
+  pricing?: ToolPricing;
 }
 
 export interface UpdateToolData {
@@ -149,6 +173,8 @@ export interface UpdateToolData {
   sharedWithInstitution?: boolean;
   requiresCheckout?: boolean;
   maxCheckoutDays?: number;
+  // Pricing
+  pricing?: ToolPricing;
   status?: ToolStatus;
 }
 

@@ -47,6 +47,7 @@ export * from './types/audit';
 export * from './types/tools';
 export * from './types/invoice';
 export * from './types/slack';
+export * from './types/maintenance';
 
 export * from './utils/logger';
 export * from './utils/jwt';

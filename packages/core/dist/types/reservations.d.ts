@@ -302,4 +302,7 @@ export interface MachineImageViewUrlResponse {
     url: string;
     expiresAt: number;
 }
+export type SlotState = 'available' | 'booked' | 'yourBooking' | 'buffer' | 'unavailable' | 'selected' | 'pending';
+export type SlotColors = Record<SlotState, string>;
+export declare const DEFAULT_SLOT_COLORS: SlotColors;
 //# sourceMappingURL=reservations.d.ts.map

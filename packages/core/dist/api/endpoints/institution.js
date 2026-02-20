@@ -6,6 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.listUserInstitutions = listUserInstitutions;
+exports.listPendingInstitutions = listPendingInstitutions;
 exports.getInstitution = getInstitution;
 exports.getInstitutionByCode = getInstitutionByCode;
 exports.getInstitutionLabs = getInstitutionLabs;
@@ -38,6 +39,16 @@ async function listUserInstitutions(client) {
     const request = {
         method: 'GET',
         path: '/institutions',
+    };
+    return client.request(request);
+}
+/**
+ * Get institutions where user has pending membership
+ */
+async function listPendingInstitutions(client) {
+    const request = {
+        method: 'GET',
+        path: '/institutions/pending',
     };
     return client.request(request);
 }

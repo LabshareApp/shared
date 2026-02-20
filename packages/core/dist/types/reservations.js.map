@@ -1,1 +1,1 @@
-{"version":3,"file":"reservations.js","sourceRoot":"","sources":["../../src/types/reservations.ts"],"names":[],"mappings":";AAAA;;;GAGG"}
+{"version":3,"file":"reservations.js","sourceRoot":"","sources":["../../src/types/reservations.ts"],"names":[],"mappings":";AAAA;;;GAGG;;;AAkYU,QAAA,mBAAmB,GAAe;IAC7C,SAAS,EAAE,SAAS,EAAK,gBAAgB;IACzC,MAAM,EAAE,SAAS,EAAQ,OAAO;IAChC,WAAW,EAAE,SAAS,EAAG,OAAO;IAChC,MAAM,EAAE,SAAS,EAAQ,QAAQ;IACjC,WAAW,EAAE,SAAS,EAAG,aAAa;IACtC,QAAQ,EAAE,SAAS,EAAM,SAAS;IAClC,OAAO,EAAE,SAAS,EAAO,SAAS;CACnC,CAAC"}

@@ -10,6 +10,18 @@ import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRe
  */
 export declare function listUserInstitutions(client: ApiClient): Promise<Institution[]>;
 /**
+ * Pending institution membership info
+ */
+export interface PendingInstitutionInfo {
+    institutionId: string;
+    institutionName: string;
+    status: string;
+}
+/**
+ * Get institutions where user has pending membership
+ */
+export declare function listPendingInstitutions(client: ApiClient): Promise<PendingInstitutionInfo[]>;
+/**
  * Get a single institution by ID
  */
 export declare function getInstitution(client: ApiClient, institutionId: string): Promise<Institution>;

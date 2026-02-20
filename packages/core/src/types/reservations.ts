@@ -373,3 +373,26 @@ export interface MachineImageViewUrlResponse {
   url: string;
   expiresAt: number;
 }
+
+// --- Slot Colors (Calendar Customization) ---
+
+export type SlotState =
+  | 'available'
+  | 'booked'
+  | 'yourBooking'
+  | 'buffer'
+  | 'unavailable'
+  | 'selected'
+  | 'pending';
+
+export type SlotColors = Record<SlotState, string>;
+
+export const DEFAULT_SLOT_COLORS: SlotColors = {
+  available: '#10B981',    // Emerald green
+  booked: '#6B7280',       // Gray
+  yourBooking: '#3B82F6',  // Blue
+  buffer: '#FBBF24',       // Amber
+  unavailable: '#E5E7EB',  // Light gray
+  selected: '#8B5CF6',     // Purple
+  pending: '#F59E0B',      // Orange
+};

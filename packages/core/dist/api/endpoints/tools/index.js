@@ -77,7 +77,7 @@ async function getTool(client, id) {
 async function createTool(client, data) {
     const response = await client.request({
         method: 'POST',
-        path: '/tools',
+        path: '/tools/create',
         body: data,
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createTool', ['name', 'category']);

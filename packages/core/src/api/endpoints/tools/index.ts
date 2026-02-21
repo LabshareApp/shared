@@ -88,7 +88,7 @@ export async function createTool(
 ): Promise<Tool> {
   const response = await client.request<WithMongoId<Tool>>({
     method: 'POST',
-    path: '/tools',
+    path: '/tools/create',
     body: data,
   });
   const validated = validateObjectResponse(response, 'createTool', ['name', 'category']);

@@ -65,7 +65,7 @@ export async function getInvoice(
 
   const response = await client.request<Invoice>({
     method: 'GET',
-    path: '/invoice',
+    path: '/invoices/get',
     query: { id: invoiceId },
   });
 
@@ -81,7 +81,7 @@ export async function createInvoice(
 ): Promise<Invoice> {
   const response = await client.request<Invoice>({
     method: 'POST',
-    path: '/invoices',
+    path: '/invoices/create',
     body: payload,
   });
 
@@ -101,7 +101,8 @@ export async function updateInvoice(
 
   const response = await client.request<Invoice>({
     method: 'PUT',
-    path: '/update-invoice',
+    path: '/invoices/update',
+    query: { id: payload.invoiceId },
     body: payload,
   });
 
@@ -121,7 +122,7 @@ export async function deleteInvoice(
 
   await client.request({
     method: 'DELETE',
-    path: '/delete-invoice',
+    path: '/invoices/delete',
     query: { id: invoiceId },
   });
 }
@@ -145,7 +146,8 @@ export async function sendInvoice(
 
   const response = await client.request<Invoice>({
     method: 'POST',
-    path: '/invoice/send',
+    path: '/invoices/send',
+    query: { id: invoiceId },
     body: payload,
   });
 
@@ -167,7 +169,8 @@ export async function markInvoicePaid(
 
   const response = await client.request<Invoice>({
     method: 'POST',
-    path: '/invoice/paid',
+    path: '/invoices/paid',
+    query: { id: invoiceId },
     body: payload,
   });
 
@@ -317,7 +320,7 @@ export async function getInvoiceTemplate(
 
   const response = await client.request<InvoiceTemplate>({
     method: 'GET',
-    path: '/invoice-template',
+    path: '/invoice-templates',
     query: { id: templateId },
   });
 
@@ -333,7 +336,7 @@ export async function createInvoiceTemplate(
 ): Promise<InvoiceTemplate> {
   const response = await client.request<InvoiceTemplate>({
     method: 'POST',
-    path: '/invoice-templates',
+    path: '/invoice-templates/create',
     body: payload,
   });
 
@@ -353,7 +356,8 @@ export async function updateInvoiceTemplate(
 
   const response = await client.request<InvoiceTemplate>({
     method: 'PUT',
-    path: '/update-invoice-template',
+    path: '/invoice-templates/update',
+    query: { id: payload.templateId },
     body: payload,
   });
 
@@ -373,7 +377,7 @@ export async function deleteInvoiceTemplate(
 
   await client.request({
     method: 'DELETE',
-    path: '/delete-invoice-template',
+    path: '/invoice-templates/delete',
     query: { id: templateId },
   });
 }

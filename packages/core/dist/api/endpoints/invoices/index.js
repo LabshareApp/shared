@@ -59,7 +59,7 @@ async function getInvoice(client, invoiceId) {
     }
     const response = await client.request({
         method: 'GET',
-        path: '/invoice',
+        path: '/invoices/get',
         query: { id: invoiceId },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getInvoice', ['_id', 'invoiceNumber']);
@@ -70,7 +70,7 @@ async function getInvoice(client, invoiceId) {
 async function createInvoice(client, payload) {
     const response = await client.request({
         method: 'POST',
-        path: '/invoices',
+        path: '/invoices/create',
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'createInvoice', ['_id', 'invoiceNumber']);
@@ -84,7 +84,8 @@ async function updateInvoice(client, payload) {
     }
     const response = await client.request({
         method: 'PUT',
-        path: '/update-invoice',
+        path: '/invoices/update',
+        query: { id: payload.invoiceId },
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'updateInvoice', ['_id', 'invoiceNumber']);
@@ -98,7 +99,7 @@ async function deleteInvoice(client, invoiceId) {
     }
     await client.request({
         method: 'DELETE',
-        path: '/delete-invoice',
+        path: '/invoices/delete',
         query: { id: invoiceId },
     });
 }
@@ -115,7 +116,8 @@ async function sendInvoice(client, invoiceId) {
     const payload = { invoiceId };
     const response = await client.request({
         method: 'POST',
-        path: '/invoice/send',
+        path: '/invoices/send',
+        query: { id: invoiceId },
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'sendInvoice', ['_id', 'invoiceNumber']);
@@ -130,7 +132,8 @@ async function markInvoicePaid(client, invoiceId) {
     const payload = { invoiceId };
     const response = await client.request({
         method: 'POST',
-        path: '/invoice/paid',
+        path: '/invoices/paid',
+        query: { id: invoiceId },
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'markInvoicePaid', ['_id', 'invoiceNumber']);
@@ -240,7 +243,7 @@ async function getInvoiceTemplate(client, templateId) {
     }
     const response = await client.request({
         method: 'GET',
-        path: '/invoice-template',
+        path: '/invoice-templates',
         query: { id: templateId },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getInvoiceTemplate', ['_id', 'name']);
@@ -251,7 +254,7 @@ async function getInvoiceTemplate(client, templateId) {
 async function createInvoiceTemplate(client, payload) {
     const response = await client.request({
         method: 'POST',
-        path: '/invoice-templates',
+        path: '/invoice-templates/create',
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'createInvoiceTemplate', ['_id', 'name']);
@@ -265,7 +268,8 @@ async function updateInvoiceTemplate(client, payload) {
     }
     const response = await client.request({
         method: 'PUT',
-        path: '/update-invoice-template',
+        path: '/invoice-templates/update',
+        query: { id: payload.templateId },
         body: payload,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'updateInvoiceTemplate', ['_id', 'name']);
@@ -279,7 +283,7 @@ async function deleteInvoiceTemplate(client, templateId) {
     }
     await client.request({
         method: 'DELETE',
-        path: '/delete-invoice-template',
+        path: '/invoice-templates/delete',
         query: { id: templateId },
     });
 }

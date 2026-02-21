@@ -17,7 +17,7 @@ export const COMMON_UNITS = [
   { label: 'roll', value: 'roll' },
   { label: 'sheet', value: 'sheet' },
   { label: 'strip', value: 'strip' },
-  { label: 'Custom...', value: '__CUSTOM__' },
+  { label: 'Custom', value: '__CUSTOM__' },
 ] as const;
 
 

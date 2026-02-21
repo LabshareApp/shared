@@ -53,7 +53,7 @@ export declare const COMMON_UNITS: readonly [{
     readonly label: "strip";
     readonly value: "strip";
 }, {
-    readonly label: "Custom...";
+    readonly label: "Custom";
     readonly value: "__CUSTOM__";
 }];
 //# sourceMappingURL=constants.d.ts.map

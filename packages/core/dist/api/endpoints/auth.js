@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerUser = registerUser;
 exports.registerInstitutionUser = registerInstitutionUser;
+exports.lookupUsers = lookupUsers;
 /**
  * Register a new user with atomic rollback.
  * This endpoint creates the auth user, profile, and optionally a new lab.
@@ -51,5 +52,29 @@ async function registerInstitutionUser(baseUrl, data) {
         throw new Error(errorText || `Registration failed with status ${response.status}`);
     }
     return response.json();
+}
+/**
+ * Look up user names by IDs.
+ * This is used for displaying user names in the UI (e.g., "Uploaded By" column).
+ *
+ * @param client - The API client
+ * @param userIds - Array of user IDs to look up
+ * @returns Array of user info objects
+ */
+async function lookupUsers(client, userIds) {
+    if (!userIds || userIds.length === 0) {
+        return [];
+    }
+    // Filter out empty strings and deduplicate
+    const uniqueIds = [...new Set(userIds.filter(id => id && id.trim() !== ''))];
+    if (uniqueIds.length === 0) {
+        return [];
+    }
+    const response = await client.request({
+        method: 'POST',
+        path: '/lookup-users',
+        body: { userIds: uniqueIds },
+    });
+    return response.users;
 }
 //# sourceMappingURL=auth.js.map

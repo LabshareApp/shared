@@ -117,3 +117,51 @@ export async function registerInstitutionUser(
 
   return response.json();
 }
+
+/**
+ * User info for display purposes
+ */
+export interface UserNameInfo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+/**
+ * Response from user lookup
+ */
+export interface LookupUsersResponse {
+  users: UserNameInfo[];
+}
+
+/**
+ * Look up user names by IDs.
+ * This is used for displaying user names in the UI (e.g., "Uploaded By" column).
+ *
+ * @param client - The API client
+ * @param userIds - Array of user IDs to look up
+ * @returns Array of user info objects
+ */
+export async function lookupUsers(
+  client: import('../ApiClient').ApiClient,
+  userIds: string[]
+): Promise<UserNameInfo[]> {
+  if (!userIds || userIds.length === 0) {
+    return [];
+  }
+
+  // Filter out empty strings and deduplicate
+  const uniqueIds = [...new Set(userIds.filter(id => id && id.trim() !== ''))];
+  if (uniqueIds.length === 0) {
+    return [];
+  }
+
+  const response = await client.request<LookupUsersResponse>({
+    method: 'POST',
+    path: '/lookup-users',
+    body: { userIds: uniqueIds },
+  });
+
+  return response.users;
+}

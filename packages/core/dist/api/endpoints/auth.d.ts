@@ -63,4 +63,28 @@ export interface RegisterInstitutionUserResponse {
  * @returns The registration response
  */
 export declare function registerInstitutionUser(baseUrl: string, data: RegisterInstitutionUserRequest): Promise<RegisterInstitutionUserResponse>;
+/**
+ * User info for display purposes
+ */
+export interface UserNameInfo {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+/**
+ * Response from user lookup
+ */
+export interface LookupUsersResponse {
+    users: UserNameInfo[];
+}
+/**
+ * Look up user names by IDs.
+ * This is used for displaying user names in the UI (e.g., "Uploaded By" column).
+ *
+ * @param client - The API client
+ * @param userIds - Array of user IDs to look up
+ * @returns Array of user info objects
+ */
+export declare function lookupUsers(client: import('../ApiClient').ApiClient, userIds: string[]): Promise<UserNameInfo[]>;
 //# sourceMappingURL=auth.d.ts.map

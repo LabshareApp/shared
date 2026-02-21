@@ -203,6 +203,8 @@ export function useMembershipMutations(client: ApiClient) {
     mutationFn: (payload: UpdateMemberRoleRequest) => updateMemberRole(client, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rbacKeys.memberships() });
+      // Also invalidate current user role in case the updated member is viewing the page
+      queryClient.invalidateQueries({ queryKey: ['rbac', 'currentUser'] });
     },
   });
 

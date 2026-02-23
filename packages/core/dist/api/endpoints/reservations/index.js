@@ -5,6 +5,7 @@ exports.createMachineTag = createMachineTag;
 exports.updateMachineTag = updateMachineTag;
 exports.deleteMachineTag = deleteMachineTag;
 exports.fetchMachines = fetchMachines;
+exports.fetchCollaboratorMachines = fetchCollaboratorMachines;
 exports.fetchMachine = fetchMachine;
 exports.createMachine = createMachine;
 exports.updateMachine = updateMachine;
@@ -110,6 +111,25 @@ async function fetchMachines(client, params) {
         query: Object.keys(query).length > 0 ? query : undefined,
     });
     const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchMachines');
+    return normalizeArray(validated);
+}
+/**
+ * Fetch machines from collaborating labs only.
+ * Returns machines from labs with accepted collaboration where:
+ * - Machine is active
+ * - Machine is either collaboratorsOnly=true OR in same institution
+ */
+async function fetchCollaboratorMachines(client, params) {
+    const query = {};
+    if (params === null || params === void 0 ? void 0 : params.activeOnly) {
+        query.activeOnly = 'true';
+    }
+    const response = await client.request({
+        method: 'GET',
+        path: '/reservations/machines/collaborator',
+        query: Object.keys(query).length > 0 ? query : undefined,
+    });
+    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchCollaboratorMachines');
     return normalizeArray(validated);
 }
 /**

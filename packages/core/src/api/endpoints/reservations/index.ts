@@ -135,6 +135,30 @@ export async function fetchMachines(
 }
 
 /**
+ * Fetch machines from collaborating labs only.
+ * Returns machines from labs with accepted collaboration where:
+ * - Machine is active
+ * - Machine is either collaboratorsOnly=true OR in same institution
+ */
+export async function fetchCollaboratorMachines(
+  client: ApiClient,
+  params?: { activeOnly?: boolean }
+): Promise<Machine[]> {
+  const query: Record<string, string> = {};
+  if (params?.activeOnly) {
+    query.activeOnly = 'true';
+  }
+
+  const response = await client.request<WithMongoId<Machine>[]>({
+    method: 'GET',
+    path: '/reservations/machines/collaborator',
+    query: Object.keys(query).length > 0 ? query : undefined,
+  });
+  const validated = validateArrayResponse<WithMongoId<Machine>>(response, 'fetchCollaboratorMachines');
+  return normalizeArray(validated);
+}
+
+/**
  * Fetch a single machine by ID.
  */
 export async function fetchMachine(client: ApiClient, id: string): Promise<Machine> {

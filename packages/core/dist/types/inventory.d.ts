@@ -107,6 +107,7 @@ export interface InventoryItem {
     totalQuantity: number;
     units?: string;
     userId?: string;
+    uploadedByUserName?: string;
     labId: string;
     isPrivate?: boolean;
     createdAt: string;

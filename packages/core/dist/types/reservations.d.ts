@@ -106,6 +106,7 @@ export interface Machine {
     locationTagNames?: string[];
     reminderSettings?: ReminderSettings;
     consumables?: MachineConsumable[];
+    hourlyRate?: number;
     isActive: boolean;
     imageUrl?: string;
     createdAt: string;
@@ -130,6 +131,7 @@ export interface CreateMachineData {
     locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
     consumables?: MachineConsumable[];
+    hourlyRate?: number;
     imageUrl?: string;
 }
 export interface UpdateMachineData {
@@ -151,6 +153,7 @@ export interface UpdateMachineData {
     locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
     consumables?: MachineConsumable[];
+    hourlyRate?: number;
     isActive?: boolean;
     imageUrl?: string;
 }

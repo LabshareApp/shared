@@ -122,6 +122,7 @@ export interface InventoryItem {
   totalQuantity: number;
   units?: string;
   userId?: string;
+  uploadedByUserName?: string; // Resolved user name (server-side populated)
   labId: string;
   isPrivate?: boolean; // If true, item is hidden from collaborating labs
   createdAt: string;

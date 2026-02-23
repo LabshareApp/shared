@@ -148,6 +148,7 @@ export interface Machine {
   locationTagNames?: string[];
   reminderSettings?: ReminderSettings;
   consumables?: MachineConsumable[]; // Linked inventory items
+  hourlyRate?: number; // Cents per hour for billing (e.g., 5000 = $50/hr)
   isActive: boolean;
   imageUrl?: string;
   createdAt: string;
@@ -173,6 +174,7 @@ export interface CreateMachineData {
   locationTagIds?: string[];
   reminderSettings?: ReminderSettings;
   consumables?: MachineConsumable[];
+  hourlyRate?: number; // Cents per hour for billing (e.g., 5000 = $50/hr)
   imageUrl?: string;
 }
 
@@ -195,6 +197,7 @@ export interface UpdateMachineData {
   locationTagIds?: string[];
   reminderSettings?: ReminderSettings;
   consumables?: MachineConsumable[];
+  hourlyRate?: number; // Cents per hour for billing (e.g., 5000 = $50/hr)
   isActive?: boolean;
   imageUrl?: string;
 }

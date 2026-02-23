@@ -160,12 +160,21 @@ export async function fetchCollaboratorMachines(
 
 /**
  * Fetch a single machine by ID.
+ * Set allowCollaborator=true to allow fetching machines from collaborating labs.
  */
-export async function fetchMachine(client: ApiClient, id: string): Promise<Machine> {
+export async function fetchMachine(
+  client: ApiClient,
+  id: string,
+  options?: { allowCollaborator?: boolean }
+): Promise<Machine> {
+  const query: Record<string, string> = { id };
+  if (options?.allowCollaborator) {
+    query.allowCollaborator = 'true';
+  }
   const response = await client.request<WithMongoId<Machine>>({
     method: 'GET',
     path: '/reservations/machine',
-    query: { id },
+    query,
   });
   const validated = validateObjectResponse(response, 'fetchMachine', ['id', 'name']);
   return normalizeId(validated as WithMongoId<Machine>);

@@ -32,8 +32,11 @@ export declare function fetchCollaboratorMachines(client: ApiClient, params?: {
 }): Promise<Machine[]>;
 /**
  * Fetch a single machine by ID.
+ * Set allowCollaborator=true to allow fetching machines from collaborating labs.
  */
-export declare function fetchMachine(client: ApiClient, id: string): Promise<Machine>;
+export declare function fetchMachine(client: ApiClient, id: string, options?: {
+    allowCollaborator?: boolean;
+}): Promise<Machine>;
 /**
  * Create a new machine.
  */

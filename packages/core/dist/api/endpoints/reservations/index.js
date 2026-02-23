@@ -134,12 +134,17 @@ async function fetchCollaboratorMachines(client, params) {
 }
 /**
  * Fetch a single machine by ID.
+ * Set allowCollaborator=true to allow fetching machines from collaborating labs.
  */
-async function fetchMachine(client, id) {
+async function fetchMachine(client, id, options) {
+    const query = { id };
+    if (options === null || options === void 0 ? void 0 : options.allowCollaborator) {
+        query.allowCollaborator = 'true';
+    }
     const response = await client.request({
         method: 'GET',
         path: '/reservations/machine',
-        query: { id },
+        query,
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchMachine', ['id', 'name']);
     return normalizeId(validated);

@@ -392,7 +392,7 @@ export type SlotColors = Record<SlotState, string>;
 
 export const DEFAULT_SLOT_COLORS: SlotColors = {
   available: '#10B981',    // Emerald green
-  booked: '#6B7280',       // Gray
+  booked: '#EF4444',       // Red
   yourBooking: '#3B82F6',  // Blue
   buffer: '#FBBF24',       // Amber
   unavailable: '#E5E7EB',  // Light gray

@@ -75,9 +75,11 @@ export interface ConsumableUsage {
 export interface CheckOutReservationData {
     consumableUsages: ConsumableUsage[];
 }
+export type SharingPolicy = 'institution' | 'department' | 'lab_only' | 'collaborators';
 export type ApprovalMode = 'any' | 'all';
 export interface ApprovalRecord {
     userId: string;
+    userName?: string;
     status: 'pending' | 'approved' | 'rejected';
     timestamp?: string;
     notes?: string;
@@ -99,7 +101,7 @@ export interface Machine {
     ownerUserId: string;
     approverUserIds?: string[];
     approvalMode?: ApprovalMode;
-    collaboratorsOnly?: boolean;
+    sharingPolicy?: SharingPolicy;
     tagIds?: string[];
     tagNames?: string[];
     locationTagIds?: string[];
@@ -126,7 +128,7 @@ export interface CreateMachineData {
     ownerUserId?: string;
     approverUserIds?: string[];
     approvalMode?: ApprovalMode;
-    collaboratorsOnly?: boolean;
+    sharingPolicy?: SharingPolicy;
     tagIds?: string[];
     locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
@@ -148,7 +150,7 @@ export interface UpdateMachineData {
     ownerUserId?: string;
     approverUserIds?: string[];
     approvalMode?: ApprovalMode;
-    collaboratorsOnly?: boolean;
+    sharingPolicy?: SharingPolicy;
     tagIds?: string[];
     locationTagIds?: string[];
     reminderSettings?: ReminderSettings;
@@ -164,6 +166,8 @@ export interface Reservation {
     machineName?: string;
     machineLabName?: string;
     userId: string;
+    userName?: string;
+    userEmail?: string;
     startTime: string;
     endTime: string;
     title?: string;

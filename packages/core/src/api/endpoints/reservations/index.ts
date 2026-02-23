@@ -138,7 +138,7 @@ export async function fetchMachines(
  * Fetch machines from collaborating labs only.
  * Returns machines from labs with accepted collaboration where:
  * - Machine is active
- * - Machine is either collaboratorsOnly=true OR in same institution
+ * - Machine's sharingPolicy allows access from the requesting lab
  */
 export async function fetchCollaboratorMachines(
   client: ApiClient,

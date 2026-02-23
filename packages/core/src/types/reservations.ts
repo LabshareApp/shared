@@ -109,6 +109,10 @@ export interface CheckOutReservationData {
   consumableUsages: ConsumableUsage[];
 }
 
+// --- Sharing Policy ---
+
+export type SharingPolicy = 'institution' | 'department' | 'lab_only' | 'collaborators';
+
 // --- Approval Mode ---
 
 export type ApprovalMode = 'any' | 'all';
@@ -117,6 +121,7 @@ export type ApprovalMode = 'any' | 'all';
 
 export interface ApprovalRecord {
   userId: string;
+  userName?: string; // Populated at runtime for display, not stored in DB
   status: 'pending' | 'approved' | 'rejected';
   timestamp?: string;
   notes?: string;
@@ -141,7 +146,7 @@ export interface Machine {
   ownerUserId: string;
   approverUserIds?: string[]; // Per-machine super users who can approve
   approvalMode?: ApprovalMode; // 'any' (any approver) or 'all' (all must approve)
-  collaboratorsOnly?: boolean; // If true, only visible to collaborating labs (not whole institution)
+  sharingPolicy?: SharingPolicy; // "institution" (default), "department", "lab_only", "collaborators"
   tagIds?: string[];
   tagNames?: string[];
   locationTagIds?: string[];
@@ -169,7 +174,7 @@ export interface CreateMachineData {
   ownerUserId?: string;
   approverUserIds?: string[]; // Per-machine super users who can approve
   approvalMode?: ApprovalMode; // 'any' (any approver) or 'all' (all must approve)
-  collaboratorsOnly?: boolean; // If true, only visible to collaborating labs (not whole institution)
+  sharingPolicy?: SharingPolicy; // "institution" (default), "department", "lab_only", "collaborators"
   tagIds?: string[];
   locationTagIds?: string[];
   reminderSettings?: ReminderSettings;
@@ -192,7 +197,7 @@ export interface UpdateMachineData {
   ownerUserId?: string;
   approverUserIds?: string[]; // Per-machine super users who can approve
   approvalMode?: ApprovalMode; // 'any' (any approver) or 'all' (all must approve)
-  collaboratorsOnly?: boolean; // If true, only visible to collaborating labs (not whole institution)
+  sharingPolicy?: SharingPolicy; // "institution" (default), "department", "lab_only", "collaborators"
   tagIds?: string[];
   locationTagIds?: string[];
   reminderSettings?: ReminderSettings;
@@ -211,6 +216,8 @@ export interface Reservation {
   machineName?: string; // Populated at runtime for display, not stored in DB
   machineLabName?: string; // Populated at runtime for display, not stored in DB
   userId: string;
+  userName?: string; // Populated at runtime for display, not stored in DB
+  userEmail?: string; // Populated at runtime for display, not stored in DB
   startTime: string; // ISO 8601 UTC format (e.g., "2024-01-15T10:30:00Z")
   endTime: string;   // ISO 8601 UTC format (e.g., "2024-01-15T11:30:00Z")
   title?: string;

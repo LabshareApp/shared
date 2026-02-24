@@ -11,6 +11,8 @@ exports.getToolCheckouts = getToolCheckouts;
 exports.getAvailableTools = getAvailableTools;
 exports.getMyCheckouts = getMyCheckouts;
 exports.logToolAccess = logToolAccess;
+exports.generateToolImagePresignedUrl = generateToolImagePresignedUrl;
+exports.getToolImageViewUrl = getToolImageViewUrl;
 exports.createMaintenanceRequest = createMaintenanceRequest;
 exports.getMaintenanceRequest = getMaintenanceRequest;
 exports.listMaintenanceRequests = listMaintenanceRequests;
@@ -199,6 +201,28 @@ async function logToolAccess(client, id, data) {
         query: { id },
         body: data,
     });
+}
+/**
+ * Generate a presigned URL for uploading a tool image to S3.
+ */
+async function generateToolImagePresignedUrl(client, data) {
+    const response = await client.request({
+        method: 'POST',
+        path: '/tools/generate-presigned-url/tool-image',
+        body: data,
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'generateToolImagePresignedUrl', ['uploadUrl', 's3Url', 'objectKey']);
+}
+/**
+ * Get a presigned URL for viewing a tool image from S3.
+ */
+async function getToolImageViewUrl(client, data) {
+    const response = await client.request({
+        method: 'POST',
+        path: '/tools/get-tool-image-view-url',
+        body: data,
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getToolImageViewUrl', ['url', 'expiresAt']);
 }
 /**
  * Create a maintenance request for a tool.

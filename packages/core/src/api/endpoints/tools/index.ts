@@ -257,6 +257,57 @@ export async function logToolAccess(
 }
 
 // =============================================================================
+// Tool Image Presigned URLs
+// =============================================================================
+
+export interface GenerateToolImagePresignedUrlRequest {
+  fileName?: string;
+  extension: string;
+}
+
+export interface GenerateToolImagePresignedUrlResponse {
+  uploadUrl: string;
+  s3Url: string;
+  objectKey: string;
+  expiresAt: number;
+}
+
+export interface GetToolImageViewUrlResponse {
+  url: string;
+  expiresAt: number;
+}
+
+/**
+ * Generate a presigned URL for uploading a tool image to S3.
+ */
+export async function generateToolImagePresignedUrl(
+  client: ApiClient,
+  data: GenerateToolImagePresignedUrlRequest
+): Promise<GenerateToolImagePresignedUrlResponse> {
+  const response = await client.request<GenerateToolImagePresignedUrlResponse>({
+    method: 'POST',
+    path: '/tools/generate-presigned-url/tool-image',
+    body: data,
+  });
+  return validateObjectResponse(response, 'generateToolImagePresignedUrl', ['uploadUrl', 's3Url', 'objectKey']) as GenerateToolImagePresignedUrlResponse;
+}
+
+/**
+ * Get a presigned URL for viewing a tool image from S3.
+ */
+export async function getToolImageViewUrl(
+  client: ApiClient,
+  data: { s3Url: string }
+): Promise<GetToolImageViewUrlResponse> {
+  const response = await client.request<GetToolImageViewUrlResponse>({
+    method: 'POST',
+    path: '/tools/get-tool-image-view-url',
+    body: data,
+  });
+  return validateObjectResponse(response, 'getToolImageViewUrl', ['url', 'expiresAt']) as GetToolImageViewUrlResponse;
+}
+
+// =============================================================================
 // Maintenance Requests
 // =============================================================================
 

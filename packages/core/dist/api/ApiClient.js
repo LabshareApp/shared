@@ -13,6 +13,7 @@ class ApiClient {
         this.maxRetryMapSize = 1000; // Limit map size to prevent memory leaks
         this.repositoryPrefix = (_a = config.repositoryPrefix) !== null && _a !== void 0 ? _a : '/repository';
         this.tokenProvider = config.tokenProvider;
+        this.labIdProvider = config.labIdProvider;
         this.logger = config.logger;
         this.axios = axios_1.default.create({
             baseURL: config.baseUrl,
@@ -21,12 +22,22 @@ class ApiClient {
                 Accept: 'application/json',
             },
         });
-        // Add request interceptor to add token
+        // Capture labIdProvider for use in interceptor closure
+        const labIdProvider = this.labIdProvider;
+        // Add request interceptor to add token and lab ID header
         this.axios.interceptors.request.use(async (config) => {
             const token = await this.tokenProvider.getAccessToken();
             if (token) {
                 config.headers = config.headers || {};
                 config.headers.Authorization = `Bearer ${token}`;
+            }
+            // Inject X-Lab-Id header for multi-lab support
+            if (labIdProvider) {
+                const labId = labIdProvider();
+                if (labId) {
+                    config.headers = config.headers || {};
+                    config.headers['X-Lab-Id'] = labId;
+                }
             }
             return config;
         }, (error) => Promise.reject(error));

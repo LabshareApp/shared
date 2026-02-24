@@ -12,7 +12,7 @@ async function getLabMemberships(client) {
         method: 'GET',
         path: '/get-lab-memberships',
     });
-    return (0, responseValidation_1.validateArrayResponse)(res, 'getLabMemberships');
+    return (0, responseValidation_1.validateArrayResponse)(res, 'getLabMemberships').map(responseValidation_1.normalizeMongoId);
 }
 /**
  * Update a member's role

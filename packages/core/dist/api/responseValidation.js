@@ -4,6 +4,7 @@ exports.validateArrayResponse = validateArrayResponse;
 exports.validateObjectResponse = validateObjectResponse;
 exports.validatePaginatedResponse = validatePaginatedResponse;
 exports.mapInventoryItems = mapInventoryItems;
+exports.normalizeMongoId = normalizeMongoId;
 function validateArrayResponse(response, functionName) {
     if (!Array.isArray(response)) {
         throw new Error(`Unexpected response format from ${functionName}: Expected array.`);
@@ -45,10 +46,18 @@ function validatePaginatedResponse(response, functionName) {
 }
 function mapInventoryItems(items) {
     return items.map((item) => {
-        const idValue = (item === null || item === void 0 ? void 0 : item._id) || (item === null || item === void 0 ? void 0 : item.id);
-        if (!idValue)
-            return { ...item };
-        return { ...item, _id: idValue, id: idValue };
+        return { ...item };
     });
+}
+/**
+ * Normalize MongoDB _id to id on a response object.
+ * The Go server may return _id instead of id depending on serialization.
+ */
+function normalizeMongoId(obj) {
+    const o = obj;
+    if (o && !o.id && o._id) {
+        return { ...o, id: o._id };
+    }
+    return obj;
 }
 //# sourceMappingURL=responseValidation.js.map

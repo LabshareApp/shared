@@ -16,7 +16,7 @@ async function getInvitations(client, includeExpired = false) {
         path: '/get-invitations',
         query: includeExpired ? { includeExpired: 'true' } : undefined,
     });
-    return (0, responseValidation_1.validateArrayResponse)(res, 'getInvitations');
+    return (0, responseValidation_1.validateArrayResponse)(res, 'getInvitations').map(responseValidation_1.normalizeMongoId);
 }
 /**
  * Create a new invitation

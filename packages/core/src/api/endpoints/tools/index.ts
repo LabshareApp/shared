@@ -15,19 +15,6 @@ import type {
 } from '../../../types/tools';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
-// Helper to normalize MongoDB _id to id
-type WithMongoId<T> = Omit<T, 'id'> & { _id?: string; id?: string };
-
-function normalizeId<T extends { id: string }>(obj: WithMongoId<T>): T {
-  const idValue = (obj as any)?._id || (obj as any)?.id;
-  if (!idValue) return obj as unknown as T;
-  return { ...(obj as any), _id: idValue, id: idValue } as T;
-}
-
-function normalizeArray<T extends { id: string }>(arr: WithMongoId<T>[]): T[] {
-  return arr.map(normalizeId);
-}
-
 // =============================================================================
 // Tool CRUD
 // =============================================================================
@@ -48,7 +35,7 @@ export async function fetchTools(
   if (params?.includeShared) query.includeShared = 'true';
 
   const response = await client.request<{
-    tools: WithMongoId<Tool>[];
+    tools: Tool[];
     totalCount: number;
     page: number;
     limit: number;
@@ -59,7 +46,7 @@ export async function fetchTools(
   });
 
   return {
-    tools: normalizeArray(response.tools || []),
+    tools: response.tools || [],
     totalCount: response.totalCount ?? 0,
     page: response.page ?? 1,
     limit: response.limit ?? 20,
@@ -70,13 +57,12 @@ export async function fetchTools(
  * Fetch a single tool by ID.
  */
 export async function getTool(client: ApiClient, id: string): Promise<Tool> {
-  const response = await client.request<WithMongoId<Tool>>({
+  const response = await client.request<Tool>({
     method: 'GET',
     path: '/tools/get',
     query: { id },
   });
-  const validated = validateObjectResponse(response, 'getTool', ['name', 'category']);
-  return normalizeId(validated as WithMongoId<Tool>);
+  return validateObjectResponse(response, 'getTool', ['name', 'category']) as Tool;
 }
 
 /**
@@ -86,13 +72,12 @@ export async function createTool(
   client: ApiClient,
   data: CreateToolData
 ): Promise<Tool> {
-  const response = await client.request<WithMongoId<Tool>>({
+  const response = await client.request<Tool>({
     method: 'POST',
     path: '/tools/create',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createTool', ['name', 'category']);
-  return normalizeId(validated as WithMongoId<Tool>);
+  return validateObjectResponse(response, 'createTool', ['name', 'category']) as Tool;
 }
 
 /**
@@ -103,14 +88,13 @@ export async function updateTool(
   id: string,
   data: UpdateToolData
 ): Promise<Tool> {
-  const response = await client.request<WithMongoId<Tool>>({
+  const response = await client.request<Tool>({
     method: 'PUT',
     path: '/tools/update',
     query: { id },
     body: data,
   });
-  const validated = validateObjectResponse(response, 'updateTool', ['name', 'category']);
-  return normalizeId(validated as WithMongoId<Tool>);
+  return validateObjectResponse(response, 'updateTool', ['name', 'category']) as Tool;
 }
 
 /**
@@ -136,14 +120,13 @@ export async function checkoutTool(
   id: string,
   data?: CheckoutToolData
 ): Promise<ToolCheckout> {
-  const response = await client.request<WithMongoId<ToolCheckout>>({
+  const response = await client.request<ToolCheckout>({
     method: 'POST',
     path: '/tools/checkout',
     query: { id },
     body: data,
   });
-  const validated = validateObjectResponse(response, 'checkoutTool', ['toolId', 'userId']);
-  return normalizeId(validated as WithMongoId<ToolCheckout>);
+  return validateObjectResponse(response, 'checkoutTool', ['toolId', 'userId']) as ToolCheckout;
 }
 
 /**
@@ -154,14 +137,13 @@ export async function returnTool(
   id: string,
   data?: ReturnToolData
 ): Promise<ToolCheckout> {
-  const response = await client.request<WithMongoId<ToolCheckout>>({
+  const response = await client.request<ToolCheckout>({
     method: 'POST',
     path: '/tools/return',
     query: { id },
     body: data,
   });
-  const validated = validateObjectResponse(response, 'returnTool', ['toolId', 'userId']);
-  return normalizeId(validated as WithMongoId<ToolCheckout>);
+  return validateObjectResponse(response, 'returnTool', ['toolId', 'userId']) as ToolCheckout;
 }
 
 /**
@@ -177,7 +159,7 @@ export async function getToolCheckouts(
   if (params?.limit) query.limit = String(params.limit);
 
   const response = await client.request<{
-    checkouts: WithMongoId<ToolCheckout>[];
+    checkouts: ToolCheckout[];
     totalCount: number;
     page: number;
     limit: number;
@@ -188,7 +170,7 @@ export async function getToolCheckouts(
   });
 
   return {
-    checkouts: normalizeArray(response.checkouts || []),
+    checkouts: response.checkouts || [],
     totalCount: response.totalCount ?? 0,
     page: response.page ?? 1,
     limit: response.limit ?? 20,
@@ -211,7 +193,7 @@ export async function getAvailableTools(
   if (params?.limit) query.limit = String(params.limit);
 
   const response = await client.request<{
-    tools: WithMongoId<Tool>[];
+    tools: Tool[];
     totalCount: number;
     page: number;
     limit: number;
@@ -222,7 +204,7 @@ export async function getAvailableTools(
   });
 
   return {
-    tools: normalizeArray(response.tools || []),
+    tools: response.tools || [],
     totalCount: response.totalCount ?? 0,
     page: response.page ?? 1,
     limit: response.limit ?? 20,
@@ -240,7 +222,7 @@ export async function getMyCheckouts(
   if (params?.allLabs) query.allLabs = 'true';
 
   const response = await client.request<{
-    checkouts: WithMongoId<ToolCheckout>[];
+    checkouts: ToolCheckout[];
     count: number;
   }>({
     method: 'GET',
@@ -249,7 +231,7 @@ export async function getMyCheckouts(
   });
 
   return {
-    checkouts: normalizeArray(response.checkouts || []),
+    checkouts: response.checkouts || [],
     count: response.count ?? 0,
   };
 }

@@ -214,7 +214,7 @@ export function useInventoryMutations(client: ApiClient) {
       queryClient.setQueriesData({ queryKey: inventoryKeys.inventory }, (oldData: any) => {
         if (!oldData) return oldData;
         const newPages = oldData.pages.map((p: any, idx: number) => {
-          const updatedItems = p.items.filter((it: InventoryItem) => (it._id ?? it.id) !== itemId);
+          const updatedItems = p.items.filter((it: InventoryItem) => it.id !== itemId);
           return idx === 0
             ? { ...p, items: updatedItems, totalCount: p.totalCount - 1 }
             : { ...p, items: updatedItems };

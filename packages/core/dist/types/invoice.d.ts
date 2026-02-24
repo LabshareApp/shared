@@ -35,7 +35,7 @@ export interface InvoiceLineItem {
  * An invoice document for billing equipment usage
  */
 export interface Invoice {
-    _id: string;
+    id: string;
     invoiceNumber: string;
     granteeLabId: string;
     granteeLabName: string;
@@ -71,7 +71,7 @@ export interface InvoiceTemplateRate {
  * Template for invoice generation with default rates and settings
  */
 export interface InvoiceTemplate {
-    _id: string;
+    id: string;
     labId: string;
     name: string;
     defaultRates: InvoiceTemplateRate[];

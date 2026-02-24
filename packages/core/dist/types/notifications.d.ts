@@ -25,7 +25,7 @@ export interface ServerResponse {
     error?: string;
 }
 export interface BaseNotification {
-    _id: string;
+    id: string;
     title: string;
     message: string;
     type: string;
@@ -40,7 +40,7 @@ export interface InventoryNotification extends BaseNotification {
     urgency: 'high' | 'medium' | 'low';
 }
 export interface Topic {
-    _id: string;
+    id: string;
     name: string;
     displayName: string;
     type: 'inventory';
@@ -53,7 +53,7 @@ export interface Topic {
     isDefault?: boolean;
 }
 export interface NotificationPreferences {
-    _id?: string;
+    id?: string;
     userId: string;
     labId: string;
     inventory: {

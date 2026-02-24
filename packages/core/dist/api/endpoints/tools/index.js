@@ -17,15 +17,6 @@ exports.listMaintenanceRequests = listMaintenanceRequests;
 exports.updateMaintenanceRequest = updateMaintenanceRequest;
 exports.getToolMaintenanceHistory = getToolMaintenanceHistory;
 const responseValidation_1 = require("../../responseValidation");
-function normalizeId(obj) {
-    const idValue = (obj === null || obj === void 0 ? void 0 : obj._id) || (obj === null || obj === void 0 ? void 0 : obj.id);
-    if (!idValue)
-        return obj;
-    return { ...obj, _id: idValue, id: idValue };
-}
-function normalizeArray(arr) {
-    return arr.map(normalizeId);
-}
 // =============================================================================
 // Tool CRUD
 // =============================================================================
@@ -53,7 +44,7 @@ async function fetchTools(client, params) {
         query: Object.keys(query).length > 0 ? query : undefined,
     });
     return {
-        tools: normalizeArray(response.tools || []),
+        tools: response.tools || [],
         totalCount: (_a = response.totalCount) !== null && _a !== void 0 ? _a : 0,
         page: (_b = response.page) !== null && _b !== void 0 ? _b : 1,
         limit: (_c = response.limit) !== null && _c !== void 0 ? _c : 20,
@@ -68,8 +59,7 @@ async function getTool(client, id) {
         path: '/tools/get',
         query: { id },
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'getTool', ['name', 'category']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getTool', ['name', 'category']);
 }
 /**
  * Create a new tool.
@@ -80,8 +70,7 @@ async function createTool(client, data) {
         path: '/tools/create',
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createTool', ['name', 'category']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createTool', ['name', 'category']);
 }
 /**
  * Update a tool.
@@ -93,8 +82,7 @@ async function updateTool(client, id, data) {
         query: { id },
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'updateTool', ['name', 'category']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'updateTool', ['name', 'category']);
 }
 /**
  * Delete a tool.
@@ -119,8 +107,7 @@ async function checkoutTool(client, id, data) {
         query: { id },
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'checkoutTool', ['toolId', 'userId']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'checkoutTool', ['toolId', 'userId']);
 }
 /**
  * Return a checked out tool.
@@ -132,8 +119,7 @@ async function returnTool(client, id, data) {
         query: { id },
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'returnTool', ['toolId', 'userId']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'returnTool', ['toolId', 'userId']);
 }
 /**
  * Get checkout history for a tool.
@@ -151,7 +137,7 @@ async function getToolCheckouts(client, id, params) {
         query,
     });
     return {
-        checkouts: normalizeArray(response.checkouts || []),
+        checkouts: response.checkouts || [],
         totalCount: (_a = response.totalCount) !== null && _a !== void 0 ? _a : 0,
         page: (_b = response.page) !== null && _b !== void 0 ? _b : 1,
         limit: (_c = response.limit) !== null && _c !== void 0 ? _c : 20,
@@ -176,7 +162,7 @@ async function getAvailableTools(client, params) {
         query: Object.keys(query).length > 0 ? query : undefined,
     });
     return {
-        tools: normalizeArray(response.tools || []),
+        tools: response.tools || [],
         totalCount: (_a = response.totalCount) !== null && _a !== void 0 ? _a : 0,
         page: (_b = response.page) !== null && _b !== void 0 ? _b : 1,
         limit: (_c = response.limit) !== null && _c !== void 0 ? _c : 20,
@@ -196,7 +182,7 @@ async function getMyCheckouts(client, params) {
         query: Object.keys(query).length > 0 ? query : undefined,
     });
     return {
-        checkouts: normalizeArray(response.checkouts || []),
+        checkouts: response.checkouts || [],
         count: (_a = response.count) !== null && _a !== void 0 ? _a : 0,
     };
 }

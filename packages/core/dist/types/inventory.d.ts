@@ -97,8 +97,7 @@ export declare enum StateOfMatter {
     Plasma = "plasma"
 }
 export interface InventoryItem {
-    _id: string;
-    id?: string;
+    id: string;
     name: string;
     description?: string;
     brands: {

@@ -114,8 +114,7 @@ export enum StateOfMatter {
 }
 
 export interface InventoryItem {
-  _id: string;
-  id?: string;
+  id: string;
   name: string;
   description?: string;
   brands: { [brandName: string]: BrandInfo };

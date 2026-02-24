@@ -15,20 +15,19 @@ export async function createInventoryItem(
 }
 
 export async function fetchInventoryItem(client: ApiClient, itemId: string): Promise<InventoryItem> {
-  const item = await client.request<Omit<InventoryItem, 'id'> & { _id?: string; id?: string }>({
+  const item = await client.request<InventoryItem>({
     method: 'GET',
     path: '/read-data',
     query: { id: itemId },
   });
 
   const validated = validateObjectResponse(item, 'fetchInventoryItem') as any;
-  const idValue = validated._id || validated.id;
-  if (!idValue) {
+  if (!validated.id) {
     throw new Error(
-      `Unexpected response format from fetchInventoryItem for item ${itemId}: Expected object with _id or id.`
+      `Unexpected response format from fetchInventoryItem for item ${itemId}: Expected object with id.`
     );
   }
-  return { ...validated, id: idValue, _id: idValue } as InventoryItem;
+  return validated as InventoryItem;
 }
 
 export async function updateInventoryItem(
@@ -84,4 +83,3 @@ export async function bulkDeleteInventoryItems(
     deletedCount: number;
   };
 }
-

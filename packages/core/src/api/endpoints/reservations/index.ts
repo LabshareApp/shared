@@ -33,19 +33,6 @@ import type {
 import { DEFAULT_SLOT_COLORS } from '../../../types/reservations';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
-// Helper to normalize MongoDB _id to id
-type WithMongoId<T> = Omit<T, 'id'> & { _id?: string; id?: string };
-
-function normalizeId<T extends { id: string }>(obj: WithMongoId<T>): T {
-  const idValue = (obj as any)?._id || (obj as any)?.id;
-  if (!idValue) return obj as unknown as T;
-  return { ...(obj as any), _id: idValue, id: idValue } as T;
-}
-
-function normalizeArray<T extends { id: string }>(arr: WithMongoId<T>[]): T[] {
-  return arr.map(normalizeId);
-}
-
 // =============================================================================
 // Machine Tags
 // =============================================================================
@@ -54,12 +41,11 @@ function normalizeArray<T extends { id: string }>(arr: WithMongoId<T>[]): T[] {
  * Fetch all machine tags for the authenticated lab.
  */
 export async function fetchMachineTags(client: ApiClient): Promise<MachineTag[]> {
-  const response = await client.request<WithMongoId<MachineTag>[]>({
+  const response = await client.request<MachineTag[]>({
     method: 'GET',
     path: '/reservations/tags',
   });
-  const validated = validateArrayResponse<WithMongoId<MachineTag>>(response, 'fetchMachineTags');
-  return normalizeArray(validated);
+  return validateArrayResponse<MachineTag>(response, 'fetchMachineTags');
 }
 
 /**
@@ -69,13 +55,12 @@ export async function createMachineTag(
   client: ApiClient,
   data: CreateMachineTagData
 ): Promise<MachineTag> {
-  const response = await client.request<WithMongoId<MachineTag>>({
+  const response = await client.request<MachineTag>({
     method: 'POST',
     path: '/reservations/create-tag',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createMachineTag', ['id', 'name']);
-  return normalizeId(validated as WithMongoId<MachineTag>);
+  return validateObjectResponse(response, 'createMachineTag', ['id', 'name']) as MachineTag;
 }
 
 /**
@@ -125,13 +110,12 @@ export async function fetchMachines(
     query.includeCollaborators = 'true';
   }
 
-  const response = await client.request<WithMongoId<Machine>[]>({
+  const response = await client.request<Machine[]>({
     method: 'GET',
     path: '/reservations/machines',
     query: Object.keys(query).length > 0 ? query : undefined,
   });
-  const validated = validateArrayResponse<WithMongoId<Machine>>(response, 'fetchMachines');
-  return normalizeArray(validated);
+  return validateArrayResponse<Machine>(response, 'fetchMachines');
 }
 
 /**
@@ -149,13 +133,12 @@ export async function fetchCollaboratorMachines(
     query.activeOnly = 'true';
   }
 
-  const response = await client.request<WithMongoId<Machine>[]>({
+  const response = await client.request<Machine[]>({
     method: 'GET',
     path: '/reservations/machines/collaborator',
     query: Object.keys(query).length > 0 ? query : undefined,
   });
-  const validated = validateArrayResponse<WithMongoId<Machine>>(response, 'fetchCollaboratorMachines');
-  return normalizeArray(validated);
+  return validateArrayResponse<Machine>(response, 'fetchCollaboratorMachines');
 }
 
 /**
@@ -171,13 +154,12 @@ export async function fetchMachine(
   if (options?.allowCollaborator) {
     query.allowCollaborator = 'true';
   }
-  const response = await client.request<WithMongoId<Machine>>({
+  const response = await client.request<Machine>({
     method: 'GET',
     path: '/reservations/machine',
     query,
   });
-  const validated = validateObjectResponse(response, 'fetchMachine', ['id', 'name']);
-  return normalizeId(validated as WithMongoId<Machine>);
+  return validateObjectResponse(response, 'fetchMachine', ['id', 'name']) as Machine;
 }
 
 /**
@@ -187,13 +169,12 @@ export async function createMachine(
   client: ApiClient,
   data: CreateMachineData
 ): Promise<Machine> {
-  const response = await client.request<WithMongoId<Machine>>({
+  const response = await client.request<Machine>({
     method: 'POST',
     path: '/reservations/create-machine',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createMachine', ['id', 'name']);
-  return normalizeId(validated as WithMongoId<Machine>);
+  return validateObjectResponse(response, 'createMachine', ['id', 'name']) as Machine;
 }
 
 /**
@@ -262,13 +243,12 @@ export async function fetchReservations(
     query.end = params.end;
   }
 
-  const response = await client.request<WithMongoId<Reservation>[]>({
+  const response = await client.request<Reservation[]>({
     method: 'GET',
     path: '/reservations/list',
     query,
   });
-  const validated = validateArrayResponse<WithMongoId<Reservation>>(response, 'fetchReservations');
-  return normalizeArray(validated);
+  return validateArrayResponse<Reservation>(response, 'fetchReservations');
 }
 
 /**
@@ -283,26 +263,24 @@ export async function fetchMyReservations(
     query.includeHistory = 'true';
   }
 
-  const response = await client.request<WithMongoId<Reservation>[]>({
+  const response = await client.request<Reservation[]>({
     method: 'GET',
     path: '/reservations/my-reservations',
     query: Object.keys(query).length > 0 ? query : undefined,
   });
-  const validated = validateArrayResponse<WithMongoId<Reservation>>(response, 'fetchMyReservations');
-  return normalizeArray(validated);
+  return validateArrayResponse<Reservation>(response, 'fetchMyReservations');
 }
 
 /**
  * Fetch a single reservation by ID.
  */
 export async function fetchReservation(client: ApiClient, id: string): Promise<Reservation> {
-  const response = await client.request<WithMongoId<Reservation>>({
+  const response = await client.request<Reservation>({
     method: 'GET',
     path: '/reservations/reservation',
     query: { id },
   });
-  const validated = validateObjectResponse(response, 'fetchReservation', ['id', 'machineId']);
-  return normalizeId(validated as WithMongoId<Reservation>);
+  return validateObjectResponse(response, 'fetchReservation', ['id', 'machineId']) as Reservation;
 }
 
 /**
@@ -336,13 +314,12 @@ export async function createReservation(
   client: ApiClient,
   data: CreateReservationData
 ): Promise<Reservation> {
-  const response = await client.request<WithMongoId<Reservation>>({
+  const response = await client.request<Reservation>({
     method: 'POST',
     path: '/reservations/create',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createReservation', ['id', 'machineId']);
-  return normalizeId(validated as WithMongoId<Reservation>);
+  return validateObjectResponse(response, 'createReservation', ['id', 'machineId']) as Reservation;
 }
 
 /**
@@ -376,12 +353,11 @@ export async function cancelReservation(client: ApiClient, id: string): Promise<
  * Fetch pending approval requests (for machine owners).
  */
 export async function fetchPendingApprovals(client: ApiClient): Promise<Reservation[]> {
-  const response = await client.request<WithMongoId<Reservation>[]>({
+  const response = await client.request<Reservation[]>({
     method: 'GET',
     path: '/reservations/pending-approvals',
   });
-  const validated = validateArrayResponse<WithMongoId<Reservation>>(response, 'fetchPendingApprovals');
-  return normalizeArray(validated);
+  return validateArrayResponse<Reservation>(response, 'fetchPendingApprovals');
 }
 
 /**
@@ -454,25 +430,23 @@ export async function checkOutReservation(
  * Fetch active recurring rules for the authenticated lab.
  */
 export async function fetchRecurringRules(client: ApiClient): Promise<RecurringRule[]> {
-  const response = await client.request<WithMongoId<RecurringRule>[]>({
+  const response = await client.request<RecurringRule[]>({
     method: 'GET',
     path: '/reservations/recurring-rules',
   });
-  const validated = validateArrayResponse<WithMongoId<RecurringRule>>(response, 'fetchRecurringRules');
-  return normalizeArray(validated);
+  return validateArrayResponse<RecurringRule>(response, 'fetchRecurringRules');
 }
 
 /**
  * Fetch a single recurring rule by ID.
  */
 export async function fetchRecurringRule(client: ApiClient, id: string): Promise<RecurringRule> {
-  const response = await client.request<WithMongoId<RecurringRule>>({
+  const response = await client.request<RecurringRule>({
     method: 'GET',
     path: '/reservations/recurring-rule',
     query: { id },
   });
-  const validated = validateObjectResponse(response, 'fetchRecurringRule', ['id', 'machineId']);
-  return normalizeId(validated as WithMongoId<RecurringRule>);
+  return validateObjectResponse(response, 'fetchRecurringRule', ['id', 'machineId']) as RecurringRule;
 }
 
 /**
@@ -482,13 +456,12 @@ export async function createRecurringRule(
   client: ApiClient,
   data: CreateRecurringRuleData
 ): Promise<RecurringRule> {
-  const response = await client.request<WithMongoId<RecurringRule>>({
+  const response = await client.request<RecurringRule>({
     method: 'POST',
     path: '/reservations/create-recurring',
     body: data,
   });
-  const validated = validateObjectResponse(response, 'createRecurringRule', ['id', 'machineId']);
-  return normalizeId(validated as WithMongoId<RecurringRule>);
+  return validateObjectResponse(response, 'createRecurringRule', ['id', 'machineId']) as RecurringRule;
 }
 
 /**

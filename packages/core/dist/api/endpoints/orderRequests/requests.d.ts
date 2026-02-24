@@ -37,4 +37,15 @@ export declare function getQuoteViewUrl(client: ApiClient, s3Url: string): Promi
     url: string;
     expiresAt: number;
 }>;
+export type OrderRequestCounts = {
+    current: number;
+    placed: number;
+    archived: number;
+};
+/**
+ * Fetch counts of order requests for each view (current, placed, archived).
+ * Uses the dedicated /count-requests endpoint which is much cheaper than
+ * fetching all orders just to count them.
+ */
+export declare function fetchOrderRequestCounts(client: ApiClient): Promise<OrderRequestCounts>;
 //# sourceMappingURL=requests.d.ts.map

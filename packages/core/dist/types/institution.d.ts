@@ -300,8 +300,7 @@ export interface InstitutionOrderRequestsParams {
  * Order request with lab name for institution admin view
  */
 export interface InstitutionOrderRequest {
-    _id: string;
-    id?: string;
+    id: string;
     name: string;
     brand?: string;
     catalog?: string;
@@ -341,8 +340,7 @@ export interface InstitutionInventoryParams {
  * Inventory item with lab name for institution admin view
  */
 export interface InstitutionInventoryItem {
-    _id: string;
-    id?: string;
+    id: string;
     name: string;
     brand?: string;
     catalog?: string;

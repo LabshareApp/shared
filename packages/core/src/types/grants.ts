@@ -37,7 +37,7 @@ export interface MoneyAmount {
 }
 
 export interface Grant {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   labId: string;
@@ -59,7 +59,7 @@ export interface Grant {
 }
 
 export interface GrantTransaction {
-  _id: string;
+  id: string;
   grantId: string;
   labId: string;
   type: GrantTransactionType;

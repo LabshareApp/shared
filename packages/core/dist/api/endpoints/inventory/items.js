@@ -21,11 +21,10 @@ async function fetchInventoryItem(client, itemId) {
         query: { id: itemId },
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(item, 'fetchInventoryItem');
-    const idValue = validated._id || validated.id;
-    if (!idValue) {
-        throw new Error(`Unexpected response format from fetchInventoryItem for item ${itemId}: Expected object with _id or id.`);
+    if (!validated.id) {
+        throw new Error(`Unexpected response format from fetchInventoryItem for item ${itemId}: Expected object with id.`);
     }
-    return { ...validated, id: idValue, _id: idValue };
+    return validated;
 }
 async function updateInventoryItem(client, itemId, itemUpdateData) {
     await client.request({

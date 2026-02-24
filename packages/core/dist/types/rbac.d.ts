@@ -39,7 +39,7 @@ export type DefaultRoleType = 'viewer' | 'member' | 'manager' | 'admin';
  * A role defines a set of permissions that can be assigned to users
  */
 export interface Role {
-    _id: string;
+    id: string;
     labId: string;
     name: string;
     description?: string;
@@ -81,7 +81,7 @@ export type MembershipStatus = 'active' | 'pending' | 'suspended';
  * A lab membership connects a user to a lab with a specific role
  */
 export interface LabMembership {
-    _id: string;
+    id: string;
     userId: string;
     labId: string;
     roleId: string;
@@ -125,7 +125,7 @@ export type InvitationStatus = 'pending' | 'accepted' | 'expired' | 'canceled';
  * An invitation for a user to join a lab
  */
 export interface Invitation {
-    _id: string;
+    id: string;
     email: string;
     firstName: string;
     lastName: string;

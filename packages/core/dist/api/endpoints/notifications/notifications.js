@@ -83,7 +83,7 @@ async function createTopic(client, topicData) {
         path: '/notifications/topics/create',
         body: topicData,
     });
-    return (0, responseValidation_1.validateObjectResponse)(res, 'createTopic', ['_id', 'name']);
+    return (0, responseValidation_1.validateObjectResponse)(res, 'createTopic', ['id', 'name']);
 }
 async function listTopics(client, type) {
     const res = await client.request({

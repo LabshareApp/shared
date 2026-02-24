@@ -59,7 +59,7 @@ export interface InvoiceLineItem {
  * An invoice document for billing equipment usage
  */
 export interface Invoice {
-  _id: string;
+  id: string;
   invoiceNumber: string;                   // Auto-generated: INV-2024-001
 
   // Parties - using Grantor/Grantee terminology
@@ -117,7 +117,7 @@ export interface InvoiceTemplateRate {
  * Template for invoice generation with default rates and settings
  */
 export interface InvoiceTemplate {
-  _id: string;
+  id: string;
   labId: string;
   name: string;
 

@@ -19,7 +19,7 @@ async function createGrant(client, payload) {
         path: '/grants',
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'createGrant', ['_id']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createGrant', ['id']);
 }
 async function listGrants(client, params = {}) {
     const response = await client.request({
@@ -42,7 +42,7 @@ async function getGrant(client, grantId) {
         path: '/get-grant',
         query: { id: String(grantId) },
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'getGrant', ['_id']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getGrant', ['id']);
 }
 async function getGrantTransactions(client, params) {
     const response = await client.request({
@@ -65,7 +65,7 @@ async function createGrantTransaction(client, params) {
         body: params.payload,
     });
     // Response is the created transaction
-    return (0, responseValidation_1.validateObjectResponse)(response, 'createGrantTransaction', ['_id']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createGrantTransaction', ['id']);
 }
 async function moveGrantTransaction(client, payload) {
     const response = await client.request({
@@ -86,8 +86,8 @@ async function updateGrant(client, grantId, grantData) {
         query: { id: String(grantId) },
         body: grantData,
     });
-    // Validate that we have a grant object with _id
-    return (0, responseValidation_1.validateObjectResponse)(response, 'updateGrant', ['_id']);
+    // Validate that we have a grant object with id
+    return (0, responseValidation_1.validateObjectResponse)(response, 'updateGrant', ['id']);
 }
 async function deleteGrant(client, grantId) {
     if (!grantId) {

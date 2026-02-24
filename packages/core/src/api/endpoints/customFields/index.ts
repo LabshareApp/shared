@@ -7,15 +7,6 @@ import type {
 } from '../../../types/customFields';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
-// Helper to normalize MongoDB _id to id
-type NormalizedCustomFieldDefinition = Omit<CustomFieldDefinition, 'id'> & { _id?: string; id?: string };
-
-function normalizeCustomFieldDefinition(def: NormalizedCustomFieldDefinition): CustomFieldDefinition {
-  const idValue = (def as any)?._id || (def as any)?.id;
-  if (!idValue) return def as any as CustomFieldDefinition;
-  return { ...(def as any), _id: idValue, id: idValue } as CustomFieldDefinition;
-}
-
 /**
  * Fetch all custom field definitions for the authenticated lab.
  * Optionally filter by entity type (inventory or orderRequest).
@@ -29,14 +20,13 @@ export async function fetchCustomFieldDefinitions(
     query.appliesTo = appliesTo;
   }
 
-  const response = await client.request<NormalizedCustomFieldDefinition[]>({
+  const response = await client.request<CustomFieldDefinition[]>({
     method: 'GET',
     path: '/custom-fields',
     query: Object.keys(query).length > 0 ? query : undefined,
   });
 
-  const validated = validateArrayResponse<NormalizedCustomFieldDefinition>(response, 'fetchCustomFieldDefinitions');
-  return validated.map(normalizeCustomFieldDefinition);
+  return validateArrayResponse<CustomFieldDefinition>(response, 'fetchCustomFieldDefinitions');
 }
 
 /**
@@ -46,14 +36,13 @@ export async function fetchCustomFieldDefinition(
   client: ApiClient,
   id: string
 ): Promise<CustomFieldDefinition> {
-  const response = await client.request<NormalizedCustomFieldDefinition>({
+  const response = await client.request<CustomFieldDefinition>({
     method: 'GET',
     path: '/custom-field',
     query: { id },
   });
 
-  const validated = validateObjectResponse(response, 'fetchCustomFieldDefinition', ['id', 'name', 'valueType']);
-  return normalizeCustomFieldDefinition(validated as NormalizedCustomFieldDefinition);
+  return validateObjectResponse(response, 'fetchCustomFieldDefinition', ['id', 'name', 'valueType']) as CustomFieldDefinition;
 }
 
 /**
@@ -63,14 +52,13 @@ export async function createCustomFieldDefinition(
   client: ApiClient,
   data: CreateCustomFieldData
 ): Promise<CustomFieldDefinition> {
-  const response = await client.request<NormalizedCustomFieldDefinition>({
+  const response = await client.request<CustomFieldDefinition>({
     method: 'POST',
     path: '/create-custom-field',
     body: data,
   });
 
-  const validated = validateObjectResponse(response, 'createCustomFieldDefinition', ['id', 'name', 'valueType']);
-  return normalizeCustomFieldDefinition(validated as NormalizedCustomFieldDefinition);
+  return validateObjectResponse(response, 'createCustomFieldDefinition', ['id', 'name', 'valueType']) as CustomFieldDefinition;
 }
 
 /**
@@ -81,15 +69,14 @@ export async function updateCustomFieldDefinition(
   id: string,
   data: UpdateCustomFieldData
 ): Promise<CustomFieldDefinition> {
-  const response = await client.request<NormalizedCustomFieldDefinition>({
+  const response = await client.request<CustomFieldDefinition>({
     method: 'PUT',
     path: '/update-custom-field',
     query: { id },
     body: data,
   });
 
-  const validated = validateObjectResponse(response, 'updateCustomFieldDefinition', ['id', 'name', 'valueType']);
-  return normalizeCustomFieldDefinition(validated as NormalizedCustomFieldDefinition);
+  return validateObjectResponse(response, 'updateCustomFieldDefinition', ['id', 'name', 'valueType']) as CustomFieldDefinition;
 }
 
 /**

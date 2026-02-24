@@ -62,7 +62,7 @@ async function getInvoice(client, invoiceId) {
         path: '/invoices/get',
         query: { id: invoiceId },
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'getInvoice', ['_id', 'invoiceNumber']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getInvoice', ['id', 'invoiceNumber']);
 }
 /**
  * Create a new invoice
@@ -73,7 +73,7 @@ async function createInvoice(client, payload) {
         path: '/invoices/create',
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'createInvoice', ['_id', 'invoiceNumber']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createInvoice', ['id', 'invoiceNumber']);
 }
 /**
  * Update an existing invoice (draft only)
@@ -88,7 +88,7 @@ async function updateInvoice(client, payload) {
         query: { id: payload.invoiceId },
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'updateInvoice', ['_id', 'invoiceNumber']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'updateInvoice', ['id', 'invoiceNumber']);
 }
 /**
  * Delete a draft invoice
@@ -120,7 +120,7 @@ async function sendInvoice(client, invoiceId) {
         query: { id: invoiceId },
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'sendInvoice', ['_id', 'invoiceNumber']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'sendInvoice', ['id', 'invoiceNumber']);
 }
 /**
  * Mark an invoice as paid
@@ -136,7 +136,7 @@ async function markInvoicePaid(client, invoiceId) {
         query: { id: invoiceId },
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'markInvoicePaid', ['_id', 'invoiceNumber']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'markInvoicePaid', ['id', 'invoiceNumber']);
 }
 // ============================================================================
 // Invoice Generation
@@ -150,7 +150,7 @@ async function generateInvoice(client, payload) {
         path: '/invoices/generate',
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'generateInvoice', ['_id', 'invoiceNumber']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'generateInvoice', ['id', 'invoiceNumber']);
 }
 /**
  * Preview invoice line items before creating
@@ -246,7 +246,7 @@ async function getInvoiceTemplate(client, templateId) {
         path: '/invoice-templates',
         query: { id: templateId },
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'getInvoiceTemplate', ['_id', 'name']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'getInvoiceTemplate', ['id', 'name']);
 }
 /**
  * Create an invoice template
@@ -257,7 +257,7 @@ async function createInvoiceTemplate(client, payload) {
         path: '/invoice-templates/create',
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'createInvoiceTemplate', ['_id', 'name']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createInvoiceTemplate', ['id', 'name']);
 }
 /**
  * Update an invoice template
@@ -272,7 +272,7 @@ async function updateInvoiceTemplate(client, payload) {
         query: { id: payload.templateId },
         body: payload,
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'updateInvoiceTemplate', ['_id', 'name']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'updateInvoiceTemplate', ['id', 'name']);
 }
 /**
  * Delete an invoice template

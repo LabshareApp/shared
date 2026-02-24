@@ -8,13 +8,8 @@ exports.reRequestArchivedOrder = reRequestArchivedOrder;
 exports.generateQuotePresignedUrl = generateQuotePresignedUrl;
 exports.updateOrderRequestQuote = updateOrderRequestQuote;
 exports.getQuoteViewUrl = getQuoteViewUrl;
+exports.fetchOrderRequestCounts = fetchOrderRequestCounts;
 const responseValidation_1 = require("../../responseValidation");
-function normalizeOrderRequest(item) {
-    const idValue = (item === null || item === void 0 ? void 0 : item._id) || (item === null || item === void 0 ? void 0 : item.id);
-    if (!idValue)
-        return item;
-    return { ...item, _id: idValue, id: idValue };
-}
 async function fetchOrderRequests(client, labId, view) {
     const response = await client.request({
         method: 'GET',
@@ -23,7 +18,7 @@ async function fetchOrderRequests(client, labId, view) {
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchOrderRequests', ['orderRequests', 'totalCount']);
     const items = (0, responseValidation_1.validateArrayResponse)(validated.orderRequests, 'fetchOrderRequests.orderRequests');
-    return { orderRequests: items.map(normalizeOrderRequest), totalCount: validated.totalCount };
+    return { orderRequests: items, totalCount: validated.totalCount };
 }
 async function fetchOrderRequest(client, orderRequestId) {
     const response = await client.request({
@@ -32,7 +27,7 @@ async function fetchOrderRequest(client, orderRequestId) {
         query: { id: orderRequestId },
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchOrderRequest', ['orderRequest']);
-    return { orderRequest: normalizeOrderRequest(validated.orderRequest) };
+    return { orderRequest: validated.orderRequest };
 }
 async function fetchArchivedOrderRequest(client, archivedOrderRequestId) {
     const response = await client.request({
@@ -41,7 +36,7 @@ async function fetchArchivedOrderRequest(client, archivedOrderRequestId) {
         query: { id: archivedOrderRequestId },
     });
     const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchArchivedOrderRequest', ['orderRequest']);
-    return { orderRequest: normalizeOrderRequest(validated.orderRequest) };
+    return { orderRequest: validated.orderRequest };
 }
 async function fetchArchivedOrderRequests(client, labId) {
     const response = await client.request({
@@ -49,8 +44,7 @@ async function fetchArchivedOrderRequests(client, labId) {
         path: '/list-all-archived-order-requests',
         query: { lab_id: labId },
     });
-    const items = (0, responseValidation_1.validateArrayResponse)(response, 'fetchArchivedOrderRequests');
-    return items.map(normalizeOrderRequest);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchArchivedOrderRequests');
 }
 async function reRequestArchivedOrder(client, payload) {
     const response = await client.request({
@@ -94,5 +88,17 @@ async function getQuoteViewUrl(client, s3Url) {
         body: { s3Url },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'getQuoteViewUrl', ['url', 'expiresAt']);
+}
+/**
+ * Fetch counts of order requests for each view (current, placed, archived).
+ * Uses the dedicated /count-requests endpoint which is much cheaper than
+ * fetching all orders just to count them.
+ */
+async function fetchOrderRequestCounts(client) {
+    const response = await client.request({
+        method: 'GET',
+        path: '/count-requests',
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchOrderRequestCounts', ['current', 'placed', 'archived']);
 }
 //# sourceMappingURL=requests.js.map

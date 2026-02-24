@@ -21,7 +21,7 @@ export async function createGrant(client: ApiClient, payload: CreateGrantRequest
     path: '/grants',
     body: payload,
   });
-  return validateObjectResponse(response, 'createGrant', ['_id']) as Grant;
+  return validateObjectResponse(response, 'createGrant', ['id']) as Grant;
 }
 
 export async function listGrants(
@@ -49,7 +49,7 @@ export async function getGrant(client: ApiClient, grantId: string): Promise<Gran
     path: '/get-grant',
     query: { id: String(grantId) },
   });
-  return validateObjectResponse(response, 'getGrant', ['_id']) as Grant;
+  return validateObjectResponse(response, 'getGrant', ['id']) as Grant;
 }
 
 export async function getGrantTransactions(
@@ -84,7 +84,7 @@ export async function createGrantTransaction(
     body: params.payload,
   });
   // Response is the created transaction
-  return validateObjectResponse(response, 'createGrantTransaction', ['_id']);
+  return validateObjectResponse(response, 'createGrantTransaction', ['id']);
 }
 
 export async function moveGrantTransaction(
@@ -135,8 +135,8 @@ export async function updateGrant(
     body: grantData,
   });
   
-  // Validate that we have a grant object with _id
-  return validateObjectResponse(response, 'updateGrant', ['_id']) as Grant;
+  // Validate that we have a grant object with id
+  return validateObjectResponse(response, 'updateGrant', ['id']) as Grant;
 }
 
 export async function deleteGrant(client: ApiClient, grantId: string): Promise<void> {

@@ -29,7 +29,7 @@ export interface ServerResponse {
 }
 
 export interface BaseNotification {
-  _id: string;
+  id: string;
   title: string;
   message: string;
   type: string;
@@ -46,7 +46,7 @@ export interface InventoryNotification extends BaseNotification {
 }
 
 export interface Topic {
-  _id: string;
+  id: string;
   name: string;
   displayName: string;
   type: 'inventory';
@@ -60,7 +60,7 @@ export interface Topic {
 }
 
 export interface NotificationPreferences {
-  _id?: string;
+  id?: string;
   userId: string;
   labId: string;
   inventory: {

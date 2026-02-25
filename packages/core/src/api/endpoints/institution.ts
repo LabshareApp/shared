@@ -19,6 +19,7 @@ import type {
   InstitutionCollaborationRequest,
   InstitutionCollaborationActionRequest,
   InstitutionLabInfo,
+  InstitutionDirectoryResponse,
   CollaborationHistoryResponse,
   InstitutionOrderRequestsParams,
   InstitutionOrderRequestsResponse,
@@ -436,6 +437,68 @@ export async function validateInstitutionCodes(
   }
 
   return results;
+}
+
+// --- Update Member Role ---
+
+/**
+ * Request to update an institution member's role
+ */
+export interface UpdateInstitutionMemberRoleRequest {
+  membershipId: string;
+  roleName: string;
+  departmentId?: string;
+}
+
+/**
+ * Update an institution member's role (admin only)
+ */
+export async function updateInstitutionMemberRole(
+  client: ApiClient,
+  data: UpdateInstitutionMemberRoleRequest
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/update-member-role',
+    body: data,
+  };
+  return client.request(request);
+}
+
+// --- Institution Directory & Search ---
+
+/**
+ * Get the hierarchical directory of departments, labs, and members
+ */
+export async function getInstitutionDirectory(
+  client: ApiClient,
+  institutionId: string
+): Promise<InstitutionDirectoryResponse> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/directory',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Search institutions by name or code
+ */
+export async function searchInstitutions(
+  client: ApiClient,
+  query?: string,
+  limit?: number
+): Promise<InstitutionPublicInfo[]> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institutions/search',
+    query: {
+      ...(query ? { q: query } : {}),
+      ...(limit ? { limit: String(limit) } : {}),
+    },
+  };
+  return client.request(request);
 }
 
 // --- Institution Admin Dashboard Endpoints ---

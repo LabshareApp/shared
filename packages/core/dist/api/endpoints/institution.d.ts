@@ -4,7 +4,7 @@
  * Provides API client functions for institution management operations.
  */
 import { ApiClient } from '../ApiClient';
-import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, InstitutionMemberInfo, InstitutionRole, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo, CollaborationHistoryResponse, InstitutionOrderRequestsParams, InstitutionOrderRequestsResponse, InstitutionInventoryParams, InstitutionInventoryResponse } from '../../types/institution';
+import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, InstitutionMemberInfo, InstitutionRole, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo, InstitutionDirectoryResponse, CollaborationHistoryResponse, InstitutionOrderRequestsParams, InstitutionOrderRequestsResponse, InstitutionInventoryParams, InstitutionInventoryResponse } from '../../types/institution';
 /**
  * Get all institutions the current user belongs to
  */
@@ -127,6 +127,26 @@ export declare function registerUserWithInstitutions(baseUrl: string, data: Regi
  * Returns an array of institution public info for each valid code
  */
 export declare function validateInstitutionCodes(baseUrl: string, codes: string[]): Promise<InstitutionPublicInfo[]>;
+/**
+ * Request to update an institution member's role
+ */
+export interface UpdateInstitutionMemberRoleRequest {
+    membershipId: string;
+    roleName: string;
+    departmentId?: string;
+}
+/**
+ * Update an institution member's role (admin only)
+ */
+export declare function updateInstitutionMemberRole(client: ApiClient, data: UpdateInstitutionMemberRoleRequest): Promise<void>;
+/**
+ * Get the hierarchical directory of departments, labs, and members
+ */
+export declare function getInstitutionDirectory(client: ApiClient, institutionId: string): Promise<InstitutionDirectoryResponse>;
+/**
+ * Search institutions by name or code
+ */
+export declare function searchInstitutions(client: ApiClient, query?: string, limit?: number): Promise<InstitutionPublicInfo[]>;
 /**
  * Get collaboration history with statistics (admin only)
  */

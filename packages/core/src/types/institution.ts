@@ -72,6 +72,7 @@ export interface Department {
   id: string;
   institutionId: string;
   name: string;
+  code?: string;
   description?: string;
   settings?: Record<string, unknown>;
   createdAt: string;
@@ -84,6 +85,7 @@ export interface Department {
 export interface CreateDepartmentRequest {
   institutionId: string;
   name: string;
+  code?: string;
   description?: string;
 }
 
@@ -92,6 +94,7 @@ export interface CreateDepartmentRequest {
  */
 export interface UpdateDepartmentRequest {
   name: string;
+  code?: string;
   description?: string;
 }
 
@@ -327,6 +330,27 @@ export function canApproveOrders(
   role: InstitutionRole | null
 ): boolean {
   return hasInstitutionPermission(membership, role, 'department:approve_orders');
+}
+
+// --- Institution Directory Types ---
+
+/**
+ * Department with its labs and members for the directory view
+ */
+export interface DirectoryDepartment {
+  id: string;
+  name: string;
+  description?: string;
+  labs: InstitutionLabInfo[];
+  members: InstitutionMemberInfo[];
+}
+
+/**
+ * Full institution directory response
+ */
+export interface InstitutionDirectoryResponse {
+  departments: DirectoryDepartment[];
+  unassignedLabs: InstitutionLabInfo[];
 }
 
 // --- Institution Admin Dashboard Types ---

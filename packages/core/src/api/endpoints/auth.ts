@@ -117,3 +117,126 @@ export async function registerInstitutionUser(
 
   return response.json();
 }
+
+/**
+ * Request to complete OAuth signup (user already authenticated via OAuth)
+ */
+export interface CompleteOAuthSignupRequest {
+  // User profile data
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+  role?: string;
+
+  // Lab data - either provide existing labId OR new lab data
+  labId?: string; // Existing lab ID (for joining)
+
+  // New lab data (for creating new lab)
+  labName?: string;
+  labDepartment?: string;
+  labCountry?: string;
+  labBuilding?: string;
+  labFloorNumber?: string;
+
+  // Institution codes (optional)
+  institutionCodes?: string[];
+}
+
+/**
+ * Response from completing OAuth signup
+ */
+export interface CompleteOAuthSignupResponse {
+  userId: string;
+  labId: string;
+  email: string;
+  institutionIds?: string[];
+  pendingInstitutionIds?: string[];
+  hasPendingInstitutions?: boolean;
+}
+
+/**
+ * Complete OAuth signup for a user who authenticated via OAuth.
+ * The user is already authenticated - this creates their profile and lab.
+ * Requires a valid JWT token in the Authorization header.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param token - JWT access token
+ * @param data - Profile and lab data
+ * @returns The completion response
+ */
+export async function completeOAuthSignup(
+  baseUrl: string,
+  token: string,
+  data: CompleteOAuthSignupRequest
+): Promise<CompleteOAuthSignupResponse> {
+  const response = await fetch(`${baseUrl}/repository/complete-oauth-signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `OAuth signup completion failed with status ${response.status}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Request to complete OAuth signup as institution-only user
+ */
+export interface CompleteOAuthInstitutionSignupRequest {
+  // User profile data
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+
+  // Institution data
+  institutionCode: string;
+}
+
+/**
+ * Response from completing OAuth institution signup
+ */
+export interface CompleteOAuthInstitutionSignupResponse {
+  userId: string;
+  institutionId: string;
+  email: string;
+  status: 'active' | 'pending';
+  isFirstAdmin: boolean;
+}
+
+/**
+ * Complete OAuth signup for an institution-only user.
+ * Requires a valid JWT token in the Authorization header.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param token - JWT access token
+ * @param data - Profile and institution data
+ * @returns The completion response
+ */
+export async function completeOAuthInstitutionSignup(
+  baseUrl: string,
+  token: string,
+  data: CompleteOAuthInstitutionSignupRequest
+): Promise<CompleteOAuthInstitutionSignupResponse> {
+  const response = await fetch(`${baseUrl}/repository/complete-oauth-institution-signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `OAuth signup completion failed with status ${response.status}`);
+  }
+
+  return response.json();
+}

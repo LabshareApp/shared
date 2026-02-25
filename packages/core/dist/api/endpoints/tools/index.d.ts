@@ -49,6 +49,30 @@ export declare function getMyCheckouts(client: ApiClient, params?: {
  * Log an access event for a tool (ID swipe, view).
  */
 export declare function logToolAccess(client: ApiClient, id: string, data: LogAccessData): Promise<void>;
+export interface GenerateToolImagePresignedUrlRequest {
+    fileName?: string;
+    extension: string;
+}
+export interface GenerateToolImagePresignedUrlResponse {
+    uploadUrl: string;
+    s3Url: string;
+    objectKey: string;
+    expiresAt: number;
+}
+export interface GetToolImageViewUrlResponse {
+    url: string;
+    expiresAt: number;
+}
+/**
+ * Generate a presigned URL for uploading a tool image to S3.
+ */
+export declare function generateToolImagePresignedUrl(client: ApiClient, data: GenerateToolImagePresignedUrlRequest): Promise<GenerateToolImagePresignedUrlResponse>;
+/**
+ * Get a presigned URL for viewing a tool image from S3.
+ */
+export declare function getToolImageViewUrl(client: ApiClient, data: {
+    s3Url: string;
+}): Promise<GetToolImageViewUrlResponse>;
 import type { MaintenanceRequest, CreateMaintenanceRequestData, UpdateMaintenanceRequestData, MaintenanceRequestListResponse, ListMaintenanceRequestsParams } from '../../../types/maintenance';
 /**
  * Create a maintenance request for a tool.

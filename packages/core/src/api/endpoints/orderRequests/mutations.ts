@@ -55,23 +55,27 @@ export async function updateOrderRequest(
   };
 }
 
-export async function deleteOrderRequest(client: ApiClient, orderRequestId: string): Promise<void> {
+export async function deleteOrderRequest(
+  client: ApiClient,
+  orderRequestId: string,
+  view?: 'current' | 'placed' | 'archived'
+): Promise<void> {
   await client.request<any>({
     method: 'DELETE',
     path: '/delete-request',
-    query: { id: orderRequestId },
+    query: { id: orderRequestId, view: view ?? null },
   });
 }
 
 export async function bulkDeleteOrderRequests(
   client: ApiClient,
-  orderRequestIds: string[]
+  orderRequestIds: string[],
+  view?: 'current' | 'placed' | 'archived'
 ): Promise<{ deletedCount: number }> {
-  // Backend expects `ItemIDs` (capitalization) for legacy reasons.
   const response = await client.request<{ deletedCount: number }>({
     method: 'POST',
     path: '/bulk-delete-requests',
-    body: { ItemIDs: orderRequestIds },
+    body: { ItemIDs: orderRequestIds, view: view ?? 'current' },
   });
   return validateObjectResponse(response, 'bulkDeleteOrderRequests', ['deletedCount']) as {
     deletedCount: number;

@@ -4,7 +4,7 @@ import type {
   UpdateMemberRoleRequest,
   RemoveMemberRequest,
 } from '../../../types/rbac';
-import { validateArrayResponse } from '../../responseValidation';
+import { validateArrayResponse, normalizeMongoId } from '../../responseValidation';
 
 /**
  * Get all lab memberships with enriched role information
@@ -16,7 +16,7 @@ export async function getLabMemberships(
     method: 'GET',
     path: '/get-lab-memberships',
   });
-  return validateArrayResponse<EnrichedMembership>(res, 'getLabMemberships');
+  return validateArrayResponse<EnrichedMembership>(res, 'getLabMemberships').map(normalizeMongoId);
 }
 
 /**

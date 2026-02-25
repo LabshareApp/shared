@@ -2,71 +2,62 @@ import type { ApiClient } from '../../ApiClient';
 import type { OrderRequestItem, ReRequestOrderPayload } from '../../../types/orderRequests';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
-type NormalizedOrderRequest = Omit<OrderRequestItem, 'id'> & { _id?: string; id?: string };
-
-function normalizeOrderRequest(item: NormalizedOrderRequest): OrderRequestItem {
-  const idValue = (item as any)?._id || (item as any)?.id;
-  if (!idValue) return item as any as OrderRequestItem;
-  return { ...(item as any), _id: idValue, id: idValue } as OrderRequestItem;
-}
-
 export async function fetchOrderRequests(
   client: ApiClient,
   labId: string,
   view?: 'current' | 'placed' | 'archived'
 ): Promise<{ orderRequests: OrderRequestItem[]; totalCount: number }> {
-  const response = await client.request<{ orderRequests: NormalizedOrderRequest[]; totalCount: number }>({
+  const response = await client.request<{ orderRequests: OrderRequestItem[]; totalCount: number }>({
     method: 'GET',
     path: '/list-requests',
     query: { labId, view: view ?? null },
   });
 
   const validated = validateObjectResponse(response, 'fetchOrderRequests', ['orderRequests', 'totalCount']) as any;
-  const items = validateArrayResponse<NormalizedOrderRequest>(validated.orderRequests, 'fetchOrderRequests.orderRequests');
+  const items = validateArrayResponse<OrderRequestItem>(validated.orderRequests, 'fetchOrderRequests.orderRequests');
 
-  return { orderRequests: items.map(normalizeOrderRequest), totalCount: validated.totalCount };
+  return { orderRequests: items, totalCount: validated.totalCount };
 }
 
 export async function fetchOrderRequest(
   client: ApiClient,
   orderRequestId: string
 ): Promise<{ orderRequest: OrderRequestItem }> {
-  const response = await client.request<{ orderRequest: NormalizedOrderRequest }>({
+  const response = await client.request<{ orderRequest: OrderRequestItem }>({
     method: 'GET',
     path: '/get-request',
     query: { id: orderRequestId },
   });
 
   const validated = validateObjectResponse(response, 'fetchOrderRequest', ['orderRequest']) as any;
-  return { orderRequest: normalizeOrderRequest(validated.orderRequest) };
+  return { orderRequest: validated.orderRequest };
 }
 
 export async function fetchArchivedOrderRequest(
   client: ApiClient,
   archivedOrderRequestId: string
 ): Promise<{ orderRequest: OrderRequestItem }> {
-  const response = await client.request<{ orderRequest: NormalizedOrderRequest }>({
+  const response = await client.request<{ orderRequest: OrderRequestItem }>({
     method: 'GET',
     path: '/get-archived-request',
     query: { id: archivedOrderRequestId },
   });
 
   const validated = validateObjectResponse(response, 'fetchArchivedOrderRequest', ['orderRequest']) as any;
-  return { orderRequest: normalizeOrderRequest(validated.orderRequest) };
+  return { orderRequest: validated.orderRequest };
 }
 
 export async function fetchArchivedOrderRequests(
   client: ApiClient,
   labId: string
 ): Promise<OrderRequestItem[]> {
-  const response = await client.request<NormalizedOrderRequest[]>({
+  const response = await client.request<OrderRequestItem[]>({
     method: 'GET',
     path: '/list-all-archived-order-requests',
     query: { lab_id: labId },
   });
 
-  const items = validateArrayResponse<NormalizedOrderRequest>(response, 'fetchArchivedOrderRequests');
-  return items.map(normalizeOrderRequest);
+  return validateArrayResponse<OrderRequestItem>(response, 'fetchArchivedOrderRequests');
 }
 
 export async function reRequestArchivedOrder(
@@ -129,6 +120,24 @@ export async function getQuoteViewUrl(
   return validateObjectResponse(response, 'getQuoteViewUrl', ['url', 'expiresAt']) as { url: string; expiresAt: number };
 }
 
+export type OrderRequestCounts = {
+  current: number;
+  placed: number;
+  archived: number;
+};
 
+/**
+ * Fetch counts of order requests for each view (current, placed, archived).
+ * Uses the dedicated /count-requests endpoint which is much cheaper than
+ * fetching all orders just to count them.
+ */
+export async function fetchOrderRequestCounts(
+  client: ApiClient
+): Promise<OrderRequestCounts> {
+  const response = await client.request<OrderRequestCounts>({
+    method: 'GET',
+    path: '/count-requests',
+  });
 
-
+  return validateObjectResponse(response, 'fetchOrderRequestCounts', ['current', 'placed', 'archived']) as OrderRequestCounts;
+}

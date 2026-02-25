@@ -69,7 +69,7 @@ export async function getInvoice(
     query: { id: invoiceId },
   });
 
-  return validateObjectResponse(response, 'getInvoice', ['_id', 'invoiceNumber']) as Invoice;
+  return validateObjectResponse(response, 'getInvoice', ['id', 'invoiceNumber']) as Invoice;
 }
 
 /**
@@ -85,7 +85,7 @@ export async function createInvoice(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'createInvoice', ['_id', 'invoiceNumber']) as Invoice;
+  return validateObjectResponse(response, 'createInvoice', ['id', 'invoiceNumber']) as Invoice;
 }
 
 /**
@@ -106,7 +106,7 @@ export async function updateInvoice(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'updateInvoice', ['_id', 'invoiceNumber']) as Invoice;
+  return validateObjectResponse(response, 'updateInvoice', ['id', 'invoiceNumber']) as Invoice;
 }
 
 /**
@@ -151,7 +151,7 @@ export async function sendInvoice(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'sendInvoice', ['_id', 'invoiceNumber']) as Invoice;
+  return validateObjectResponse(response, 'sendInvoice', ['id', 'invoiceNumber']) as Invoice;
 }
 
 /**
@@ -174,7 +174,7 @@ export async function markInvoicePaid(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'markInvoicePaid', ['_id', 'invoiceNumber']) as Invoice;
+  return validateObjectResponse(response, 'markInvoicePaid', ['id', 'invoiceNumber']) as Invoice;
 }
 
 // ============================================================================
@@ -194,7 +194,7 @@ export async function generateInvoice(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'generateInvoice', ['_id', 'invoiceNumber']) as Invoice;
+  return validateObjectResponse(response, 'generateInvoice', ['id', 'invoiceNumber']) as Invoice;
 }
 
 /**
@@ -324,7 +324,7 @@ export async function getInvoiceTemplate(
     query: { id: templateId },
   });
 
-  return validateObjectResponse(response, 'getInvoiceTemplate', ['_id', 'name']) as InvoiceTemplate;
+  return validateObjectResponse(response, 'getInvoiceTemplate', ['id', 'name']) as InvoiceTemplate;
 }
 
 /**
@@ -340,7 +340,7 @@ export async function createInvoiceTemplate(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'createInvoiceTemplate', ['_id', 'name']) as InvoiceTemplate;
+  return validateObjectResponse(response, 'createInvoiceTemplate', ['id', 'name']) as InvoiceTemplate;
 }
 
 /**
@@ -361,7 +361,7 @@ export async function updateInvoiceTemplate(
     body: payload,
   });
 
-  return validateObjectResponse(response, 'updateInvoiceTemplate', ['_id', 'name']) as InvoiceTemplate;
+  return validateObjectResponse(response, 'updateInvoiceTemplate', ['id', 'name']) as InvoiceTemplate;
 }
 
 /**

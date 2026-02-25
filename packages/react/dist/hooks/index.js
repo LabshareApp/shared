@@ -26,5 +26,5 @@ __exportStar(require("./rbac"), exports);
 __exportStar(require("./reservations"), exports);
 __exportStar(require("./institution"), exports);
 __exportStar(require("./audit"), exports);
-__exportStar(require("./slack"), exports);
+__exportStar(require("./invoices"), exports);
 //# sourceMappingURL=index.js.map

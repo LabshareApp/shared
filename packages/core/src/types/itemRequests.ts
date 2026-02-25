@@ -6,7 +6,7 @@ export interface ContactInfo {
 }
 
 export interface ItemRequest {
-  _id: string;
+  id: string;
   itemId: string;
   itemName: string;
   quantity: number;

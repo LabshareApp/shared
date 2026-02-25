@@ -27,19 +27,18 @@ async function updateOrderRequest(client, orderRequestId, orderRequestUpdateData
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'updateOrderRequest', ['orderRequest']);
 }
-async function deleteOrderRequest(client, orderRequestId) {
+async function deleteOrderRequest(client, orderRequestId, view) {
     await client.request({
         method: 'DELETE',
         path: '/delete-request',
-        query: { id: orderRequestId },
+        query: { id: orderRequestId, view: view !== null && view !== void 0 ? view : null },
     });
 }
-async function bulkDeleteOrderRequests(client, orderRequestIds) {
-    // Backend expects `ItemIDs` (capitalization) for legacy reasons.
+async function bulkDeleteOrderRequests(client, orderRequestIds, view) {
     const response = await client.request({
         method: 'POST',
         path: '/bulk-delete-requests',
-        body: { ItemIDs: orderRequestIds },
+        body: { ItemIDs: orderRequestIds, view: view !== null && view !== void 0 ? view : 'current' },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'bulkDeleteOrderRequests', ['deletedCount']);
 }

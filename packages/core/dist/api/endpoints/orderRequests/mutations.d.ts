@@ -8,8 +8,8 @@ export declare function updateOrderRequest(client: ApiClient, orderRequestId: st
     message: string;
     orderRequest: OrderRequestItem;
 }>;
-export declare function deleteOrderRequest(client: ApiClient, orderRequestId: string): Promise<void>;
-export declare function bulkDeleteOrderRequests(client: ApiClient, orderRequestIds: string[]): Promise<{
+export declare function deleteOrderRequest(client: ApiClient, orderRequestId: string, view?: 'current' | 'placed' | 'archived'): Promise<void>;
+export declare function bulkDeleteOrderRequests(client: ApiClient, orderRequestIds: string[], view?: 'current' | 'placed' | 'archived'): Promise<{
     deletedCount: number;
 }>;
 export declare function moveOrderRequestToInventory(client: ApiClient, orderRequestId: string, quantity: number, locationId?: string): Promise<{

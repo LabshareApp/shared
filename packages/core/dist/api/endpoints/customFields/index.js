@@ -9,12 +9,6 @@ exports.reorderCustomFieldDefinitions = reorderCustomFieldDefinitions;
 exports.generateCustomFieldFilePresignedUrl = generateCustomFieldFilePresignedUrl;
 exports.getCustomFieldFileViewUrl = getCustomFieldFileViewUrl;
 const responseValidation_1 = require("../../responseValidation");
-function normalizeCustomFieldDefinition(def) {
-    const idValue = (def === null || def === void 0 ? void 0 : def._id) || (def === null || def === void 0 ? void 0 : def.id);
-    if (!idValue)
-        return def;
-    return { ...def, _id: idValue, id: idValue };
-}
 /**
  * Fetch all custom field definitions for the authenticated lab.
  * Optionally filter by entity type (inventory or orderRequest).
@@ -29,8 +23,7 @@ async function fetchCustomFieldDefinitions(client, appliesTo) {
         path: '/custom-fields',
         query: Object.keys(query).length > 0 ? query : undefined,
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchCustomFieldDefinitions');
-    return validated.map(normalizeCustomFieldDefinition);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchCustomFieldDefinitions');
 }
 /**
  * Fetch a single custom field definition by ID.
@@ -41,8 +34,7 @@ async function fetchCustomFieldDefinition(client, id) {
         path: '/custom-field',
         query: { id },
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchCustomFieldDefinition', ['id', 'name', 'valueType']);
-    return normalizeCustomFieldDefinition(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchCustomFieldDefinition', ['id', 'name', 'valueType']);
 }
 /**
  * Create a new custom field definition.
@@ -53,8 +45,7 @@ async function createCustomFieldDefinition(client, data) {
         path: '/create-custom-field',
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createCustomFieldDefinition', ['id', 'name', 'valueType']);
-    return normalizeCustomFieldDefinition(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createCustomFieldDefinition', ['id', 'name', 'valueType']);
 }
 /**
  * Update an existing custom field definition.
@@ -66,8 +57,7 @@ async function updateCustomFieldDefinition(client, id, data) {
         query: { id },
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'updateCustomFieldDefinition', ['id', 'name', 'valueType']);
-    return normalizeCustomFieldDefinition(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'updateCustomFieldDefinition', ['id', 'name', 'valueType']);
 }
 /**
  * Delete a custom field definition.

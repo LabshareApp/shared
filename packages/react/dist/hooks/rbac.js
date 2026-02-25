@@ -157,6 +157,8 @@ function useMembershipMutations(client) {
         mutationFn: (payload) => (0, shared_core_1.updateMemberRole)(client, payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: rbac_1.rbacKeys.memberships() });
+            // Also invalidate current user role in case the updated member is viewing the page
+            queryClient.invalidateQueries({ queryKey: ['rbac', 'currentUser'] });
         },
     });
     const removeMemberMutation = (0, react_query_1.useMutation)({

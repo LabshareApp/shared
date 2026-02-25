@@ -19,7 +19,7 @@ async function getRoles(client) {
         method: 'GET',
         path: '/get-roles',
     });
-    return (0, responseValidation_1.validateArrayResponse)(res, 'getRoles');
+    return (0, responseValidation_1.validateArrayResponse)(res, 'getRoles').map(responseValidation_1.normalizeMongoId);
 }
 /**
  * Create a new custom role

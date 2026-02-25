@@ -14,8 +14,7 @@ export type OrderRequestUrgency = 'high' | 'medium' | 'low';
 
 // Mirrors backend `models.OrderRequest` as consumed by clients.
 export interface OrderRequestItem {
-  _id: string;
-  id?: string;
+  id: string;
 
   name: string;
   description?: string;

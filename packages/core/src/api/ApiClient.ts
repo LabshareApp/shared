@@ -3,10 +3,14 @@ import { ApiError } from './ApiError';
 import type { TokenProvider } from './TokenProvider';
 import type { Logger } from '../utils/logger';
 
+/** Optional provider that returns the active lab ID for the X-Lab-Id header. */
+export type LabIdProvider = () => string | null | undefined;
+
 export interface ApiClientConfig {
   baseUrl: string;
   repositoryPrefix?: string;
   tokenProvider: TokenProvider;
+  labIdProvider?: LabIdProvider;
   logger?: Logger;
   timeoutMs?: number;
 }
@@ -23,6 +27,7 @@ export class ApiClient {
   private readonly axios: AxiosInstance;
   private readonly repositoryPrefix: string;
   private readonly tokenProvider: TokenProvider;
+  private readonly labIdProvider?: LabIdProvider;
   private readonly logger?: Logger;
   private retryCountMap: Map<string, number> = new Map(); // Track retry counts per request
   private readonly maxRetryMapSize = 1000; // Limit map size to prevent memory leaks
@@ -30,6 +35,7 @@ export class ApiClient {
   constructor(config: ApiClientConfig) {
     this.repositoryPrefix = config.repositoryPrefix ?? '/repository';
     this.tokenProvider = config.tokenProvider;
+    this.labIdProvider = config.labIdProvider;
     this.logger = config.logger;
 
     this.axios = axios.create({
@@ -40,13 +46,24 @@ export class ApiClient {
       },
     });
 
-    // Add request interceptor to add token
+    // Capture labIdProvider for use in interceptor closure
+    const labIdProvider = this.labIdProvider;
+
+    // Add request interceptor to add token and lab ID header
     this.axios.interceptors.request.use(
       async (config) => {
         const token = await this.tokenProvider.getAccessToken();
         if (token) {
           config.headers = config.headers || {};
           config.headers.Authorization = `Bearer ${token}`;
+        }
+        // Inject X-Lab-Id header for multi-lab support
+        if (labIdProvider) {
+          const labId = labIdProvider();
+          if (labId) {
+            config.headers = config.headers || {};
+            config.headers['X-Lab-Id'] = labId;
+          }
         }
         return config;
       },

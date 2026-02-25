@@ -21,7 +21,7 @@ export * from './api/endpoints/institution';
 export * from './api/endpoints/audit';
 export * from './api/endpoints/tools';
 export * from './api/endpoints/invoices';
-export * from './api/endpoints/slack';
+export * from './api/endpoints/shareLinks';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -46,10 +46,11 @@ export * from './types/institution';
 export * from './types/audit';
 export * from './types/tools';
 export * from './types/invoice';
-export * from './types/slack';
 export * from './types/maintenance';
+export * from './types/shareLinks';
 
 export * from './utils/logger';
 export * from './utils/jwt';
 export * from './utils/stableStringify';
+export * from './utils/currency';
 

@@ -1,8 +1,6 @@
 import type { InventoryItem, PaginatedSearchResult } from '../types/inventory';
 
-export type PaginatedInventoryResponse = PaginatedSearchResult<
-  Omit<InventoryItem, 'id'> & { _id?: string; id?: string }
->;
+export type PaginatedInventoryResponse = PaginatedSearchResult<InventoryItem>;
 
 export function validateArrayResponse<T>(response: any, functionName: string): T[] {
   if (!Array.isArray(response)) {
@@ -64,9 +62,19 @@ export function validatePaginatedResponse(
 
 export function mapInventoryItems(items: PaginatedInventoryResponse['items']): InventoryItem[] {
   return items.map((item: any) => {
-    const idValue = item?._id || item?.id;
-    if (!idValue) return { ...item } as InventoryItem;
-    return { ...item, _id: idValue, id: idValue } as InventoryItem;
+    return { ...item } as InventoryItem;
   });
+}
+
+/**
+ * Normalize MongoDB _id to id on a response object.
+ * The Go server may return _id instead of id depending on serialization.
+ */
+export function normalizeMongoId<T>(obj: T): T {
+  const o = obj as any;
+  if (o && !o.id && o._id) {
+    return { ...o, id: o._id };
+  }
+  return obj;
 }
 

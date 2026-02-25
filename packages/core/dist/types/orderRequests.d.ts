@@ -2,8 +2,7 @@ import type { TagCategory } from './inventory';
 export type OrderRequestStatus = 'pending' | 'placed' | 'approved' | 'rejected' | 'fulfilled' | 'cancelled';
 export type OrderRequestUrgency = 'high' | 'medium' | 'low';
 export interface OrderRequestItem {
-    _id: string;
-    id?: string;
+    id: string;
     name: string;
     description?: string;
     notes?: string;

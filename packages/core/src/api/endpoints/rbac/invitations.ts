@@ -8,7 +8,7 @@ import type {
   ClaimInvitationRequest,
   LabMembership,
 } from '../../../types/rbac';
-import { validateArrayResponse } from '../../responseValidation';
+import { validateArrayResponse, normalizeMongoId } from '../../responseValidation';
 
 /**
  * Get all invitations for the current lab
@@ -22,7 +22,7 @@ export async function getInvitations(
     path: '/get-invitations',
     query: includeExpired ? { includeExpired: 'true' } : undefined,
   });
-  return validateArrayResponse<EnrichedInvitation>(res, 'getInvitations');
+  return validateArrayResponse<EnrichedInvitation>(res, 'getInvitations').map(normalizeMongoId);
 }
 
 /**

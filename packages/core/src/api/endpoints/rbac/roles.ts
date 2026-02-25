@@ -9,7 +9,7 @@ import type {
   InitializeLabWithAdminResponse,
   CreateSelfMembershipResponse,
 } from '../../../types/rbac';
-import { validateArrayResponse } from '../../responseValidation';
+import { validateArrayResponse, normalizeMongoId } from '../../responseValidation';
 
 /**
  * Get all roles for the current lab
@@ -19,7 +19,7 @@ export async function getRoles(client: ApiClient): Promise<Role[]> {
     method: 'GET',
     path: '/get-roles',
   });
-  return validateArrayResponse<Role>(res, 'getRoles');
+  return validateArrayResponse<Role>(res, 'getRoles').map(normalizeMongoId);
 }
 
 /**

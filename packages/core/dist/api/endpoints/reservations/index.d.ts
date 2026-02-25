@@ -22,9 +22,21 @@ export declare function deleteMachineTag(client: ApiClient, id: string): Promise
  */
 export declare function fetchMachines(client: ApiClient, params?: ListMachinesParams): Promise<Machine[]>;
 /**
- * Fetch a single machine by ID.
+ * Fetch machines from collaborating labs only.
+ * Returns machines from labs with accepted collaboration where:
+ * - Machine is active
+ * - Machine's sharingPolicy allows access from the requesting lab
  */
-export declare function fetchMachine(client: ApiClient, id: string): Promise<Machine>;
+export declare function fetchCollaboratorMachines(client: ApiClient, params?: {
+    activeOnly?: boolean;
+}): Promise<Machine[]>;
+/**
+ * Fetch a single machine by ID.
+ * Set allowCollaborator=true to allow fetching machines from collaborating labs.
+ */
+export declare function fetchMachine(client: ApiClient, id: string, options?: {
+    allowCollaborator?: boolean;
+}): Promise<Machine>;
 /**
  * Create a new machine.
  */

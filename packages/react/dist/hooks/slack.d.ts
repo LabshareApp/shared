@@ -2,13 +2,12 @@
  * React Query Hooks for Slack Integration
  */
 import type { ApiClient } from '@labshare/shared-core';
-import type { SlackIntegration, SlackConnectRequest, SlackUpdateSettingsRequest, SlackChannelsResponse } from '@labshare/shared-core';
 /**
  * Hook to get the current Slack integration
  */
 export declare function useSlackIntegration(client: ApiClient, options?: {
     enabled?: boolean;
-}): import("@tanstack/react-query").UseQueryResult<SlackIntegration | null, Error>;
+}): import("@tanstack/react-query").UseQueryResult<any, Error>;
 /**
  * Hook to get the Slack OAuth URL
  */

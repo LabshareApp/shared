@@ -114,14 +114,14 @@ export enum StateOfMatter {
 }
 
 export interface InventoryItem {
-  _id: string;
-  id?: string;
+  id: string;
   name: string;
   description?: string;
   brands: { [brandName: string]: BrandInfo };
   totalQuantity: number;
   units?: string;
   userId?: string;
+  uploadedByUserName?: string; // Resolved user name (server-side populated)
   labId: string;
   isPrivate?: boolean; // If true, item is hidden from collaborating labs
   createdAt: string;

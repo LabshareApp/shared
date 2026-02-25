@@ -63,4 +63,58 @@ export interface RegisterInstitutionUserResponse {
  * @returns The registration response
  */
 export declare function registerInstitutionUser(baseUrl: string, data: RegisterInstitutionUserRequest): Promise<RegisterInstitutionUserResponse>;
+/**
+ * Request for invitation-based user registration
+ */
+export interface RegisterWithInvitationRequest {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    inviteCode: string;
+}
+/**
+ * Response from invitation-based registration
+ */
+export interface RegisterWithInvitationResponse {
+    userId: string;
+    labId: string;
+    email: string;
+    message: string;
+}
+/**
+ * Register a new user via invitation.
+ * Creates the auth user (email auto-confirmed), profile with lab_id,
+ * and lab membership with the invitation's role. Marks the invitation as accepted.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param data - The registration data including invite code
+ * @returns The registration response with userId and labId
+ */
+export declare function registerWithInvitation(baseUrl: string, data: RegisterWithInvitationRequest): Promise<RegisterWithInvitationResponse>;
+/**
+ * User info for display purposes
+ */
+export interface UserNameInfo {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+/**
+ * Response from user lookup
+ */
+export interface LookupUsersResponse {
+    users: UserNameInfo[];
+}
+/**
+ * Look up user names by IDs.
+ * This is used for displaying user names in the UI (e.g., "Uploaded By" column).
+ *
+ * @param client - The API client
+ * @param userIds - Array of user IDs to look up
+ * @returns Array of user info objects
+ */
+export declare function lookupUsers(client: import('../ApiClient').ApiClient, userIds: string[]): Promise<UserNameInfo[]>;
 //# sourceMappingURL=auth.d.ts.map

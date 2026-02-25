@@ -5,6 +5,7 @@ exports.createMachineTag = createMachineTag;
 exports.updateMachineTag = updateMachineTag;
 exports.deleteMachineTag = deleteMachineTag;
 exports.fetchMachines = fetchMachines;
+exports.fetchCollaboratorMachines = fetchCollaboratorMachines;
 exports.fetchMachine = fetchMachine;
 exports.createMachine = createMachine;
 exports.updateMachine = updateMachine;
@@ -33,15 +34,6 @@ exports.fetchSlotColors = fetchSlotColors;
 exports.updateSlotColors = updateSlotColors;
 const reservations_1 = require("../../../types/reservations");
 const responseValidation_1 = require("../../responseValidation");
-function normalizeId(obj) {
-    const idValue = (obj === null || obj === void 0 ? void 0 : obj._id) || (obj === null || obj === void 0 ? void 0 : obj.id);
-    if (!idValue)
-        return obj;
-    return { ...obj, _id: idValue, id: idValue };
-}
-function normalizeArray(arr) {
-    return arr.map(normalizeId);
-}
 // =============================================================================
 // Machine Tags
 // =============================================================================
@@ -53,8 +45,7 @@ async function fetchMachineTags(client) {
         method: 'GET',
         path: '/reservations/tags',
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchMachineTags');
-    return normalizeArray(validated);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchMachineTags');
 }
 /**
  * Create a new machine tag.
@@ -65,8 +56,7 @@ async function createMachineTag(client, data) {
         path: '/reservations/create-tag',
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createMachineTag', ['id', 'name']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createMachineTag', ['id', 'name']);
 }
 /**
  * Update a machine tag.
@@ -109,20 +99,41 @@ async function fetchMachines(client, params) {
         path: '/reservations/machines',
         query: Object.keys(query).length > 0 ? query : undefined,
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchMachines');
-    return normalizeArray(validated);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchMachines');
+}
+/**
+ * Fetch machines from collaborating labs only.
+ * Returns machines from labs with accepted collaboration where:
+ * - Machine is active
+ * - Machine's sharingPolicy allows access from the requesting lab
+ */
+async function fetchCollaboratorMachines(client, params) {
+    const query = {};
+    if (params === null || params === void 0 ? void 0 : params.activeOnly) {
+        query.activeOnly = 'true';
+    }
+    const response = await client.request({
+        method: 'GET',
+        path: '/reservations/machines/collaborator',
+        query: Object.keys(query).length > 0 ? query : undefined,
+    });
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchCollaboratorMachines');
 }
 /**
  * Fetch a single machine by ID.
+ * Set allowCollaborator=true to allow fetching machines from collaborating labs.
  */
-async function fetchMachine(client, id) {
+async function fetchMachine(client, id, options) {
+    const query = { id };
+    if (options === null || options === void 0 ? void 0 : options.allowCollaborator) {
+        query.allowCollaborator = 'true';
+    }
     const response = await client.request({
         method: 'GET',
         path: '/reservations/machine',
-        query: { id },
+        query,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchMachine', ['id', 'name']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchMachine', ['id', 'name']);
 }
 /**
  * Create a new machine.
@@ -133,8 +144,7 @@ async function createMachine(client, data) {
         path: '/reservations/create-machine',
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createMachine', ['id', 'name']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createMachine', ['id', 'name']);
 }
 /**
  * Update a machine.
@@ -191,8 +201,7 @@ async function fetchReservations(client, params) {
         path: '/reservations/list',
         query,
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchReservations');
-    return normalizeArray(validated);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchReservations');
 }
 /**
  * Fetch the current user's reservations.
@@ -207,8 +216,7 @@ async function fetchMyReservations(client, params) {
         path: '/reservations/my-reservations',
         query: Object.keys(query).length > 0 ? query : undefined,
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchMyReservations');
-    return normalizeArray(validated);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchMyReservations');
 }
 /**
  * Fetch a single reservation by ID.
@@ -219,8 +227,7 @@ async function fetchReservation(client, id) {
         path: '/reservations/reservation',
         query: { id },
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchReservation', ['id', 'machineId']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchReservation', ['id', 'machineId']);
 }
 /**
  * Check availability for a time slot.
@@ -250,8 +257,7 @@ async function createReservation(client, data) {
         path: '/reservations/create',
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createReservation', ['id', 'machineId']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createReservation', ['id', 'machineId']);
 }
 /**
  * Update a reservation.
@@ -282,8 +288,7 @@ async function fetchPendingApprovals(client) {
         method: 'GET',
         path: '/reservations/pending-approvals',
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchPendingApprovals');
-    return normalizeArray(validated);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchPendingApprovals');
 }
 /**
  * Approve a reservation request.
@@ -342,8 +347,7 @@ async function fetchRecurringRules(client) {
         method: 'GET',
         path: '/reservations/recurring-rules',
     });
-    const validated = (0, responseValidation_1.validateArrayResponse)(response, 'fetchRecurringRules');
-    return normalizeArray(validated);
+    return (0, responseValidation_1.validateArrayResponse)(response, 'fetchRecurringRules');
 }
 /**
  * Fetch a single recurring rule by ID.
@@ -354,8 +358,7 @@ async function fetchRecurringRule(client, id) {
         path: '/reservations/recurring-rule',
         query: { id },
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'fetchRecurringRule', ['id', 'machineId']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchRecurringRule', ['id', 'machineId']);
 }
 /**
  * Create a new recurring rule.
@@ -366,8 +369,7 @@ async function createRecurringRule(client, data) {
         path: '/reservations/create-recurring',
         body: data,
     });
-    const validated = (0, responseValidation_1.validateObjectResponse)(response, 'createRecurringRule', ['id', 'machineId']);
-    return normalizeId(validated);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'createRecurringRule', ['id', 'machineId']);
 }
 /**
  * Update a recurring rule.

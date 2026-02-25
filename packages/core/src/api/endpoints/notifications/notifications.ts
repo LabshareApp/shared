@@ -111,7 +111,7 @@ export async function createTopic(
     path: '/notifications/topics/create',
     body: topicData,
   });
-  return validateObjectResponse(res, 'createTopic', ['_id', 'name']) as any;
+  return validateObjectResponse(res, 'createTopic', ['id', 'name']) as any;
 }
 
 export async function listTopics(client: ApiClient, type?: 'inventory'): Promise<Topic[]> {

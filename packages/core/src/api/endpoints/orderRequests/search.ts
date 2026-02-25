@@ -4,15 +4,9 @@ import type { OrderRequestItem } from '../../../types/orderRequests';
 import { validatePaginatedResponse } from '../../responseValidation';
 
 type PaginatedOrderRequestResponse = {
-  items: (Omit<OrderRequestItem, 'id'> & { _id?: string; id?: string })[];
+  items: OrderRequestItem[];
   totalCount: number;
 };
-
-function normalize(item: any): OrderRequestItem {
-  const idValue = item?._id || item?.id;
-  if (!idValue) return item as OrderRequestItem;
-  return { ...item, _id: idValue, id: idValue } as OrderRequestItem;
-}
 
 export async function searchOrderRequests(
   client: ApiClient,
@@ -39,9 +33,5 @@ export async function searchOrderRequests(
   });
 
   const validated = validatePaginatedResponse(response, 'searchOrderRequests') as any;
-  return { items: (validated.items ?? []).map(normalize), totalCount: validated.totalCount };
+  return { items: validated.items ?? [], totalCount: validated.totalCount };
 }
-
-
-
-

@@ -8,6 +8,7 @@ export type ToolCondition = 'good' | 'damaged' | 'needs_maintenance';
 export type ToolAccessAction = 'view' | 'checkout' | 'return' | 'access';
 export type ToolOwnershipLevel = 'lab' | 'department';
 export type ToolBillingType = 'hourly' | 'daily' | 'flat' | 'free';
+export type ToolSharingPolicy = 'institution' | 'department' | 'lab_only' | 'collaborators';
 export interface ToolPricing {
     billingType: ToolBillingType;
     hourlyRate?: number;
@@ -18,6 +19,7 @@ export interface ToolPricing {
 export interface CurrentCheckout {
     userId: string;
     userEmail: string;
+    userName?: string;
     labId: string;
     checkedOutAt: string;
     dueDate?: string;
@@ -36,6 +38,7 @@ export interface Tool {
     departmentId?: string;
     departmentName?: string;
     institutionId?: string;
+    sharingPolicy?: ToolSharingPolicy;
     isShareable: boolean;
     sharedWithLabIds?: string[];
     sharedWithDepartmentIds?: string[];
@@ -55,6 +58,7 @@ export interface ToolCheckout {
     toolName: string;
     userId: string;
     userEmail: string;
+    userName?: string;
     labId: string;
     labName: string;
     checkedOutAt: string;
@@ -95,6 +99,7 @@ export interface CreateToolData {
     departmentId?: string;
     departmentName?: string;
     institutionId?: string;
+    sharingPolicy?: ToolSharingPolicy;
     isShareable?: boolean;
     sharedWithLabIds?: string[];
     sharedWithDepartmentIds?: string[];
@@ -114,6 +119,7 @@ export interface UpdateToolData {
     departmentId?: string;
     departmentName?: string;
     institutionId?: string;
+    sharingPolicy?: ToolSharingPolicy;
     isShareable?: boolean;
     sharedWithLabIds?: string[];
     sharedWithDepartmentIds?: string[];

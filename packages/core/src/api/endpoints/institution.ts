@@ -8,6 +8,7 @@ import { ApiClient, ApiRequest } from '../ApiClient';
 import type {
   Institution,
   InstitutionPublicInfo,
+  InstitutionAddress,
   Department,
   CreateDepartmentRequest,
   UpdateDepartmentRequest,
@@ -19,12 +20,20 @@ import type {
   InstitutionCollaborationRequest,
   InstitutionCollaborationActionRequest,
   InstitutionLabInfo,
-  InstitutionDirectoryResponse,
   CollaborationHistoryResponse,
   InstitutionOrderRequestsParams,
   InstitutionOrderRequestsResponse,
   InstitutionInventoryParams,
   InstitutionInventoryResponse,
+  UpdateInstitutionMemberRoleRequest,
+  InstitutionInvitation,
+  InstitutionInvitationDetails,
+  CreateInstitutionInvitationRequest,
+  ClaimInstitutionInvitationResponse,
+  InstitutionPermissionsByResource,
+  CreateInstitutionRoleRequest,
+  UpdateInstitutionRoleRequest,
+  DeleteInstitutionRoleRequest,
 } from '../../types/institution';
 
 // --- Institution Endpoints ---
@@ -439,68 +448,6 @@ export async function validateInstitutionCodes(
   return results;
 }
 
-// --- Update Member Role ---
-
-/**
- * Request to update an institution member's role
- */
-export interface UpdateInstitutionMemberRoleRequest {
-  membershipId: string;
-  roleName: string;
-  departmentId?: string;
-}
-
-/**
- * Update an institution member's role (admin only)
- */
-export async function updateInstitutionMemberRole(
-  client: ApiClient,
-  data: UpdateInstitutionMemberRoleRequest
-): Promise<void> {
-  const request: ApiRequest = {
-    method: 'POST',
-    path: '/institution/update-member-role',
-    body: data,
-  };
-  return client.request(request);
-}
-
-// --- Institution Directory & Search ---
-
-/**
- * Get the hierarchical directory of departments, labs, and members
- */
-export async function getInstitutionDirectory(
-  client: ApiClient,
-  institutionId: string
-): Promise<InstitutionDirectoryResponse> {
-  const request: ApiRequest = {
-    method: 'GET',
-    path: '/institution/directory',
-    query: { institutionId },
-  };
-  return client.request(request);
-}
-
-/**
- * Search institutions by name or code
- */
-export async function searchInstitutions(
-  client: ApiClient,
-  query?: string,
-  limit?: number
-): Promise<InstitutionPublicInfo[]> {
-  const request: ApiRequest = {
-    method: 'GET',
-    path: '/institutions/search',
-    query: {
-      ...(query ? { q: query } : {}),
-      ...(limit ? { limit: String(limit) } : {}),
-    },
-  };
-  return client.request(request);
-}
-
 // --- Institution Admin Dashboard Endpoints ---
 
 /**
@@ -590,6 +537,214 @@ export async function joinLab(
   const request: ApiRequest = {
     method: 'POST',
     path: '/join-lab',
+    body: data,
+  };
+  return client.request(request);
+}
+
+// --- Institution Role CRUD ---
+
+/**
+ * Get all roles for an institution
+ */
+export async function getInstitutionRoles(
+  client: ApiClient,
+  institutionId: string
+): Promise<InstitutionRole[]> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/roles',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Get available institution permissions grouped by resource
+ */
+export async function getInstitutionAvailablePermissions(
+  client: ApiClient,
+  institutionId: string
+): Promise<InstitutionPermissionsByResource> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/available-permissions',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Create a custom institution role (admin only)
+ */
+export async function createInstitutionRole(
+  client: ApiClient,
+  data: CreateInstitutionRoleRequest
+): Promise<InstitutionRole> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/create-role',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * Update an institution role (admin only)
+ */
+export async function updateInstitutionRole(
+  client: ApiClient,
+  data: UpdateInstitutionRoleRequest
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'PUT',
+    path: '/institution/update-role',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * Delete an institution role (admin only, non-default only)
+ */
+export async function deleteInstitutionRole(
+  client: ApiClient,
+  data: DeleteInstitutionRoleRequest
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/delete-role',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * Update institution profile (admin only)
+ */
+export async function updateInstitutionProfile(
+  client: ApiClient,
+  institutionId: string,
+  data: { name?: string; website?: string; address?: InstitutionAddress }
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'PUT',
+    path: '/institution/update-profile',
+    query: { institutionId },
+    body: data,
+  };
+  return client.request(request);
+}
+
+// --- Institution Member Role Update ---
+
+/**
+ * Update an institution member's role (admin only)
+ */
+export async function updateInstitutionMemberRole(
+  client: ApiClient,
+  data: UpdateInstitutionMemberRoleRequest
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/update-member-role',
+    body: data,
+  };
+  return client.request(request);
+}
+
+// --- Institution Invitations ---
+
+/**
+ * Create an institution invitation (admin only)
+ */
+export async function createInstitutionInvitation(
+  client: ApiClient,
+  data: CreateInstitutionInvitationRequest
+): Promise<InstitutionInvitation> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/create-invitation',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * List institution invitations (admin only)
+ */
+export async function listInstitutionInvitations(
+  client: ApiClient,
+  institutionId: string
+): Promise<InstitutionInvitation[]> {
+  const request: ApiRequest = {
+    method: 'GET',
+    path: '/institution/invitations',
+    query: { institutionId },
+  };
+  return client.request(request);
+}
+
+/**
+ * Cancel an institution invitation (admin only)
+ */
+export async function cancelInstitutionInvitation(
+  client: ApiClient,
+  data: { invitationId: string }
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/cancel-invitation',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * Resend an institution invitation email (admin only)
+ */
+export async function resendInstitutionInvitation(
+  client: ApiClient,
+  data: { invitationId: string }
+): Promise<void> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/resend-invitation',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
+ * Get institution invitation details by code (PUBLIC - for signup flow)
+ */
+export async function getInstitutionInvitationByCode(
+  baseUrl: string,
+  code: string
+): Promise<InstitutionInvitationDetails> {
+  const response = await fetch(`${baseUrl}/repository/institution-invitation-by-code?code=${encodeURIComponent(code)}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `Failed to get invitation: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Claim an institution invitation (creates membership)
+ */
+export async function claimInstitutionInvitation(
+  client: ApiClient,
+  data: { inviteCode: string }
+): Promise<ClaimInstitutionInvitationResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/claim-invitation',
     body: data,
   };
   return client.request(request);

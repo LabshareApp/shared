@@ -4,7 +4,7 @@
  * Provides API client functions for institution management operations.
  */
 import { ApiClient } from '../ApiClient';
-import type { Institution, InstitutionPublicInfo, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, InstitutionMemberInfo, InstitutionRole, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo, InstitutionDirectoryResponse, CollaborationHistoryResponse, InstitutionOrderRequestsParams, InstitutionOrderRequestsResponse, InstitutionInventoryParams, InstitutionInventoryResponse } from '../../types/institution';
+import type { Institution, InstitutionPublicInfo, InstitutionAddress, Department, CreateDepartmentRequest, UpdateDepartmentRequest, LabDepartmentRequest, InstitutionMembership, InstitutionMemberInfo, InstitutionRole, AllowedCollaboration, InstitutionCollaborationRequest, InstitutionCollaborationActionRequest, InstitutionLabInfo, CollaborationHistoryResponse, InstitutionOrderRequestsParams, InstitutionOrderRequestsResponse, InstitutionInventoryParams, InstitutionInventoryResponse, UpdateInstitutionMemberRoleRequest, InstitutionInvitation, InstitutionInvitationDetails, CreateInstitutionInvitationRequest, ClaimInstitutionInvitationResponse, InstitutionPermissionsByResource, CreateInstitutionRoleRequest, UpdateInstitutionRoleRequest, DeleteInstitutionRoleRequest } from '../../types/institution';
 /**
  * Get all institutions the current user belongs to
  */
@@ -128,26 +128,6 @@ export declare function registerUserWithInstitutions(baseUrl: string, data: Regi
  */
 export declare function validateInstitutionCodes(baseUrl: string, codes: string[]): Promise<InstitutionPublicInfo[]>;
 /**
- * Request to update an institution member's role
- */
-export interface UpdateInstitutionMemberRoleRequest {
-    membershipId: string;
-    roleName: string;
-    departmentId?: string;
-}
-/**
- * Update an institution member's role (admin only)
- */
-export declare function updateInstitutionMemberRole(client: ApiClient, data: UpdateInstitutionMemberRoleRequest): Promise<void>;
-/**
- * Get the hierarchical directory of departments, labs, and members
- */
-export declare function getInstitutionDirectory(client: ApiClient, institutionId: string): Promise<InstitutionDirectoryResponse>;
-/**
- * Search institutions by name or code
- */
-export declare function searchInstitutions(client: ApiClient, query?: string, limit?: number): Promise<InstitutionPublicInfo[]>;
-/**
  * Get collaboration history with statistics (admin only)
  */
 export declare function getCollaborationHistory(client: ApiClient, institutionId: string): Promise<CollaborationHistoryResponse>;
@@ -176,4 +156,66 @@ export interface JoinLabResponse {
  * Join an existing lab (for institution-only users)
  */
 export declare function joinLab(client: ApiClient, data: JoinLabRequest): Promise<JoinLabResponse>;
+/**
+ * Get all roles for an institution
+ */
+export declare function getInstitutionRoles(client: ApiClient, institutionId: string): Promise<InstitutionRole[]>;
+/**
+ * Get available institution permissions grouped by resource
+ */
+export declare function getInstitutionAvailablePermissions(client: ApiClient, institutionId: string): Promise<InstitutionPermissionsByResource>;
+/**
+ * Create a custom institution role (admin only)
+ */
+export declare function createInstitutionRole(client: ApiClient, data: CreateInstitutionRoleRequest): Promise<InstitutionRole>;
+/**
+ * Update an institution role (admin only)
+ */
+export declare function updateInstitutionRole(client: ApiClient, data: UpdateInstitutionRoleRequest): Promise<void>;
+/**
+ * Delete an institution role (admin only, non-default only)
+ */
+export declare function deleteInstitutionRole(client: ApiClient, data: DeleteInstitutionRoleRequest): Promise<void>;
+/**
+ * Update institution profile (admin only)
+ */
+export declare function updateInstitutionProfile(client: ApiClient, institutionId: string, data: {
+    name?: string;
+    website?: string;
+    address?: InstitutionAddress;
+}): Promise<void>;
+/**
+ * Update an institution member's role (admin only)
+ */
+export declare function updateInstitutionMemberRole(client: ApiClient, data: UpdateInstitutionMemberRoleRequest): Promise<void>;
+/**
+ * Create an institution invitation (admin only)
+ */
+export declare function createInstitutionInvitation(client: ApiClient, data: CreateInstitutionInvitationRequest): Promise<InstitutionInvitation>;
+/**
+ * List institution invitations (admin only)
+ */
+export declare function listInstitutionInvitations(client: ApiClient, institutionId: string): Promise<InstitutionInvitation[]>;
+/**
+ * Cancel an institution invitation (admin only)
+ */
+export declare function cancelInstitutionInvitation(client: ApiClient, data: {
+    invitationId: string;
+}): Promise<void>;
+/**
+ * Resend an institution invitation email (admin only)
+ */
+export declare function resendInstitutionInvitation(client: ApiClient, data: {
+    invitationId: string;
+}): Promise<void>;
+/**
+ * Get institution invitation details by code (PUBLIC - for signup flow)
+ */
+export declare function getInstitutionInvitationByCode(baseUrl: string, code: string): Promise<InstitutionInvitationDetails>;
+/**
+ * Claim an institution invitation (creates membership)
+ */
+export declare function claimInstitutionInvitation(client: ApiClient, data: {
+    inviteCode: string;
+}): Promise<ClaimInstitutionInvitationResponse>;
 //# sourceMappingURL=institution.d.ts.map

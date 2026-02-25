@@ -12,7 +12,9 @@ import type {
   MyCheckoutsResponse,
   ListToolsParams,
   ListCheckoutsParams,
+  ToolRequiredFields,
 } from '../../../types/tools';
+import { DEFAULT_TOOL_REQUIRED_FIELDS } from '../../../types/tools';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
 // =============================================================================
@@ -393,4 +395,40 @@ export async function getToolMaintenanceHistory(
 ): Promise<MaintenanceRequest[]> {
   const response = await listMaintenanceRequests(client, { toolId });
   return response.requests;
+}
+
+// =============================================================================
+// Lab Settings - Tool Required Fields
+// =============================================================================
+
+/**
+ * Fetch the tool required fields configuration for the current lab.
+ * Returns defaults if the lab has no custom configuration.
+ */
+export async function fetchToolRequiredFields(
+  client: ApiClient
+): Promise<ToolRequiredFields> {
+  try {
+    const response = await client.request<ToolRequiredFields>({
+      method: 'GET',
+      path: '/lab-settings/tool-required-fields',
+    });
+    return response ?? DEFAULT_TOOL_REQUIRED_FIELDS;
+  } catch {
+    return DEFAULT_TOOL_REQUIRED_FIELDS;
+  }
+}
+
+/**
+ * Update the tool required fields configuration for the current lab (admin only).
+ */
+export async function updateToolRequiredFields(
+  client: ApiClient,
+  fields: ToolRequiredFields
+): Promise<ToolRequiredFields> {
+  return client.request<ToolRequiredFields>({
+    method: 'PUT',
+    path: '/lab-settings/tool-required-fields',
+    body: fields,
+  });
 }

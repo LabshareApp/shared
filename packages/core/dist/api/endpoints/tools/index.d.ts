@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { Tool, ToolCheckout, CreateToolData, UpdateToolData, CheckoutToolData, ReturnToolData, LogAccessData, ToolListResponse, CheckoutListResponse, MyCheckoutsResponse, ListToolsParams, ListCheckoutsParams } from '../../../types/tools';
+import type { Tool, ToolCheckout, CreateToolData, UpdateToolData, CheckoutToolData, ReturnToolData, LogAccessData, ToolListResponse, CheckoutListResponse, MyCheckoutsResponse, ListToolsParams, ListCheckoutsParams, ToolRequiredFields } from '../../../types/tools';
 /**
  * Fetch all tools for the authenticated lab.
  */
@@ -94,4 +94,13 @@ export declare function updateMaintenanceRequest(client: ApiClient, requestId: s
  * Get maintenance requests for a specific tool.
  */
 export declare function getToolMaintenanceHistory(client: ApiClient, toolId: string): Promise<MaintenanceRequest[]>;
+/**
+ * Fetch the tool required fields configuration for the current lab.
+ * Returns defaults if the lab has no custom configuration.
+ */
+export declare function fetchToolRequiredFields(client: ApiClient): Promise<ToolRequiredFields>;
+/**
+ * Update the tool required fields configuration for the current lab (admin only).
+ */
+export declare function updateToolRequiredFields(client: ApiClient, fields: ToolRequiredFields): Promise<ToolRequiredFields>;
 //# sourceMappingURL=index.d.ts.map

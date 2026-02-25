@@ -176,4 +176,27 @@ export interface ListCheckoutsParams {
 }
 export declare const TOOL_CATEGORIES: readonly ["Hand Tool", "Power Tool", "Measurement", "Cutting", "Safety Equipment", "Cleaning", "Storage", "Electrical", "Optical", "Laboratory Equipment", "Other"];
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
+/**
+ * Configurable required fields for tool creation/editing.
+ * When true, the field is required when creating or editing a tool.
+ */
+export interface ToolRequiredFields {
+    description: boolean;
+    serialNumber: boolean;
+    location: boolean;
+    imageUrl: boolean;
+    maxCheckoutDays: boolean;
+}
+/**
+ * Default required fields configuration (all false = no extra required fields)
+ */
+export declare const DEFAULT_TOOL_REQUIRED_FIELDS: ToolRequiredFields;
+/**
+ * Metadata for each configurable required field (used in settings UI)
+ */
+export declare const TOOL_REQUIRED_FIELD_OPTIONS: {
+    key: keyof ToolRequiredFields;
+    label: string;
+    description: string;
+}[];
 //# sourceMappingURL=tools.d.ts.map

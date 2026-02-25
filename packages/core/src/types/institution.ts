@@ -123,6 +123,7 @@ export interface InstitutionRole {
   id: string;
   institutionId: string;
   name: InstitutionRoleName;
+  description?: string;
   permissions: InstitutionPermission[];
   isDefault: boolean;
   createdAt: string;
@@ -130,22 +131,62 @@ export interface InstitutionRole {
 }
 
 /**
- * Default institution role names
+ * Institution role name — includes default roles and any custom roles
  */
-export type InstitutionRoleName =
-  | 'institution_admin'
-  | 'department_head'
-  | 'observer';
+export type InstitutionRoleName = string;
 
 /**
  * Available institution-level permissions
  */
 export type InstitutionPermission =
+  // Institution-level
   | 'institution:view'
+  | 'institution:edit'
   | 'institution:admin'
+  // Members
+  | 'members:view'
+  | 'members:invite'
+  | 'members:edit_roles'
+  | 'members:remove'
+  // Departments
   | 'department:view'
   | 'department:admin'
-  | 'department:approve_orders';
+  // Orders (cross-lab)
+  | 'orders:view'
+  | 'orders:approve'
+  // Inventory (cross-lab)
+  | 'inventory:view'
+  // Collaborations
+  | 'collaborations:view'
+  | 'collaborations:manage'
+  // Sharing
+  | 'sharing:view';
+
+/**
+ * Human-readable labels for institution permissions
+ */
+export const INSTITUTION_PERMISSION_LABELS: Record<InstitutionPermission, string> = {
+  'institution:view': 'View Institution',
+  'institution:edit': 'Edit Institution Settings',
+  'institution:admin': 'Full Admin Access',
+  'members:view': 'View Members',
+  'members:invite': 'Invite Members',
+  'members:edit_roles': 'Edit Member Roles',
+  'members:remove': 'Remove Members',
+  'department:view': 'View Departments',
+  'department:admin': 'Manage Departments',
+  'orders:view': 'View All Orders',
+  'orders:approve': 'Approve Orders',
+  'inventory:view': 'View All Inventory',
+  'collaborations:view': 'View Collaborations',
+  'collaborations:manage': 'Manage Collaborations',
+  'sharing:view': 'View Sharing History',
+};
+
+/**
+ * Permissions grouped by resource category
+ */
+export type InstitutionPermissionsByResource = Record<string, InstitutionPermission[]>;
 
 /**
  * User's membership in an institution
@@ -329,28 +370,7 @@ export function canApproveOrders(
   membership: InstitutionMembership | null,
   role: InstitutionRole | null
 ): boolean {
-  return hasInstitutionPermission(membership, role, 'department:approve_orders');
-}
-
-// --- Institution Directory Types ---
-
-/**
- * Department with its labs and members for the directory view
- */
-export interface DirectoryDepartment {
-  id: string;
-  name: string;
-  description?: string;
-  labs: InstitutionLabInfo[];
-  members: InstitutionMemberInfo[];
-}
-
-/**
- * Full institution directory response
- */
-export interface InstitutionDirectoryResponse {
-  departments: DirectoryDepartment[];
-  unassignedLabs: InstitutionLabInfo[];
+  return hasInstitutionPermission(membership, role, 'orders:approve');
 }
 
 // --- Institution Admin Dashboard Types ---
@@ -466,4 +486,108 @@ export interface InstitutionInventoryItem {
 export interface InstitutionInventoryResponse {
   items: InstitutionInventoryItem[];
   totalCount: number;
+}
+
+// --- Institution Member Role Update ---
+
+/**
+ * Request to update an institution member's role
+ */
+export interface UpdateInstitutionMemberRoleRequest {
+  membershipId: string;
+  roleName: InstitutionRoleName;
+  departmentId?: string;
+}
+
+// --- Institution Role CRUD ---
+
+/**
+ * Request to create a custom institution role
+ */
+export interface CreateInstitutionRoleRequest {
+  institutionId: string;
+  name: string;
+  description?: string;
+  permissions: InstitutionPermission[];
+}
+
+/**
+ * Request to update an institution role
+ */
+export interface UpdateInstitutionRoleRequest {
+  roleId: string;
+  name: string;
+  description?: string;
+  permissions: InstitutionPermission[];
+}
+
+/**
+ * Request to delete an institution role
+ */
+export interface DeleteInstitutionRoleRequest {
+  roleId: string;
+}
+
+// --- Institution Invitations ---
+
+/**
+ * Status of an institution invitation
+ */
+export type InstitutionInvitationStatus = 'pending' | 'accepted' | 'expired' | 'canceled';
+
+/**
+ * Institution invitation document (stored in MongoDB)
+ */
+export interface InstitutionInvitation {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  institutionId: string;
+  roleName: InstitutionRoleName;
+  departmentId?: string;
+  invitedBy: string;
+  inviteCode: string;
+  status: InstitutionInvitationStatus;
+  expiresAt: string;
+  createdAt: string;
+  acceptedAt?: string;
+}
+
+/**
+ * Public details of an institution invitation (returned for signup flow)
+ */
+export interface InstitutionInvitationDetails {
+  inviteCode: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  institutionId: string;
+  institutionName: string;
+  roleName: InstitutionRoleName;
+  departmentName?: string;
+  status: InstitutionInvitationStatus;
+  expiresAt: string;
+}
+
+/**
+ * Request to create an institution invitation
+ */
+export interface CreateInstitutionInvitationRequest {
+  email: string;
+  firstName: string;
+  lastName: string;
+  institutionId: string;
+  roleName: InstitutionRoleName;
+  departmentId?: string;
+}
+
+/**
+ * Response from claiming an institution invitation
+ */
+export interface ClaimInstitutionInvitationResponse {
+  membershipId: string;
+  institutionId: string;
+  roleId: string;
+  departmentId?: string;
 }

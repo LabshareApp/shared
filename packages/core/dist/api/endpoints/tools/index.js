@@ -18,6 +18,9 @@ exports.getMaintenanceRequest = getMaintenanceRequest;
 exports.listMaintenanceRequests = listMaintenanceRequests;
 exports.updateMaintenanceRequest = updateMaintenanceRequest;
 exports.getToolMaintenanceHistory = getToolMaintenanceHistory;
+exports.fetchToolRequiredFields = fetchToolRequiredFields;
+exports.updateToolRequiredFields = updateToolRequiredFields;
+const tools_1 = require("../../../types/tools");
 const responseValidation_1 = require("../../responseValidation");
 // =============================================================================
 // Tool CRUD
@@ -279,5 +282,34 @@ async function updateMaintenanceRequest(client, requestId, data) {
 async function getToolMaintenanceHistory(client, toolId) {
     const response = await listMaintenanceRequests(client, { toolId });
     return response.requests;
+}
+// =============================================================================
+// Lab Settings - Tool Required Fields
+// =============================================================================
+/**
+ * Fetch the tool required fields configuration for the current lab.
+ * Returns defaults if the lab has no custom configuration.
+ */
+async function fetchToolRequiredFields(client) {
+    try {
+        const response = await client.request({
+            method: 'GET',
+            path: '/lab-settings/tool-required-fields',
+        });
+        return response !== null && response !== void 0 ? response : tools_1.DEFAULT_TOOL_REQUIRED_FIELDS;
+    }
+    catch {
+        return tools_1.DEFAULT_TOOL_REQUIRED_FIELDS;
+    }
+}
+/**
+ * Update the tool required fields configuration for the current lab (admin only).
+ */
+async function updateToolRequiredFields(client, fields) {
+    return client.request({
+        method: 'PUT',
+        path: '/lab-settings/tool-required-fields',
+        body: fields,
+    });
 }
 //# sourceMappingURL=index.js.map

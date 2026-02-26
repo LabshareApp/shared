@@ -117,4 +117,71 @@ export interface LookupUsersResponse {
  * @returns Array of user info objects
  */
 export declare function lookupUsers(client: import('../ApiClient').ApiClient, userIds: string[]): Promise<UserNameInfo[]>;
+/**
+ * Request to complete OAuth signup (user already authenticated via OAuth)
+ */
+export interface CompleteOAuthSignupRequest {
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    role?: string;
+    labId?: string;
+    labName?: string;
+    labDepartment?: string;
+    labCountry?: string;
+    labBuilding?: string;
+    labFloorNumber?: string;
+    institutionCodes?: string[];
+}
+/**
+ * Response from completing OAuth signup
+ */
+export interface CompleteOAuthSignupResponse {
+    userId: string;
+    labId: string;
+    email: string;
+    institutionIds?: string[];
+    pendingInstitutionIds?: string[];
+    hasPendingInstitutions?: boolean;
+}
+/**
+ * Complete OAuth signup for a user who authenticated via OAuth.
+ * The user is already authenticated - this creates their profile and lab.
+ * Requires a valid JWT token in the Authorization header.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param token - JWT access token
+ * @param data - Profile and lab data
+ * @returns The completion response
+ */
+export declare function completeOAuthSignup(baseUrl: string, token: string, data: CompleteOAuthSignupRequest): Promise<CompleteOAuthSignupResponse>;
+/**
+ * Request to complete OAuth signup as institution-only user
+ */
+export interface CompleteOAuthInstitutionSignupRequest {
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    institutionCode: string;
+}
+/**
+ * Response from completing OAuth institution signup
+ */
+export interface CompleteOAuthInstitutionSignupResponse {
+    userId: string;
+    institutionId: string;
+    email: string;
+    status: 'active' | 'pending';
+    isFirstAdmin: boolean;
+}
+/**
+ * Complete OAuth signup for an institution-only user.
+ * Requires a valid JWT token in the Authorization header.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param token - JWT access token
+ * @param data - Profile and institution data
+ * @returns The completion response
+ */
+export declare function completeOAuthInstitutionSignup(baseUrl: string, token: string, data: CompleteOAuthInstitutionSignupRequest): Promise<CompleteOAuthInstitutionSignupResponse>;
 //# sourceMappingURL=auth.d.ts.map

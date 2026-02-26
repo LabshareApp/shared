@@ -5,6 +5,7 @@
  * Provides API client functions for institution management operations.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.listInstitutionRoles = void 0;
 exports.listUserInstitutions = listUserInstitutions;
 exports.listPendingInstitutions = listPendingInstitutions;
 exports.getInstitution = getInstitution;
@@ -34,6 +35,20 @@ exports.getCollaborationHistory = getCollaborationHistory;
 exports.searchInstitutionOrderRequests = searchInstitutionOrderRequests;
 exports.searchInstitutionInventory = searchInstitutionInventory;
 exports.joinLab = joinLab;
+exports.getInstitutionRoles = getInstitutionRoles;
+exports.getInstitutionAvailablePermissions = getInstitutionAvailablePermissions;
+exports.createInstitutionRole = createInstitutionRole;
+exports.updateInstitutionRole = updateInstitutionRole;
+exports.deleteInstitutionRole = deleteInstitutionRole;
+exports.getInstitutionInvitationByCode = getInstitutionInvitationByCode;
+exports.claimInstitutionInvitation = claimInstitutionInvitation;
+exports.createInstitutionInvitation = createInstitutionInvitation;
+exports.listInstitutionInvitations = listInstitutionInvitations;
+exports.cancelInstitutionInvitation = cancelInstitutionInvitation;
+exports.resendInstitutionInvitation = resendInstitutionInvitation;
+exports.placeInstitutionOrder = placeInstitutionOrder;
+exports.revertInstitutionOrder = revertInstitutionOrder;
+exports.updateInstitutionProfile = updateInstitutionProfile;
 // --- Institution Endpoints ---
 /**
  * Get all institutions the current user belongs to
@@ -400,6 +415,170 @@ async function joinLab(client, data) {
     const request = {
         method: 'POST',
         path: '/join-lab',
+        body: data,
+    };
+    return client.request(request);
+}
+// --- Institution Role CRUD ---
+/**
+ * Get all roles for an institution
+ */
+async function getInstitutionRoles(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/roles',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/** Alias for getInstitutionRoles */
+exports.listInstitutionRoles = getInstitutionRoles;
+/**
+ * Get available permissions grouped by resource
+ */
+async function getInstitutionAvailablePermissions(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/available-permissions',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Create a new institution role (admin only)
+ */
+async function createInstitutionRole(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/create-role',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Update an institution role (admin only)
+ */
+async function updateInstitutionRole(client, data) {
+    const request = {
+        method: 'PUT',
+        path: '/institution/update-role',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Delete an institution role (admin only)
+ */
+async function deleteInstitutionRole(client, data) {
+    const request = {
+        method: 'DELETE',
+        path: '/institution/delete-role',
+        query: { roleId: data.roleId },
+    };
+    return client.request(request);
+}
+// --- Institution Invitation Endpoints ---
+/**
+ * Get institution invitation details by invite code (public endpoint)
+ */
+async function getInstitutionInvitationByCode(baseUrl, code) {
+    const response = await fetch(`${baseUrl}/repository/institution/invitation?code=${encodeURIComponent(code)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Failed to get invitation: ${response.status}`);
+    }
+    return response.json();
+}
+/**
+ * Claim an institution invitation (authenticated)
+ */
+async function claimInstitutionInvitation(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/claim-invitation',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Create a new institution invitation (admin only)
+ */
+async function createInstitutionInvitation(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/create-invitation',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * List all invitations for an institution (admin only)
+ */
+async function listInstitutionInvitations(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/invitations',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Cancel an institution invitation (admin only)
+ */
+async function cancelInstitutionInvitation(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/cancel-invitation',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Resend an institution invitation (admin only)
+ */
+async function resendInstitutionInvitation(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/resend-invitation',
+        body: data,
+    };
+    return client.request(request);
+}
+// --- Institution Order Management ---
+/**
+ * Place an institution order (admin only)
+ */
+async function placeInstitutionOrder(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/place-order',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
+ * Revert an institution order back to current (admin only)
+ */
+async function revertInstitutionOrder(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/revert-order',
+        body: data,
+    };
+    return client.request(request);
+}
+// --- Institution Profile ---
+/**
+ * Update institution profile (admin only)
+ */
+async function updateInstitutionProfile(client, institutionId, data) {
+    const request = {
+        method: 'PUT',
+        path: '/institution/update-profile',
+        query: { institutionId },
         body: data,
     };
     return client.request(request);

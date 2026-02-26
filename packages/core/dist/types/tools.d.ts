@@ -176,4 +176,16 @@ export interface ListCheckoutsParams {
 }
 export declare const TOOL_CATEGORIES: readonly ["Hand Tool", "Power Tool", "Measurement", "Cutting", "Safety Equipment", "Cleaning", "Storage", "Electrical", "Optical", "Laboratory Equipment", "Other"];
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
+export interface ToolRequiredFields {
+    description: boolean;
+    serialNumber: boolean;
+    location: boolean;
+    imageUrl: boolean;
+    maxCheckoutDays: boolean;
+}
+export declare const TOOL_REQUIRED_FIELD_OPTIONS: {
+    key: keyof ToolRequiredFields;
+    label: string;
+    description: string;
+}[];
 //# sourceMappingURL=tools.d.ts.map

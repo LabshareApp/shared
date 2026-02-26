@@ -394,3 +394,49 @@ export async function getToolMaintenanceHistory(
   const response = await listMaintenanceRequests(client, { toolId });
   return response.requests;
 }
+
+// =============================================================================
+// Tool Required Fields
+// =============================================================================
+
+import type { ToolRequiredFields } from '../../../types/tools';
+
+const DEFAULT_TOOL_REQUIRED_FIELDS: ToolRequiredFields = {
+  description: false,
+  serialNumber: false,
+  location: false,
+  imageUrl: false,
+  maxCheckoutDays: false,
+};
+
+/**
+ * Fetch the lab's tool required field settings.
+ */
+export async function fetchToolRequiredFields(
+  client: ApiClient
+): Promise<ToolRequiredFields> {
+  try {
+    const response = await client.request<ToolRequiredFields>({
+      method: 'GET',
+      path: '/tools/required-fields',
+    });
+    return { ...DEFAULT_TOOL_REQUIRED_FIELDS, ...response };
+  } catch {
+    return DEFAULT_TOOL_REQUIRED_FIELDS;
+  }
+}
+
+/**
+ * Update the lab's tool required field settings.
+ */
+export async function updateToolRequiredFields(
+  client: ApiClient,
+  fields: ToolRequiredFields
+): Promise<ToolRequiredFields> {
+  const response = await client.request<ToolRequiredFields>({
+    method: 'PUT',
+    path: '/tools/required-fields',
+    body: fields,
+  });
+  return { ...DEFAULT_TOOL_REQUIRED_FIELDS, ...response };
+}

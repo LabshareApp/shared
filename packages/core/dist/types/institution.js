@@ -10,10 +10,26 @@
  * - Department heads can edit orders and configure approval flows
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.INSTITUTION_PERMISSION_LABELS = void 0;
 exports.hasInstitutionPermission = hasInstitutionPermission;
 exports.isInstitutionAdmin = isInstitutionAdmin;
 exports.isDepartmentHead = isDepartmentHead;
 exports.canApproveOrders = canApproveOrders;
+/**
+ * Human-readable labels for institution permissions
+ */
+exports.INSTITUTION_PERMISSION_LABELS = {
+    'institution:view': 'View Institution',
+    'institution:admin': 'Institution Admin',
+    'department:view': 'View Departments',
+    'department:admin': 'Manage Departments',
+    'department:approve_orders': 'Approve Department Orders',
+    'inventory:view': 'View Inventory',
+    'orders:view': 'View Orders',
+    'orders:approve': 'Approve Orders',
+    'members:view': 'View Members',
+    'sharing:view': 'View Sharing History',
+};
 /**
  * Permission check for institution-level operations
  */

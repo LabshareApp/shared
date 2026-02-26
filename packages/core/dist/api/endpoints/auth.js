@@ -8,6 +8,8 @@ exports.registerUser = registerUser;
 exports.registerInstitutionUser = registerInstitutionUser;
 exports.registerWithInvitation = registerWithInvitation;
 exports.lookupUsers = lookupUsers;
+exports.completeOAuthSignup = completeOAuthSignup;
+exports.completeOAuthInstitutionSignup = completeOAuthInstitutionSignup;
 /**
  * Register a new user with atomic rollback.
  * This endpoint creates the auth user, profile, and optionally a new lab.
@@ -100,5 +102,54 @@ async function lookupUsers(client, userIds) {
         body: { userIds: uniqueIds },
     });
     return response.users;
+}
+/**
+ * Complete OAuth signup for a user who authenticated via OAuth.
+ * The user is already authenticated - this creates their profile and lab.
+ * Requires a valid JWT token in the Authorization header.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param token - JWT access token
+ * @param data - Profile and lab data
+ * @returns The completion response
+ */
+async function completeOAuthSignup(baseUrl, token, data) {
+    const response = await fetch(`${baseUrl}/repository/complete-oauth-signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `OAuth signup completion failed with status ${response.status}`);
+    }
+    return response.json();
+}
+/**
+ * Complete OAuth signup for an institution-only user.
+ * Requires a valid JWT token in the Authorization header.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param token - JWT access token
+ * @param data - Profile and institution data
+ * @returns The completion response
+ */
+async function completeOAuthInstitutionSignup(baseUrl, token, data) {
+    const response = await fetch(`${baseUrl}/repository/complete-oauth-institution-signup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `OAuth signup completion failed with status ${response.status}`);
+    }
+    return response.json();
 }
 //# sourceMappingURL=auth.js.map

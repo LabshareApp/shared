@@ -46,7 +46,7 @@ function validatePaginatedResponse(response, functionName) {
 }
 function mapInventoryItems(items) {
     return items.map((item) => {
-        return normalizeMongoId({ ...item });
+        return { ...item };
     });
 }
 /**

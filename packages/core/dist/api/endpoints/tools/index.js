@@ -18,6 +18,8 @@ exports.getMaintenanceRequest = getMaintenanceRequest;
 exports.listMaintenanceRequests = listMaintenanceRequests;
 exports.updateMaintenanceRequest = updateMaintenanceRequest;
 exports.getToolMaintenanceHistory = getToolMaintenanceHistory;
+exports.fetchToolRequiredFields = fetchToolRequiredFields;
+exports.updateToolRequiredFields = updateToolRequiredFields;
 const responseValidation_1 = require("../../responseValidation");
 // =============================================================================
 // Tool CRUD
@@ -279,5 +281,38 @@ async function updateMaintenanceRequest(client, requestId, data) {
 async function getToolMaintenanceHistory(client, toolId) {
     const response = await listMaintenanceRequests(client, { toolId });
     return response.requests;
+}
+const DEFAULT_TOOL_REQUIRED_FIELDS = {
+    description: false,
+    serialNumber: false,
+    location: false,
+    imageUrl: false,
+    maxCheckoutDays: false,
+};
+/**
+ * Fetch the lab's tool required field settings.
+ */
+async function fetchToolRequiredFields(client) {
+    try {
+        const response = await client.request({
+            method: 'GET',
+            path: '/tools/required-fields',
+        });
+        return { ...DEFAULT_TOOL_REQUIRED_FIELDS, ...response };
+    }
+    catch {
+        return DEFAULT_TOOL_REQUIRED_FIELDS;
+    }
+}
+/**
+ * Update the lab's tool required field settings.
+ */
+async function updateToolRequiredFields(client, fields) {
+    const response = await client.request({
+        method: 'PUT',
+        path: '/tools/required-fields',
+        body: fields,
+    });
+    return { ...DEFAULT_TOOL_REQUIRED_FIELDS, ...response };
 }
 //# sourceMappingURL=index.js.map

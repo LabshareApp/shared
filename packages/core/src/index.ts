@@ -22,6 +22,7 @@ export * from './api/endpoints/audit';
 export * from './api/endpoints/tools';
 export * from './api/endpoints/invoices';
 export * from './api/endpoints/shareLinks';
+export * from './api/endpoints/preferences';
 
 export * from './adapters/AnalyticsAdapter';
 export * from './adapters/StorageAdapter';
@@ -48,6 +49,7 @@ export * from './types/tools';
 export * from './types/invoice';
 export * from './types/maintenance';
 export * from './types/shareLinks';
+export * from './types/preferences';
 
 export * from './utils/logger';
 export * from './utils/jwt';

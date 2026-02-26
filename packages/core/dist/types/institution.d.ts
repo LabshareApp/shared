@@ -112,6 +112,7 @@ export interface InstitutionRole {
     id: string;
     institutionId: string;
     name: InstitutionRoleName;
+    description?: string;
     permissions: InstitutionPermission[];
     isDefault: boolean;
     createdAt: string;
@@ -120,11 +121,19 @@ export interface InstitutionRole {
 /**
  * Default institution role names
  */
-export type InstitutionRoleName = 'institution_admin' | 'department_head' | 'observer';
+export type InstitutionRoleName = 'institution_admin' | 'department_head' | 'observer' | (string & {});
 /**
  * Available institution-level permissions
  */
-export type InstitutionPermission = 'institution:view' | 'institution:admin' | 'department:view' | 'department:admin' | 'department:approve_orders';
+export type InstitutionPermission = 'institution:view' | 'institution:admin' | 'department:view' | 'department:admin' | 'department:approve_orders' | 'inventory:view' | 'orders:view' | 'orders:approve' | 'members:view' | 'sharing:view';
+/**
+ * Human-readable labels for institution permissions
+ */
+export declare const INSTITUTION_PERMISSION_LABELS: Record<InstitutionPermission, string>;
+/**
+ * Permissions grouped by resource for UI display
+ */
+export type InstitutionPermissionsByResource = Record<string, InstitutionPermission[]>;
 /**
  * User's membership in an institution
  */
@@ -216,6 +225,7 @@ export interface RegisterUserWithInstitutionsResponse {
 export interface InstitutionLabInfo {
     id: string;
     name: string;
+    code?: string;
     institution: string;
 }
 /**
@@ -227,9 +237,12 @@ export interface InstitutionMemberInfo extends InstitutionMembership {
         email: string;
         firstName: string;
         lastName: string;
+        labId?: string;
     };
     role?: InstitutionRole;
     department?: Department;
+    departmentIds?: string[];
+    departments?: Department[];
 }
 /**
  * Dashboard overview stats for an institution
@@ -264,6 +277,7 @@ export declare function canApproveOrders(membership: InstitutionMembership | nul
 export interface DirectoryDepartment {
     id: string;
     name: string;
+    code?: string;
     description?: string;
     labs: InstitutionLabInfo[];
     members: InstitutionMemberInfo[];
@@ -274,6 +288,7 @@ export interface DirectoryDepartment {
 export interface InstitutionDirectoryResponse {
     departments: DirectoryDepartment[];
     unassignedLabs: InstitutionLabInfo[];
+    unassignedMembers?: InstitutionMemberInfo[];
 }
 /**
  * Collaboration with enriched institution names
@@ -378,5 +393,64 @@ export interface InstitutionInventoryItem {
 export interface InstitutionInventoryResponse {
     items: InstitutionInventoryItem[];
     totalCount: number;
+}
+export interface InstitutionInvitationDetails {
+    id: string;
+    inviteCode: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    institutionId: string;
+    institutionName: string;
+    roleName: string;
+    departmentNames?: string[];
+    status: 'pending' | 'accepted' | 'canceled' | 'expired';
+    expiresAt: string;
+    createdAt: string;
+}
+/** Alias for InstitutionInvitationDetails */
+export type InstitutionInvitation = InstitutionInvitationDetails;
+export interface CreateInstitutionRoleRequest {
+    institutionId: string;
+    name: string;
+    description?: string;
+    permissions: InstitutionPermission[];
+}
+export interface UpdateInstitutionRoleRequest {
+    roleId: string;
+    name?: string;
+    description?: string;
+    permissions?: InstitutionPermission[];
+}
+export interface DeleteInstitutionRoleRequest {
+    roleId: string;
+}
+export interface PlaceInstitutionOrderRequest {
+    orderRequestId: string;
+    labId: string;
+    institutionId: string;
+    unitCost?: number;
+    shippingCost?: number;
+    currency?: string;
+}
+export interface PlaceInstitutionOrderResponse {
+    message: string;
+    id: string;
+}
+export interface RevertInstitutionOrderRequest {
+    orderRequestId: string;
+    labId: string;
+    institutionId: string;
+}
+export interface UpdateInstitutionProfileRequest {
+    name?: string;
+    website?: string;
+    address?: InstitutionAddress;
+}
+export interface PendingInstitutionInfo {
+    id: string;
+    institutionId: string;
+    institutionName: string;
+    status: string;
 }
 //# sourceMappingURL=institution.d.ts.map

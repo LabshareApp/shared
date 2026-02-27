@@ -261,12 +261,8 @@ export const TOOL_CATEGORIES = [
 
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
 
-// --- Tool Required Fields (Lab Settings) ---
+// --- Tool Required Fields ---
 
-/**
- * Configurable required fields for tool creation/editing.
- * When true, the field is required when creating or editing a tool.
- */
 export interface ToolRequiredFields {
   description: boolean;
   serialNumber: boolean;
@@ -275,28 +271,14 @@ export interface ToolRequiredFields {
   maxCheckoutDays: boolean;
 }
 
-/**
- * Default required fields configuration (all false = no extra required fields)
- */
-export const DEFAULT_TOOL_REQUIRED_FIELDS: ToolRequiredFields = {
-  description: false,
-  serialNumber: false,
-  location: false,
-  imageUrl: false,
-  maxCheckoutDays: false,
-};
-
-/**
- * Metadata for each configurable required field (used in settings UI)
- */
 export const TOOL_REQUIRED_FIELD_OPTIONS: {
   key: keyof ToolRequiredFields;
   label: string;
   description: string;
 }[] = [
   { key: 'description', label: 'Description', description: 'Require a description when creating tools' },
-  { key: 'serialNumber', label: 'Serial Number', description: 'Require a serial number for all tools' },
-  { key: 'location', label: 'Location', description: 'Require a location for all tools' },
-  { key: 'imageUrl', label: 'Image', description: 'Require an image when creating tools' },
-  { key: 'maxCheckoutDays', label: 'Max Checkout Days', description: 'Require a max checkout duration' },
+  { key: 'serialNumber', label: 'Serial Number', description: 'Require a serial number for each tool' },
+  { key: 'location', label: 'Location', description: 'Require a storage location' },
+  { key: 'imageUrl', label: 'Image', description: 'Require an image of the tool' },
+  { key: 'maxCheckoutDays', label: 'Max Checkout Days', description: 'Require a maximum checkout duration' },
 ];

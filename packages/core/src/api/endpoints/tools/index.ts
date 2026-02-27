@@ -398,12 +398,21 @@ export async function getToolMaintenanceHistory(
 }
 
 // =============================================================================
-// Lab Settings - Tool Required Fields
+// Tool Required Fields
 // =============================================================================
 
+import type { ToolRequiredFields } from '../../../types/tools';
+
+const DEFAULT_TOOL_REQUIRED_FIELDS: ToolRequiredFields = {
+  description: false,
+  serialNumber: false,
+  location: false,
+  imageUrl: false,
+  maxCheckoutDays: false,
+};
+
 /**
- * Fetch the tool required fields configuration for the current lab.
- * Returns defaults if the lab has no custom configuration.
+ * Fetch the lab's tool required field settings.
  */
 export async function fetchToolRequiredFields(
   client: ApiClient
@@ -411,24 +420,25 @@ export async function fetchToolRequiredFields(
   try {
     const response = await client.request<ToolRequiredFields>({
       method: 'GET',
-      path: '/lab-settings/tool-required-fields',
+      path: '/tools/required-fields',
     });
-    return response ?? DEFAULT_TOOL_REQUIRED_FIELDS;
+    return { ...DEFAULT_TOOL_REQUIRED_FIELDS, ...response };
   } catch {
     return DEFAULT_TOOL_REQUIRED_FIELDS;
   }
 }
 
 /**
- * Update the tool required fields configuration for the current lab (admin only).
+ * Update the lab's tool required field settings.
  */
 export async function updateToolRequiredFields(
   client: ApiClient,
   fields: ToolRequiredFields
 ): Promise<ToolRequiredFields> {
-  return client.request<ToolRequiredFields>({
+  const response = await client.request<ToolRequiredFields>({
     method: 'PUT',
-    path: '/lab-settings/tool-required-fields',
+    path: '/tools/required-fields',
     body: fields,
   });
+  return { ...DEFAULT_TOOL_REQUIRED_FIELDS, ...response };
 }

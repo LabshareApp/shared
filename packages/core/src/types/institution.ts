@@ -133,7 +133,11 @@ export interface InstitutionRole {
 /**
  * Institution role name — includes default roles and any custom roles
  */
-export type InstitutionRoleName = string;
+export type InstitutionRoleName =
+  | 'institution_admin'
+  | 'department_head'
+  | 'observer'
+  | (string & {});
 
 /**
  * Available institution-level permissions
@@ -151,15 +155,11 @@ export type InstitutionPermission =
   // Departments
   | 'department:view'
   | 'department:admin'
-  // Orders (cross-lab)
+  | 'department:approve_orders'
+  | 'inventory:view'
   | 'orders:view'
   | 'orders:approve'
-  // Inventory (cross-lab)
-  | 'inventory:view'
-  // Collaborations
-  | 'collaborations:view'
-  | 'collaborations:manage'
-  // Sharing
+  | 'members:view'
   | 'sharing:view';
 
 /**
@@ -167,24 +167,19 @@ export type InstitutionPermission =
  */
 export const INSTITUTION_PERMISSION_LABELS: Record<InstitutionPermission, string> = {
   'institution:view': 'View Institution',
-  'institution:edit': 'Edit Institution Settings',
-  'institution:admin': 'Full Admin Access',
-  'members:view': 'View Members',
-  'members:invite': 'Invite Members',
-  'members:edit_roles': 'Edit Member Roles',
-  'members:remove': 'Remove Members',
+  'institution:admin': 'Institution Admin',
   'department:view': 'View Departments',
   'department:admin': 'Manage Departments',
-  'orders:view': 'View All Orders',
+  'department:approve_orders': 'Approve Department Orders',
+  'inventory:view': 'View Inventory',
+  'orders:view': 'View Orders',
   'orders:approve': 'Approve Orders',
-  'inventory:view': 'View All Inventory',
-  'collaborations:view': 'View Collaborations',
-  'collaborations:manage': 'Manage Collaborations',
+  'members:view': 'View Members',
   'sharing:view': 'View Sharing History',
 };
 
 /**
- * Permissions grouped by resource category
+ * Permissions grouped by resource for UI display
  */
 export type InstitutionPermissionsByResource = Record<string, InstitutionPermission[]>;
 
@@ -293,6 +288,7 @@ export interface RegisterUserWithInstitutionsResponse {
 export interface InstitutionLabInfo {
   id: string;
   name: string;
+  code?: string;
   institution: string;
 }
 
@@ -305,9 +301,12 @@ export interface InstitutionMemberInfo extends InstitutionMembership {
     email: string;
     firstName: string;
     lastName: string;
+    labId?: string;
   };
   role?: InstitutionRole;
   department?: Department;
+  departmentIds?: string[];
+  departments?: Department[];
 }
 
 /**
@@ -368,7 +367,30 @@ export function canApproveOrders(
   membership: InstitutionMembership | null,
   role: InstitutionRole | null
 ): boolean {
-  return hasInstitutionPermission(membership, role, 'orders:approve');
+  return hasInstitutionPermission(membership, role, 'department:approve_orders');
+}
+
+// --- Institution Directory Types ---
+
+/**
+ * Department with its labs and members for the directory view
+ */
+export interface DirectoryDepartment {
+  id: string;
+  name: string;
+  code?: string;
+  description?: string;
+  labs: InstitutionLabInfo[];
+  members: InstitutionMemberInfo[];
+}
+
+/**
+ * Full institution directory response
+ */
+export interface InstitutionDirectoryResponse {
+  departments: DirectoryDepartment[];
+  unassignedLabs: InstitutionLabInfo[];
+  unassignedMembers?: InstitutionMemberInfo[];
 }
 
 // --- Institution Admin Dashboard Types ---
@@ -486,22 +508,28 @@ export interface InstitutionInventoryResponse {
   totalCount: number;
 }
 
-// --- Institution Member Role Update ---
+// --- Institution Invitation Types ---
 
-/**
- * Request to update an institution member's role
- */
-export interface UpdateInstitutionMemberRoleRequest {
-  membershipId: string;
-  roleName: InstitutionRoleName;
-  departmentId?: string;
+export interface InstitutionInvitationDetails {
+  id: string;
+  inviteCode: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  institutionId: string;
+  institutionName: string;
+  roleName: string;
+  departmentNames?: string[];
+  status: 'pending' | 'accepted' | 'canceled' | 'expired';
+  expiresAt: string;
+  createdAt: string;
 }
 
-// --- Institution Role CRUD ---
+/** Alias for InstitutionInvitationDetails */
+export type InstitutionInvitation = InstitutionInvitationDetails;
 
-/**
- * Request to create a custom institution role
- */
+// --- Institution Role CRUD Types ---
+
 export interface CreateInstitutionRoleRequest {
   institutionId: string;
   name: string;
@@ -509,83 +537,52 @@ export interface CreateInstitutionRoleRequest {
   permissions: InstitutionPermission[];
 }
 
-/**
- * Request to update an institution role
- */
 export interface UpdateInstitutionRoleRequest {
   roleId: string;
-  name: string;
+  name?: string;
   description?: string;
-  permissions: InstitutionPermission[];
+  permissions?: InstitutionPermission[];
 }
 
-/**
- * Request to delete an institution role
- */
 export interface DeleteInstitutionRoleRequest {
   roleId: string;
 }
 
-// --- Institution Invitations ---
+// --- Institution Order Management Types ---
 
-/**
- * Status of an institution invitation
- */
-export type InstitutionInvitationStatus = 'pending' | 'accepted' | 'expired' | 'canceled';
-
-/**
- * Institution invitation document (stored in MongoDB)
- */
-export interface InstitutionInvitation {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+export interface PlaceInstitutionOrderRequest {
+  orderRequestId: string;
+  labId: string;
   institutionId: string;
-  roleName: InstitutionRoleName;
-  departmentId?: string;
-  invitedBy: string;
-  inviteCode: string;
-  status: InstitutionInvitationStatus;
-  expiresAt: string;
-  createdAt: string;
-  acceptedAt?: string;
+  unitCost?: number;
+  shippingCost?: number;
+  currency?: string;
 }
 
-/**
- * Public details of an institution invitation (returned for signup flow)
- */
-export interface InstitutionInvitationDetails {
-  inviteCode: string;
-  email: string;
-  firstName: string;
-  lastName: string;
+export interface PlaceInstitutionOrderResponse {
+  message: string;
+  id: string;
+}
+
+export interface RevertInstitutionOrderRequest {
+  orderRequestId: string;
+  labId: string;
+  institutionId: string;
+}
+
+// --- Institution Profile Update ---
+
+export interface UpdateInstitutionProfileRequest {
+  name?: string;
+  website?: string;
+  address?: InstitutionAddress;
+}
+
+// --- Pending Institution Info ---
+
+export interface PendingInstitutionInfo {
+  id: string;
   institutionId: string;
   institutionName: string;
-  roleName: InstitutionRoleName;
-  departmentName?: string;
-  status: InstitutionInvitationStatus;
-  expiresAt: string;
-}
-
-/**
- * Request to create an institution invitation
- */
-export interface CreateInstitutionInvitationRequest {
-  email: string;
-  firstName: string;
-  lastName: string;
-  institutionId: string;
-  roleName: InstitutionRoleName;
-  departmentId?: string;
-}
-
-/**
- * Response from claiming an institution invitation
- */
-export interface ClaimInstitutionInvitationResponse {
-  membershipId: string;
-  institutionId: string;
-  roleId: string;
-  departmentId?: string;
+  status: string;
 }

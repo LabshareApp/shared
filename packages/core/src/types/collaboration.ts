@@ -2,6 +2,7 @@ import type { BrandInfo } from './inventory';
 
 export interface Collaborator {
   lab_id: string;
+  labId: string;
   status: 'sent' | 'pending' | 'accepted';
   name?: string;
   institution?: string;

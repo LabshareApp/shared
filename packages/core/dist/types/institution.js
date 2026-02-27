@@ -20,19 +20,14 @@ exports.canApproveOrders = canApproveOrders;
  */
 exports.INSTITUTION_PERMISSION_LABELS = {
     'institution:view': 'View Institution',
-    'institution:edit': 'Edit Institution Settings',
-    'institution:admin': 'Full Admin Access',
-    'members:view': 'View Members',
-    'members:invite': 'Invite Members',
-    'members:edit_roles': 'Edit Member Roles',
-    'members:remove': 'Remove Members',
+    'institution:admin': 'Institution Admin',
     'department:view': 'View Departments',
     'department:admin': 'Manage Departments',
-    'orders:view': 'View All Orders',
+    'department:approve_orders': 'Approve Department Orders',
+    'inventory:view': 'View Inventory',
+    'orders:view': 'View Orders',
     'orders:approve': 'Approve Orders',
-    'inventory:view': 'View All Inventory',
-    'collaborations:view': 'View Collaborations',
-    'collaborations:manage': 'Manage Collaborations',
+    'members:view': 'View Members',
     'sharing:view': 'View Sharing History',
 };
 /**

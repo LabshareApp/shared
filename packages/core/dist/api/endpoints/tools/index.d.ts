@@ -94,13 +94,13 @@ export declare function updateMaintenanceRequest(client: ApiClient, requestId: s
  * Get maintenance requests for a specific tool.
  */
 export declare function getToolMaintenanceHistory(client: ApiClient, toolId: string): Promise<MaintenanceRequest[]>;
+import type { ToolRequiredFields } from '../../../types/tools';
 /**
- * Fetch the tool required fields configuration for the current lab.
- * Returns defaults if the lab has no custom configuration.
+ * Fetch the lab's tool required field settings.
  */
 export declare function fetchToolRequiredFields(client: ApiClient): Promise<ToolRequiredFields>;
 /**
- * Update the tool required fields configuration for the current lab (admin only).
+ * Update the lab's tool required field settings.
  */
 export declare function updateToolRequiredFields(client: ApiClient, fields: ToolRequiredFields): Promise<ToolRequiredFields>;
 //# sourceMappingURL=index.d.ts.map

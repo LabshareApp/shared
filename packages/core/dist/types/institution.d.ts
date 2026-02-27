@@ -204,8 +204,6 @@ export interface RegisterUserWithInstitutionsRequest {
     labName: string;
     labDepartment?: string;
     labCountry?: string;
-    labBuilding?: string;
-    labFloorNumber?: string;
     institutionCodes: string[];
 }
 /**

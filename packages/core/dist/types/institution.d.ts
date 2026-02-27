@@ -125,7 +125,7 @@ export type InstitutionRoleName = 'institution_admin' | 'department_head' | 'obs
 /**
  * Available institution-level permissions
  */
-export type InstitutionPermission = 'institution:view' | 'institution:admin' | 'department:view' | 'department:admin' | 'department:approve_orders' | 'inventory:view' | 'orders:view' | 'orders:approve' | 'members:view' | 'sharing:view';
+export type InstitutionPermission = 'institution:view' | 'institution:edit' | 'institution:admin' | 'members:view' | 'members:invite' | 'members:edit_roles' | 'members:remove' | 'department:view' | 'department:admin' | 'department:approve_orders' | 'inventory:view' | 'orders:view' | 'orders:approve' | 'sharing:view';
 /**
  * Human-readable labels for institution permissions
  */

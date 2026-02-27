@@ -28,6 +28,9 @@ exports.approveInstitutionCollaboration = approveInstitutionCollaboration;
 exports.rejectInstitutionCollaboration = rejectInstitutionCollaboration;
 exports.registerUserWithInstitutions = registerUserWithInstitutions;
 exports.validateInstitutionCodes = validateInstitutionCodes;
+exports.updateInstitutionMemberRole = updateInstitutionMemberRole;
+exports.getInstitutionDirectory = getInstitutionDirectory;
+exports.searchInstitutions = searchInstitutions;
 exports.getCollaborationHistory = getCollaborationHistory;
 exports.searchInstitutionOrderRequests = searchInstitutionOrderRequests;
 exports.searchInstitutionInventory = searchInstitutionInventory;
@@ -318,6 +321,43 @@ async function validateInstitutionCodes(baseUrl, codes) {
         }
     }
     return results;
+}
+/**
+ * Update an institution member's role (admin only)
+ */
+async function updateInstitutionMemberRole(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/update-member-role',
+        body: data,
+    };
+    return client.request(request);
+}
+// --- Institution Directory & Search ---
+/**
+ * Get the hierarchical directory of departments, labs, and members
+ */
+async function getInstitutionDirectory(client, institutionId) {
+    const request = {
+        method: 'GET',
+        path: '/institution/directory',
+        query: { institutionId },
+    };
+    return client.request(request);
+}
+/**
+ * Search institutions by name or code
+ */
+async function searchInstitutions(client, query, limit) {
+    const request = {
+        method: 'GET',
+        path: '/institutions/search',
+        query: {
+            ...(query ? { q: query } : {}),
+            ...(limit ? { limit: String(limit) } : {}),
+        },
+    };
+    return client.request(request);
 }
 // --- Institution Admin Dashboard Endpoints ---
 /**

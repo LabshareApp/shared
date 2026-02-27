@@ -14,7 +14,6 @@ import type {
   ListCheckoutsParams,
   ToolRequiredFields,
 } from '../../../types/tools';
-import { DEFAULT_TOOL_REQUIRED_FIELDS } from '../../../types/tools';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
 // =============================================================================
@@ -400,8 +399,6 @@ export async function getToolMaintenanceHistory(
 // =============================================================================
 // Tool Required Fields
 // =============================================================================
-
-import type { ToolRequiredFields } from '../../../types/tools';
 
 const DEFAULT_TOOL_REQUIRED_FIELDS: ToolRequiredFields = {
   description: false,

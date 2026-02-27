@@ -20,14 +20,18 @@ exports.canApproveOrders = canApproveOrders;
  */
 exports.INSTITUTION_PERMISSION_LABELS = {
     'institution:view': 'View Institution',
+    'institution:edit': 'Edit Institution Settings',
     'institution:admin': 'Institution Admin',
+    'members:view': 'View Members',
+    'members:invite': 'Invite Members',
+    'members:edit_roles': 'Edit Member Roles',
+    'members:remove': 'Remove Members',
     'department:view': 'View Departments',
     'department:admin': 'Manage Departments',
     'department:approve_orders': 'Approve Department Orders',
     'inventory:view': 'View Inventory',
     'orders:view': 'View Orders',
     'orders:approve': 'Approve Orders',
-    'members:view': 'View Members',
     'sharing:view': 'View Sharing History',
 };
 /**
@@ -58,6 +62,6 @@ function isDepartmentHead(membership, role) {
  * Check if user can approve orders for a department
  */
 function canApproveOrders(membership, role) {
-    return hasInstitutionPermission(membership, role, 'orders:approve');
+    return hasInstitutionPermission(membership, role, 'department:approve_orders');
 }
 //# sourceMappingURL=institution.js.map

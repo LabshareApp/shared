@@ -156,10 +156,11 @@ export type InstitutionPermission =
   | 'department:view'
   | 'department:admin'
   | 'department:approve_orders'
+  // Inventory & Orders
   | 'inventory:view'
   | 'orders:view'
   | 'orders:approve'
-  | 'members:view'
+  // Sharing
   | 'sharing:view';
 
 /**
@@ -167,14 +168,18 @@ export type InstitutionPermission =
  */
 export const INSTITUTION_PERMISSION_LABELS: Record<InstitutionPermission, string> = {
   'institution:view': 'View Institution',
+  'institution:edit': 'Edit Institution Settings',
   'institution:admin': 'Institution Admin',
+  'members:view': 'View Members',
+  'members:invite': 'Invite Members',
+  'members:edit_roles': 'Edit Member Roles',
+  'members:remove': 'Remove Members',
   'department:view': 'View Departments',
   'department:admin': 'Manage Departments',
   'department:approve_orders': 'Approve Department Orders',
   'inventory:view': 'View Inventory',
   'orders:view': 'View Orders',
   'orders:approve': 'Approve Orders',
-  'members:view': 'View Members',
   'sharing:view': 'View Sharing History',
 };
 

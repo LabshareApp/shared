@@ -282,6 +282,9 @@ async function getToolMaintenanceHistory(client, toolId) {
     const response = await listMaintenanceRequests(client, { toolId });
     return response.requests;
 }
+// =============================================================================
+// Tool Required Fields
+// =============================================================================
 const DEFAULT_TOOL_REQUIRED_FIELDS = {
     description: false,
     serialNumber: false,

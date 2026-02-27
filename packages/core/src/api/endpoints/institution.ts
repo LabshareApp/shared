@@ -35,6 +35,7 @@ import type {
   PlaceInstitutionOrderResponse,
   RevertInstitutionOrderRequest,
   UpdateInstitutionProfileRequest,
+  InstitutionDirectoryResponse,
 } from '../../types/institution';
 
 // --- Institution Endpoints ---

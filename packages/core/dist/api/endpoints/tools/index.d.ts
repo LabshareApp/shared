@@ -94,7 +94,6 @@ export declare function updateMaintenanceRequest(client: ApiClient, requestId: s
  * Get maintenance requests for a specific tool.
  */
 export declare function getToolMaintenanceHistory(client: ApiClient, toolId: string): Promise<MaintenanceRequest[]>;
-import type { ToolRequiredFields } from '../../../types/tools';
 /**
  * Fetch the lab's tool required field settings.
  */

@@ -13,7 +13,7 @@ export async function createCollaboratorRequest(
   client: ApiClient,
   targetLabId: string
 ): Promise<CollaborationResponse> {
-  const request: CollaborationRequest = { target_lab_id: targetLabId };
+  const request: CollaborationRequest = { targetLabId };
   const response = await client.request<CollaborationResponse>({
     method: 'POST',
     path: '/create-collaborator-request',
@@ -26,7 +26,7 @@ export async function acceptCollaboratorRequest(
   client: ApiClient,
   requestingLabId: string
 ): Promise<CollaborationResponse> {
-  const request: AcceptCollaborationRequest = { requesting_lab_id: requestingLabId };
+  const request: AcceptCollaborationRequest = { requestingLabId };
   const response = await client.request<CollaborationResponse>({
     method: 'POST',
     path: '/accept-collaborator-request',
@@ -39,7 +39,7 @@ export async function deleteCollaborator(
   client: ApiClient,
   collaboratorLabId: string
 ): Promise<CollaborationResponse> {
-  const request: DeleteCollaborationRequest = { collaborator_lab_id: collaboratorLabId };
+  const request: DeleteCollaborationRequest = { collaboratorLabId };
   const response = await client.request<CollaborationResponse>({
     method: 'DELETE',
     path: '/delete-collaborator',

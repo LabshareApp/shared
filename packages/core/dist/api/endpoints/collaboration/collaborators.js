@@ -7,7 +7,7 @@ exports.listCollaborators = listCollaborators;
 exports.getAvailableLabs = getAvailableLabs;
 const responseValidation_1 = require("../../responseValidation");
 async function createCollaboratorRequest(client, targetLabId) {
-    const request = { target_lab_id: targetLabId };
+    const request = { targetLabId };
     const response = await client.request({
         method: 'POST',
         path: '/create-collaborator-request',
@@ -16,7 +16,7 @@ async function createCollaboratorRequest(client, targetLabId) {
     return (0, responseValidation_1.validateObjectResponse)(response, 'createCollaboratorRequest', ['message']);
 }
 async function acceptCollaboratorRequest(client, requestingLabId) {
-    const request = { requesting_lab_id: requestingLabId };
+    const request = { requestingLabId };
     const response = await client.request({
         method: 'POST',
         path: '/accept-collaborator-request',
@@ -25,7 +25,7 @@ async function acceptCollaboratorRequest(client, requestingLabId) {
     return (0, responseValidation_1.validateObjectResponse)(response, 'acceptCollaboratorRequest', ['message']);
 }
 async function deleteCollaborator(client, collaboratorLabId) {
-    const request = { collaborator_lab_id: collaboratorLabId };
+    const request = { collaboratorLabId };
     const response = await client.request({
         method: 'DELETE',
         path: '/delete-collaborator',

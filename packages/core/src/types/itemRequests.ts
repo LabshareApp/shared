@@ -32,14 +32,13 @@ export interface ListItemRequestsResponse {
   requests: ItemRequest[];
 }
 
-// Matches backend request struct (legacy capitalization).
 export interface CreateItemRequestRequest {
-  ItemID: string;
-  ItemName: string;
-  Quantity: number;
-  BrandName: string;
-  RecipientLabID: string;
-  Notes?: string;
+  itemId: string;
+  itemName: string;
+  quantity: number;
+  brandName: string;
+  recipientLabId: string;
+  notes?: string;
 }
 
 export interface CreateItemRequestResponse {

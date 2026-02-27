@@ -1,19 +1,18 @@
 import type { BrandInfo } from './inventory';
 export interface Collaborator {
-    lab_id: string;
     labId: string;
     status: 'sent' | 'pending' | 'accepted';
     name?: string;
     institution?: string;
 }
 export interface CollaborationRequest {
-    target_lab_id: string;
+    targetLabId: string;
 }
 export interface AcceptCollaborationRequest {
-    requesting_lab_id: string;
+    requestingLabId: string;
 }
 export interface DeleteCollaborationRequest {
-    collaborator_lab_id: string;
+    collaboratorLabId: string;
 }
 export interface CollaborationResponse {
     message: string;

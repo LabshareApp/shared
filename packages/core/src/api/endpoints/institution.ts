@@ -8,6 +8,7 @@ import { ApiClient, ApiRequest } from '../ApiClient';
 import type {
   Institution,
   InstitutionPublicInfo,
+  InstitutionAddress,
   Department,
   CreateDepartmentRequest,
   UpdateDepartmentRequest,
@@ -21,7 +22,6 @@ import type {
   InstitutionCollaborationRequest,
   InstitutionCollaborationActionRequest,
   InstitutionLabInfo,
-  InstitutionDirectoryResponse,
   CollaborationHistoryResponse,
   InstitutionOrderRequestsParams,
   InstitutionOrderRequestsResponse,

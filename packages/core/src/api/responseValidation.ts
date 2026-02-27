@@ -62,7 +62,7 @@ export function validatePaginatedResponse(
 
 export function mapInventoryItems(items: PaginatedInventoryResponse['items']): InventoryItem[] {
   return items.map((item: any) => {
-    return { ...item } as InventoryItem;
+    return normalizeMongoId({ ...item }) as InventoryItem;
   });
 }
 

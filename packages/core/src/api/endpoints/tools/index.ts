@@ -12,7 +12,9 @@ import type {
   MyCheckoutsResponse,
   ListToolsParams,
   ListCheckoutsParams,
+  ToolRequiredFields,
 } from '../../../types/tools';
+import { DEFAULT_TOOL_REQUIRED_FIELDS } from '../../../types/tools';
 import { validateArrayResponse, validateObjectResponse } from '../../responseValidation';
 
 // =============================================================================

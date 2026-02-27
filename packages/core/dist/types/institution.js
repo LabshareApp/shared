@@ -58,6 +58,6 @@ function isDepartmentHead(membership, role) {
  * Check if user can approve orders for a department
  */
 function canApproveOrders(membership, role) {
-    return hasInstitutionPermission(membership, role, 'department:approve_orders');
+    return hasInstitutionPermission(membership, role, 'orders:approve');
 }
 //# sourceMappingURL=institution.js.map

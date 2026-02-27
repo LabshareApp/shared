@@ -14,8 +14,6 @@ export interface RegisterUserRequest {
     labInstitution?: string;
     labDepartment?: string;
     labCountry?: string;
-    labBuilding?: string;
-    labFloorNumber?: string;
 }
 export interface RegisterUserResponse {
     userId: string;

@@ -22,8 +22,6 @@ export interface RegisterUserRequest {
   labInstitution?: string;
   labDepartment?: string;
   labCountry?: string;
-  labBuilding?: string;
-  labFloorNumber?: string;
 }
 
 export interface RegisterUserResponse {
@@ -239,8 +237,6 @@ export interface CompleteOAuthSignupRequest {
   labName?: string;
   labDepartment?: string;
   labCountry?: string;
-  labBuilding?: string;
-  labFloorNumber?: string;
 
   // Institution codes (optional)
   institutionCodes?: string[];

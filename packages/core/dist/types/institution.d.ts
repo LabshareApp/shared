@@ -119,7 +119,7 @@ export interface InstitutionRole {
     updatedAt: string;
 }
 /**
- * Default institution role names
+ * Institution role name — includes default roles and any custom roles
  */
 export type InstitutionRoleName = 'institution_admin' | 'department_head' | 'observer' | (string & {});
 /**
@@ -204,8 +204,6 @@ export interface RegisterUserWithInstitutionsRequest {
     labName: string;
     labDepartment?: string;
     labCountry?: string;
-    labBuilding?: string;
-    labFloorNumber?: string;
     institutionCodes: string[];
 }
 /**

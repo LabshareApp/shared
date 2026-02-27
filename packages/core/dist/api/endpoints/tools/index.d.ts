@@ -1,5 +1,5 @@
 import type { ApiClient } from '../../ApiClient';
-import type { Tool, ToolCheckout, CreateToolData, UpdateToolData, CheckoutToolData, ReturnToolData, LogAccessData, ToolListResponse, CheckoutListResponse, MyCheckoutsResponse, ListToolsParams, ListCheckoutsParams } from '../../../types/tools';
+import type { Tool, ToolCheckout, CreateToolData, UpdateToolData, CheckoutToolData, ReturnToolData, LogAccessData, ToolListResponse, CheckoutListResponse, MyCheckoutsResponse, ListToolsParams, ListCheckoutsParams, ToolRequiredFields } from '../../../types/tools';
 /**
  * Fetch all tools for the authenticated lab.
  */

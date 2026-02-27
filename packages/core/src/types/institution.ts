@@ -131,7 +131,7 @@ export interface InstitutionRole {
 }
 
 /**
- * Default institution role names
+ * Institution role name — includes default roles and any custom roles
  */
 export type InstitutionRoleName =
   | 'institution_admin'
@@ -143,8 +143,16 @@ export type InstitutionRoleName =
  * Available institution-level permissions
  */
 export type InstitutionPermission =
+  // Institution-level
   | 'institution:view'
+  | 'institution:edit'
   | 'institution:admin'
+  // Members
+  | 'members:view'
+  | 'members:invite'
+  | 'members:edit_roles'
+  | 'members:remove'
+  // Departments
   | 'department:view'
   | 'department:admin'
   | 'department:approve_orders'
@@ -257,8 +265,6 @@ export interface RegisterUserWithInstitutionsRequest {
   labName: string;
   labDepartment?: string;
   labCountry?: string;
-  labBuilding?: string;
-  labFloorNumber?: string;
 
   // Institution codes (required, 1+)
   institutionCodes: string[];

@@ -75,7 +75,7 @@ export async function bulkDeleteOrderRequests(
   const response = await client.request<{ deletedCount: number }>({
     method: 'POST',
     path: '/bulk-delete-requests',
-    body: { ItemIDs: orderRequestIds, view: view ?? 'current' },
+    body: { itemIds: orderRequestIds, view: view ?? 'current' },
   });
   return validateObjectResponse(response, 'bulkDeleteOrderRequests', ['deletedCount']) as {
     deletedCount: number;

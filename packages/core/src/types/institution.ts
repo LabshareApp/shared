@@ -308,7 +308,8 @@ export interface InstitutionMemberInfo extends InstitutionMembership {
     lastName: string;
     labId?: string;
   };
-  role?: InstitutionRole;
+  role?: InstitutionRole;            // Primary role (backward compat)
+  roles?: InstitutionRole[];         // All assigned roles (multi-role support)
   department?: Department;
   departmentIds?: string[];
   departments?: Department[];
@@ -327,14 +328,16 @@ export interface InstitutionDashboardOverview {
 }
 
 /**
- * Permission check for institution-level operations
+ * Permission check for institution-level operations.
+ * Supports multi-role: checks if ANY of the user's roles has the permission.
  */
 export function hasInstitutionPermission(
   membership: InstitutionMembership | null,
   role: InstitutionRole | null,
-  permission: InstitutionPermission
+  permission: InstitutionPermission,
+  roles?: InstitutionRole[] | null
 ): boolean {
-  if (!membership || !role) {
+  if (!membership) {
     return false;
   }
 
@@ -342,26 +345,56 @@ export function hasInstitutionPermission(
     return false;
   }
 
+  // Multi-role: check all roles
+  if (roles && roles.length > 0) {
+    return roles.some(r => r.permissions.includes(permission));
+  }
+
+  // Fallback: single role
+  if (!role) {
+    return false;
+  }
   return role.permissions.includes(permission);
 }
 
 /**
- * Check if user is institution admin
+ * Get aggregated permissions from all roles.
+ */
+export function getAggregatedPermissions(roles: InstitutionRole[]): Set<InstitutionPermission> {
+  const perms = new Set<InstitutionPermission>();
+  for (const role of roles) {
+    for (const p of role.permissions) {
+      perms.add(p);
+    }
+  }
+  return perms;
+}
+
+/**
+ * Check if user is institution admin (any of their roles)
  */
 export function isInstitutionAdmin(
   membership: InstitutionMembership | null,
-  role: InstitutionRole | null
+  role: InstitutionRole | null,
+  roles?: InstitutionRole[] | null
 ): boolean {
+  if (roles && roles.length > 0) {
+    return roles.some(r => r.name === 'institution_admin');
+  }
   return hasInstitutionPermission(membership, role, 'institution:admin');
 }
 
 /**
- * Check if user is department head
+ * Check if user is department head (any of their roles)
  */
 export function isDepartmentHead(
   membership: InstitutionMembership | null,
-  role: InstitutionRole | null
+  role: InstitutionRole | null,
+  roles?: InstitutionRole[] | null
 ): boolean {
+  if (roles && roles.length > 0) {
+    return roles.some(r => r.name === 'department_head');
+  }
   return hasInstitutionPermission(membership, role, 'department:admin');
 }
 
@@ -370,9 +403,10 @@ export function isDepartmentHead(
  */
 export function canApproveOrders(
   membership: InstitutionMembership | null,
-  role: InstitutionRole | null
+  role: InstitutionRole | null,
+  roles?: InstitutionRole[] | null
 ): boolean {
-  return hasInstitutionPermission(membership, role, 'department:approve_orders');
+  return hasInstitutionPermission(membership, role, 'department:approve_orders', roles);
 }
 
 // --- Institution Directory Types ---
@@ -548,6 +582,7 @@ export interface UpdateInstitutionRoleRequest {
   description?: string;
   permissions?: InstitutionPermission[];
 }
+
 
 export interface DeleteInstitutionRoleRequest {
   roleId: string;

@@ -154,7 +154,7 @@ function useInventoryMutations(client) {
                 if (!oldData)
                     return oldData;
                 const newPages = oldData.pages.map((p, idx) => {
-                    const updatedItems = p.items.filter((it) => { var _a; return ((_a = it._id) !== null && _a !== void 0 ? _a : it.id) !== itemId; });
+                    const updatedItems = p.items.filter((it) => it.id !== itemId);
                     return idx === 0
                         ? { ...p, items: updatedItems, totalCount: p.totalCount - 1 }
                         : { ...p, items: updatedItems };

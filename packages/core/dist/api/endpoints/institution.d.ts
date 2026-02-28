@@ -36,6 +36,7 @@ export declare function getInstitutionMembers(client: ApiClient, institutionId: 
  */
 export interface MyMembershipResponse extends InstitutionMembership {
     role?: InstitutionRole;
+    roles?: InstitutionRole[];
     departmentIds?: string[];
 }
 /**
@@ -122,11 +123,13 @@ export declare function registerUserWithInstitutions(baseUrl: string, data: Regi
  */
 export declare function validateInstitutionCodes(baseUrl: string, codes: string[]): Promise<InstitutionPublicInfo[]>;
 /**
- * Request to update an institution member's role
+ * Request to update an institution member's role(s)
+ * Supports both single roleName (backward compat) and roleNames[] (multi-role)
  */
 export interface UpdateInstitutionMemberRoleRequest {
     membershipId: string;
-    roleName: string;
+    roleName?: string;
+    roleNames?: string[];
     departmentId?: string;
     departmentIds?: string[];
 }

@@ -38,7 +38,7 @@ async function bulkDeleteOrderRequests(client, orderRequestIds, view) {
     const response = await client.request({
         method: 'POST',
         path: '/bulk-delete-requests',
-        body: { ItemIDs: orderRequestIds, view: view !== null && view !== void 0 ? view : 'current' },
+        body: { itemIds: orderRequestIds, view: view !== null && view !== void 0 ? view : 'current' },
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'bulkDeleteOrderRequests', ['deletedCount']);
 }

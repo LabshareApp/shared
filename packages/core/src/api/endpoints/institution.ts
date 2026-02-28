@@ -140,7 +140,8 @@ export async function getInstitutionMembers(
  * Response from getMyInstitutionMembership
  */
 export interface MyMembershipResponse extends InstitutionMembership {
-  role?: InstitutionRole;
+  role?: InstitutionRole;            // Primary role (backward compat)
+  roles?: InstitutionRole[];         // All assigned roles (multi-role)
   departmentIds?: string[];
 }
 
@@ -447,11 +448,13 @@ export async function validateInstitutionCodes(
 // --- Update Member Role ---
 
 /**
- * Request to update an institution member's role
+ * Request to update an institution member's role(s)
+ * Supports both single roleName (backward compat) and roleNames[] (multi-role)
  */
 export interface UpdateInstitutionMemberRoleRequest {
   membershipId: string;
-  roleName: string;
+  roleName?: string;           // Single role (backward compat)
+  roleNames?: string[];        // Multiple roles (multi-role support)
   departmentId?: string;
   departmentIds?: string[];
 }

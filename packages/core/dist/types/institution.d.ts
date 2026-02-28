@@ -238,6 +238,7 @@ export interface InstitutionMemberInfo extends InstitutionMembership {
         labId?: string;
     };
     role?: InstitutionRole;
+    roles?: InstitutionRole[];
     department?: Department;
     departmentIds?: string[];
     departments?: Department[];
@@ -254,21 +255,26 @@ export interface InstitutionDashboardOverview {
     totalGrants: number;
 }
 /**
- * Permission check for institution-level operations
+ * Permission check for institution-level operations.
+ * Supports multi-role: checks if ANY of the user's roles has the permission.
  */
-export declare function hasInstitutionPermission(membership: InstitutionMembership | null, role: InstitutionRole | null, permission: InstitutionPermission): boolean;
+export declare function hasInstitutionPermission(membership: InstitutionMembership | null, role: InstitutionRole | null, permission: InstitutionPermission, roles?: InstitutionRole[] | null): boolean;
 /**
- * Check if user is institution admin
+ * Get aggregated permissions from all roles.
  */
-export declare function isInstitutionAdmin(membership: InstitutionMembership | null, role: InstitutionRole | null): boolean;
+export declare function getAggregatedPermissions(roles: InstitutionRole[]): Set<InstitutionPermission>;
 /**
- * Check if user is department head
+ * Check if user is institution admin (any of their roles)
  */
-export declare function isDepartmentHead(membership: InstitutionMembership | null, role: InstitutionRole | null): boolean;
+export declare function isInstitutionAdmin(membership: InstitutionMembership | null, role: InstitutionRole | null, roles?: InstitutionRole[] | null): boolean;
+/**
+ * Check if user is department head (any of their roles)
+ */
+export declare function isDepartmentHead(membership: InstitutionMembership | null, role: InstitutionRole | null, roles?: InstitutionRole[] | null): boolean;
 /**
  * Check if user can approve orders for a department
  */
-export declare function canApproveOrders(membership: InstitutionMembership | null, role: InstitutionRole | null): boolean;
+export declare function canApproveOrders(membership: InstitutionMembership | null, role: InstitutionRole | null, roles?: InstitutionRole[] | null): boolean;
 /**
  * Department with its labs and members for the directory view
  */

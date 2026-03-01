@@ -472,8 +472,9 @@ export interface CollaborationHistoryResponse {
  * Request params for searching institution order requests
  */
 export interface InstitutionOrderRequestsParams {
-  view: 'current' | 'placed' | 'archived';
+  view: 'current' | 'approved' | 'placed' | 'archived';
   labIds?: string[];
+  departmentId?: string;
   query?: string;
   page?: number;
   limit?: number;
@@ -491,6 +492,9 @@ export interface InstitutionOrderRequest {
   units?: string;
   labId: string;
   labName?: string;
+  status?: string;
+  approvedBy?: string;
+  approvedAt?: string;
   createdAt: string;
   updatedAt?: string;
   urgency?: 'high' | 'medium' | 'low';
@@ -517,6 +521,7 @@ export interface InstitutionOrderRequestsResponse {
  */
 export interface InstitutionInventoryParams {
   labIds?: string[];
+  departmentId?: string;
   query?: string;
   page?: number;
   limit?: number;

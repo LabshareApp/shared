@@ -73,7 +73,7 @@ export interface SearchRequest {
   customGroupId?: string;
   query: SearchCriteria;
   globalSearchTerm?: string;
-  view?: 'current' | 'placed' | 'archived';
+  view?: 'current' | 'approved' | 'placed' | 'archived';
   selectedLabIds?: string[]; // For collaborator inventory filtering
 }
 

@@ -5,7 +5,7 @@ import { validateArrayResponse, validateObjectResponse } from '../../responseVal
 export async function fetchOrderRequests(
   client: ApiClient,
   labId: string,
-  view?: 'current' | 'placed' | 'archived'
+  view?: 'current' | 'approved' | 'placed' | 'archived'
 ): Promise<{ orderRequests: OrderRequestItem[]; totalCount: number }> {
   const response = await client.request<{ orderRequests: OrderRequestItem[]; totalCount: number }>({
     method: 'GET',
@@ -122,12 +122,13 @@ export async function getQuoteViewUrl(
 
 export type OrderRequestCounts = {
   current: number;
+  approved: number;
   placed: number;
   archived: number;
 };
 
 /**
- * Fetch counts of order requests for each view (current, placed, archived).
+ * Fetch counts of order requests for each view (current, approved, placed, archived).
  * Uses the dedicated /count-requests endpoint which is much cheaper than
  * fetching all orders just to count them.
  */
@@ -139,5 +140,5 @@ export async function fetchOrderRequestCounts(
     path: '/count-requests',
   });
 
-  return validateObjectResponse(response, 'fetchOrderRequestCounts', ['current', 'placed', 'archived']) as OrderRequestCounts;
+  return validateObjectResponse(response, 'fetchOrderRequestCounts', ['current', 'approved', 'placed', 'archived']) as OrderRequestCounts;
 }

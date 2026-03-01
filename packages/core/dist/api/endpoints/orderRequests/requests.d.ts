@@ -1,6 +1,6 @@
 import type { ApiClient } from '../../ApiClient';
 import type { OrderRequestItem, ReRequestOrderPayload } from '../../../types/orderRequests';
-export declare function fetchOrderRequests(client: ApiClient, labId: string, view?: 'current' | 'placed' | 'archived'): Promise<{
+export declare function fetchOrderRequests(client: ApiClient, labId: string, view?: 'current' | 'approved' | 'placed' | 'archived'): Promise<{
     orderRequests: OrderRequestItem[];
     totalCount: number;
 }>;
@@ -39,11 +39,12 @@ export declare function getQuoteViewUrl(client: ApiClient, s3Url: string): Promi
 }>;
 export type OrderRequestCounts = {
     current: number;
+    approved: number;
     placed: number;
     archived: number;
 };
 /**
- * Fetch counts of order requests for each view (current, placed, archived).
+ * Fetch counts of order requests for each view (current, approved, placed, archived).
  * Uses the dedicated /count-requests endpoint which is much cheaper than
  * fetching all orders just to count them.
  */

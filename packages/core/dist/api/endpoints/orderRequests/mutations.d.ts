@@ -9,13 +9,17 @@ export declare function updateOrderRequest(client: ApiClient, orderRequestId: st
     orderRequest: OrderRequestItem;
 }>;
 export declare function deleteOrderRequest(client: ApiClient, orderRequestId: string, view?: 'current' | 'placed' | 'archived'): Promise<void>;
-export declare function bulkDeleteOrderRequests(client: ApiClient, orderRequestIds: string[], view?: 'current' | 'placed' | 'archived'): Promise<{
+export declare function bulkDeleteOrderRequests(client: ApiClient, orderRequestIds: string[], view?: 'current' | 'approved' | 'placed' | 'archived'): Promise<{
     deletedCount: number;
 }>;
 export declare function moveOrderRequestToInventory(client: ApiClient, orderRequestId: string, quantity: number, locationId?: string): Promise<{
     id: string;
 }>;
 export declare function bulkMoveOrderRequestsToInventory(client: ApiClient, orderRequestIds: string[], locationId?: string): Promise<BulkOperationResult>;
+export declare function approveOrderRequest(client: ApiClient, orderRequestId: string): Promise<{
+    id: string;
+    message: string;
+}>;
 export declare function placeOrderRequest(client: ApiClient, payload: PlaceOrderPayload): Promise<{
     id: string;
 }>;

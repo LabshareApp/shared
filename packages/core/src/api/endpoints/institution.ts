@@ -542,6 +542,7 @@ export async function searchInstitutionOrderRequests(
     body: {
       view: params.view,
       labIds: params.labIds,
+      departmentId: params.departmentId,
       query: params.query,
       page: params.page ?? 1,
       limit: params.limit ?? 50,
@@ -564,6 +565,7 @@ export async function searchInstitutionInventory(
     query: { institutionId },
     body: {
       labIds: params.labIds,
+      departmentId: params.departmentId,
       query: params.query,
       page: params.page ?? 1,
       limit: params.limit ?? 50,
@@ -799,6 +801,21 @@ export async function resendInstitutionInvitation(
 // --- Institution Order Management ---
 
 /**
+ * Approve a pending order request at institution level
+ */
+export async function approveInstitutionOrder(
+  client: ApiClient,
+  data: { orderRequestId: string; labId: string; institutionId: string }
+): Promise<{ id: string; message: string }> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/approve-order',
+    body: data,
+  };
+  return client.request(request);
+}
+
+/**
  * Place an institution order (admin only)
  */
 export async function placeInstitutionOrder(
@@ -824,6 +841,91 @@ export async function revertInstitutionOrder(
     method: 'POST',
     path: '/institution/revert-order',
     body: data,
+  };
+  return client.request(request);
+}
+
+// --- Institution-Level Search: Tools ---
+
+export interface InstitutionToolsParams {
+  labIds?: string[];
+  departmentId?: string;
+  query?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface InstitutionToolsResponse {
+  tools: Record<string, unknown>[];
+  totalCount: number;
+}
+
+export async function searchInstitutionTools(
+  client: ApiClient,
+  institutionId: string,
+  params: InstitutionToolsParams
+): Promise<InstitutionToolsResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: `/institution/search-tools?institutionId=${encodeURIComponent(institutionId)}`,
+    body: params,
+  };
+  return client.request(request);
+}
+
+// --- Institution-Level Search: Invoices ---
+
+export interface InstitutionInvoicesParams {
+  labIds?: string[];
+  departmentId?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface InstitutionInvoicesResponse {
+  invoices: Record<string, unknown>[];
+  totalCount: number;
+}
+
+export async function searchInstitutionInvoices(
+  client: ApiClient,
+  institutionId: string,
+  params: InstitutionInvoicesParams
+): Promise<InstitutionInvoicesResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: `/institution/search-invoices?institutionId=${encodeURIComponent(institutionId)}`,
+    body: params,
+  };
+  return client.request(request);
+}
+
+// --- Institution-Level Search: Reservations ---
+
+export interface InstitutionReservationsParams {
+  labIds?: string[];
+  departmentId?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface InstitutionReservationsResponse {
+  reservations: Record<string, unknown>[];
+  totalCount: number;
+}
+
+export async function searchInstitutionReservations(
+  client: ApiClient,
+  institutionId: string,
+  params: InstitutionReservationsParams
+): Promise<InstitutionReservationsResponse> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: `/institution/search-reservations?institutionId=${encodeURIComponent(institutionId)}`,
+    body: params,
   };
   return client.request(request);
 }

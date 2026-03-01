@@ -239,6 +239,17 @@ export declare function resendInstitutionInvitation(client: ApiClient, data: {
     invitationId: string;
 }): Promise<void>;
 /**
+ * Approve a pending order request at institution level
+ */
+export declare function approveInstitutionOrder(client: ApiClient, data: {
+    orderRequestId: string;
+    labId: string;
+    institutionId: string;
+}): Promise<{
+    id: string;
+    message: string;
+}>;
+/**
  * Place an institution order (admin only)
  */
 export declare function placeInstitutionOrder(client: ApiClient, data: PlaceInstitutionOrderRequest): Promise<PlaceInstitutionOrderResponse>;
@@ -246,6 +257,43 @@ export declare function placeInstitutionOrder(client: ApiClient, data: PlaceInst
  * Revert an institution order back to current (admin only)
  */
 export declare function revertInstitutionOrder(client: ApiClient, data: RevertInstitutionOrderRequest): Promise<void>;
+export interface InstitutionToolsParams {
+    labIds?: string[];
+    departmentId?: string;
+    query?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+}
+export interface InstitutionToolsResponse {
+    tools: Record<string, unknown>[];
+    totalCount: number;
+}
+export declare function searchInstitutionTools(client: ApiClient, institutionId: string, params: InstitutionToolsParams): Promise<InstitutionToolsResponse>;
+export interface InstitutionInvoicesParams {
+    labIds?: string[];
+    departmentId?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+}
+export interface InstitutionInvoicesResponse {
+    invoices: Record<string, unknown>[];
+    totalCount: number;
+}
+export declare function searchInstitutionInvoices(client: ApiClient, institutionId: string, params: InstitutionInvoicesParams): Promise<InstitutionInvoicesResponse>;
+export interface InstitutionReservationsParams {
+    labIds?: string[];
+    departmentId?: string;
+    status?: string;
+    page?: number;
+    limit?: number;
+}
+export interface InstitutionReservationsResponse {
+    reservations: Record<string, unknown>[];
+    totalCount: number;
+}
+export declare function searchInstitutionReservations(client: ApiClient, institutionId: string, params: InstitutionReservationsParams): Promise<InstitutionReservationsResponse>;
 /**
  * Update institution profile (admin only)
  */

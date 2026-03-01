@@ -90,7 +90,7 @@ async function getQuoteViewUrl(client, s3Url) {
     return (0, responseValidation_1.validateObjectResponse)(response, 'getQuoteViewUrl', ['url', 'expiresAt']);
 }
 /**
- * Fetch counts of order requests for each view (current, placed, archived).
+ * Fetch counts of order requests for each view (current, approved, placed, archived).
  * Uses the dedicated /count-requests endpoint which is much cheaper than
  * fetching all orders just to count them.
  */
@@ -99,6 +99,6 @@ async function fetchOrderRequestCounts(client) {
         method: 'GET',
         path: '/count-requests',
     });
-    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchOrderRequestCounts', ['current', 'placed', 'archived']);
+    return (0, responseValidation_1.validateObjectResponse)(response, 'fetchOrderRequestCounts', ['current', 'approved', 'placed', 'archived']);
 }
 //# sourceMappingURL=requests.js.map

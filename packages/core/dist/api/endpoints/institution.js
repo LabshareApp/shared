@@ -46,8 +46,12 @@ exports.createInstitutionInvitation = createInstitutionInvitation;
 exports.listInstitutionInvitations = listInstitutionInvitations;
 exports.cancelInstitutionInvitation = cancelInstitutionInvitation;
 exports.resendInstitutionInvitation = resendInstitutionInvitation;
+exports.approveInstitutionOrder = approveInstitutionOrder;
 exports.placeInstitutionOrder = placeInstitutionOrder;
 exports.revertInstitutionOrder = revertInstitutionOrder;
+exports.searchInstitutionTools = searchInstitutionTools;
+exports.searchInstitutionInvoices = searchInstitutionInvoices;
+exports.searchInstitutionReservations = searchInstitutionReservations;
 exports.updateInstitutionProfile = updateInstitutionProfile;
 // --- Institution Endpoints ---
 /**
@@ -383,6 +387,7 @@ async function searchInstitutionOrderRequests(client, institutionId, params) {
         body: {
             view: params.view,
             labIds: params.labIds,
+            departmentId: params.departmentId,
             query: params.query,
             page: (_a = params.page) !== null && _a !== void 0 ? _a : 1,
             limit: (_b = params.limit) !== null && _b !== void 0 ? _b : 50,
@@ -401,6 +406,7 @@ async function searchInstitutionInventory(client, institutionId, params) {
         query: { institutionId },
         body: {
             labIds: params.labIds,
+            departmentId: params.departmentId,
             query: params.query,
             page: (_a = params.page) !== null && _a !== void 0 ? _a : 1,
             limit: (_b = params.limit) !== null && _b !== void 0 ? _b : 50,
@@ -549,6 +555,17 @@ async function resendInstitutionInvitation(client, data) {
 }
 // --- Institution Order Management ---
 /**
+ * Approve a pending order request at institution level
+ */
+async function approveInstitutionOrder(client, data) {
+    const request = {
+        method: 'POST',
+        path: '/institution/approve-order',
+        body: data,
+    };
+    return client.request(request);
+}
+/**
  * Place an institution order (admin only)
  */
 async function placeInstitutionOrder(client, data) {
@@ -567,6 +584,30 @@ async function revertInstitutionOrder(client, data) {
         method: 'POST',
         path: '/institution/revert-order',
         body: data,
+    };
+    return client.request(request);
+}
+async function searchInstitutionTools(client, institutionId, params) {
+    const request = {
+        method: 'POST',
+        path: `/institution/search-tools?institutionId=${encodeURIComponent(institutionId)}`,
+        body: params,
+    };
+    return client.request(request);
+}
+async function searchInstitutionInvoices(client, institutionId, params) {
+    const request = {
+        method: 'POST',
+        path: `/institution/search-invoices?institutionId=${encodeURIComponent(institutionId)}`,
+        body: params,
+    };
+    return client.request(request);
+}
+async function searchInstitutionReservations(client, institutionId, params) {
+    const request = {
+        method: 'POST',
+        path: `/institution/search-reservations?institutionId=${encodeURIComponent(institutionId)}`,
+        body: params,
     };
     return client.request(request);
 }

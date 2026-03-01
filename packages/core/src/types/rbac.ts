@@ -41,8 +41,7 @@ export type Permission =
   | 'groups:create_public'
   | 'groups:edit_all'
   | 'groups:delete_all'
-  // Lab settings permissions
-  | 'settings:view'
+  // Lab settings permissions (all users can view settings, only edit requires permission)
   | 'settings:edit'
   // Member management permissions
   | 'members:view'
@@ -67,6 +66,7 @@ export type Permission =
   // Invoice permissions
   | 'invoices:view'
   | 'invoices:create'
+  | 'invoices:edit'
   | 'invoices:send'
   | 'invoices:delete';
 
@@ -111,7 +111,6 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   'groups:create_public': 'Create public saved searches',
   'groups:edit_all': 'Edit all saved searches',
   'groups:delete_all': 'Delete any saved search',
-  'settings:view': 'View lab settings',
   'settings:edit': 'Edit lab settings',
   'members:view': 'View lab members',
   'members:invite': 'Invite new members',
@@ -131,6 +130,7 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   'sharing:approve': 'Approve/reject sharing requests',
   'invoices:view': 'View invoices',
   'invoices:create': 'Create invoices',
+  'invoices:edit': 'Edit invoices',
   'invoices:send': 'Send invoices',
   'invoices:delete': 'Delete invoices',
 };

@@ -6,6 +6,7 @@ exports.deleteOrderRequest = deleteOrderRequest;
 exports.bulkDeleteOrderRequests = bulkDeleteOrderRequests;
 exports.moveOrderRequestToInventory = moveOrderRequestToInventory;
 exports.bulkMoveOrderRequestsToInventory = bulkMoveOrderRequestsToInventory;
+exports.approveOrderRequest = approveOrderRequest;
 exports.placeOrderRequest = placeOrderRequest;
 exports.revertPlacedOrderRequest = revertPlacedOrderRequest;
 exports.bulkPlaceOrderRequests = bulkPlaceOrderRequests;
@@ -63,6 +64,14 @@ async function bulkMoveOrderRequestsToInventory(client, orderRequestIds, locatio
         body,
     });
     return (0, responseValidation_1.validateObjectResponse)(response, 'bulkMoveOrderRequestsToInventory', ['successCount', 'failureCount', 'errors']);
+}
+async function approveOrderRequest(client, orderRequestId) {
+    const response = await client.request({
+        method: 'POST',
+        path: '/approve-order-request',
+        body: { orderRequestId },
+    });
+    return (0, responseValidation_1.validateObjectResponse)(response, 'approveOrderRequest', ['id']);
 }
 async function placeOrderRequest(client, payload) {
     const { orderRequestId, unitCost, shippingCost, currency } = payload;

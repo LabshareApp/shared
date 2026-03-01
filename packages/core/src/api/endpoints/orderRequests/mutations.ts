@@ -70,7 +70,7 @@ export async function deleteOrderRequest(
 export async function bulkDeleteOrderRequests(
   client: ApiClient,
   orderRequestIds: string[],
-  view?: 'current' | 'placed' | 'archived'
+  view?: 'current' | 'approved' | 'placed' | 'archived'
 ): Promise<{ deletedCount: number }> {
   const response = await client.request<{ deletedCount: number }>({
     method: 'POST',
@@ -113,6 +113,18 @@ export async function bulkMoveOrderRequestsToInventory(
     body,
   });
   return validateObjectResponse(response, 'bulkMoveOrderRequestsToInventory', ['successCount', 'failureCount', 'errors']) as any;
+}
+
+export async function approveOrderRequest(
+  client: ApiClient,
+  orderRequestId: string
+): Promise<{ id: string; message: string }> {
+  const response = await client.request<{ id: string; message: string }>({
+    method: 'POST',
+    path: '/approve-order-request',
+    body: { orderRequestId },
+  });
+  return validateObjectResponse(response, 'approveOrderRequest', ['id']) as { id: string; message: string };
 }
 
 export async function placeOrderRequest(

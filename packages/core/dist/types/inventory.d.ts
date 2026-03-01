@@ -61,7 +61,7 @@ export interface SearchRequest {
     customGroupId?: string;
     query: SearchCriteria;
     globalSearchTerm?: string;
-    view?: 'current' | 'placed' | 'archived';
+    view?: 'current' | 'approved' | 'placed' | 'archived';
     selectedLabIds?: string[];
 }
 export interface PaginatedSearchResult<T> {

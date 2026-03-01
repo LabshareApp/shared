@@ -129,6 +129,8 @@ export interface ApprovalRecord {
 
 // --- Machines ---
 
+export type MachineOwnershipLevel = 'lab' | 'department';
+
 export interface Machine {
   id: string;
   labId: string;
@@ -142,6 +144,12 @@ export interface Machine {
   bufferMinutes?: number;
   availableHours?: AvailableHours;
   availableDays?: number[]; // 0=Sunday, 1=Monday, etc.
+  // Department-level ownership
+  ownershipLevel?: MachineOwnershipLevel;
+  departmentId?: string;
+  departmentName?: string;
+  institutionId?: string;
+  // Approval & Access
   requiresApproval: boolean;
   ownerUserId: string;
   approverUserIds?: string[]; // Per-machine super users who can approve
@@ -181,6 +189,11 @@ export interface CreateMachineData {
   consumables?: MachineConsumable[];
   hourlyRate?: number; // Cents per hour for billing (e.g., 5000 = $50/hr)
   imageUrl?: string;
+  // Department-level ownership
+  ownershipLevel?: MachineOwnershipLevel;
+  departmentId?: string;
+  departmentName?: string;
+  institutionId?: string;
 }
 
 export interface UpdateMachineData {

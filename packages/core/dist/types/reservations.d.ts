@@ -84,6 +84,7 @@ export interface ApprovalRecord {
     timestamp?: string;
     notes?: string;
 }
+export type MachineOwnershipLevel = 'lab' | 'department';
 export interface Machine {
     id: string;
     labId: string;
@@ -97,6 +98,10 @@ export interface Machine {
     bufferMinutes?: number;
     availableHours?: AvailableHours;
     availableDays?: number[];
+    ownershipLevel?: MachineOwnershipLevel;
+    departmentId?: string;
+    departmentName?: string;
+    institutionId?: string;
     requiresApproval: boolean;
     ownerUserId: string;
     approverUserIds?: string[];
@@ -135,6 +140,10 @@ export interface CreateMachineData {
     consumables?: MachineConsumable[];
     hourlyRate?: number;
     imageUrl?: string;
+    ownershipLevel?: MachineOwnershipLevel;
+    departmentId?: string;
+    departmentName?: string;
+    institutionId?: string;
 }
 export interface UpdateMachineData {
     name?: string;

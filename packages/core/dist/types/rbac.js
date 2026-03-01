@@ -36,7 +36,6 @@ exports.PERMISSION_LABELS = {
     'groups:create_public': 'Create public saved searches',
     'groups:edit_all': 'Edit all saved searches',
     'groups:delete_all': 'Delete any saved search',
-    'settings:view': 'View lab settings',
     'settings:edit': 'Edit lab settings',
     'members:view': 'View lab members',
     'members:invite': 'Invite new members',
@@ -56,6 +55,7 @@ exports.PERMISSION_LABELS = {
     'sharing:approve': 'Approve/reject sharing requests',
     'invoices:view': 'View invoices',
     'invoices:create': 'Create invoices',
+    'invoices:edit': 'Edit invoices',
     'invoices:send': 'Send invoices',
     'invoices:delete': 'Delete invoices',
 };

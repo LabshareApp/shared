@@ -488,7 +488,7 @@ async function deleteInstitutionRole(client, data) {
  * Get institution invitation details by invite code (public endpoint)
  */
 async function getInstitutionInvitationByCode(baseUrl, code) {
-    const response = await fetch(`${baseUrl}/repository/institution/invitation?code=${encodeURIComponent(code)}`, {
+    const response = await fetch(`${baseUrl}/repository/institution-invitation-by-code?code=${encodeURIComponent(code)}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });

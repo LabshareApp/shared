@@ -410,6 +410,7 @@ export interface InstitutionInvitationDetails {
     firstName: string;
     lastName: string;
     institutionId: string;
+    institutionCode?: string;
     institutionName: string;
     roleName: string;
     departmentNames?: string[];

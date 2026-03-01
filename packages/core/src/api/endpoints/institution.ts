@@ -696,7 +696,7 @@ export async function getInstitutionInvitationByCode(
   code: string
 ): Promise<InstitutionInvitationDetails> {
   const response = await fetch(
-    `${baseUrl}/repository/institution/invitation?code=${encodeURIComponent(code)}`,
+    `${baseUrl}/repository/institution-invitation-by-code?code=${encodeURIComponent(code)}`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },

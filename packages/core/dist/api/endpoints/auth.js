@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerUser = registerUser;
 exports.registerInstitutionUser = registerInstitutionUser;
 exports.registerWithInvitation = registerWithInvitation;
+exports.registerWithInstitutionInvitation = registerWithInstitutionInvitation;
 exports.lookupUsers = lookupUsers;
 exports.completeOAuthSignup = completeOAuthSignup;
 exports.completeOAuthInstitutionSignup = completeOAuthInstitutionSignup;
@@ -67,6 +68,30 @@ async function registerInstitutionUser(baseUrl, data) {
  */
 async function registerWithInvitation(baseUrl, data) {
     const response = await fetch(`${baseUrl}/repository/register-with-invitation`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Registration failed with status ${response.status}`);
+    }
+    return response.json();
+}
+/**
+ * Register a new user via institution invitation.
+ * Creates the auth user (email auto-confirmed), profile (no lab, signup_complete: true),
+ * institution membership with the invitation's role, assigns departments,
+ * and marks the invitation as accepted — all atomically.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param data - The registration data including invite code
+ * @returns The registration response with userId and institutionId
+ */
+async function registerWithInstitutionInvitation(baseUrl, data) {
+    const response = await fetch(`${baseUrl}/repository/register-with-institution-invitation`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

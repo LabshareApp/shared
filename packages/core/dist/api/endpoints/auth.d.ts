@@ -92,6 +92,37 @@ export interface RegisterWithInvitationResponse {
  */
 export declare function registerWithInvitation(baseUrl: string, data: RegisterWithInvitationRequest): Promise<RegisterWithInvitationResponse>;
 /**
+ * Request for institution-invitation-based user registration
+ */
+export interface RegisterWithInstitutionInvitationRequest {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    inviteCode: string;
+}
+/**
+ * Response from institution-invitation-based registration
+ */
+export interface RegisterWithInstitutionInvitationResponse {
+    userId: string;
+    institutionId: string;
+    email: string;
+    message: string;
+}
+/**
+ * Register a new user via institution invitation.
+ * Creates the auth user (email auto-confirmed), profile (no lab, signup_complete: true),
+ * institution membership with the invitation's role, assigns departments,
+ * and marks the invitation as accepted — all atomically.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param data - The registration data including invite code
+ * @returns The registration response with userId and institutionId
+ */
+export declare function registerWithInstitutionInvitation(baseUrl: string, data: RegisterWithInstitutionInvitationRequest): Promise<RegisterWithInstitutionInvitationResponse>;
+/**
  * User info for display purposes
  */
 export interface UserNameInfo {

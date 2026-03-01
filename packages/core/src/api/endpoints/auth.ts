@@ -173,6 +173,63 @@ export async function registerWithInvitation(
 }
 
 /**
+ * Request for institution-invitation-based user registration
+ */
+export interface RegisterWithInstitutionInvitationRequest {
+  // User credentials
+  email: string;
+  password: string;
+
+  // User profile data
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+
+  // Invitation
+  inviteCode: string;
+}
+
+/**
+ * Response from institution-invitation-based registration
+ */
+export interface RegisterWithInstitutionInvitationResponse {
+  userId: string;
+  institutionId: string;
+  email: string;
+  message: string;
+}
+
+/**
+ * Register a new user via institution invitation.
+ * Creates the auth user (email auto-confirmed), profile (no lab, signup_complete: true),
+ * institution membership with the invitation's role, assigns departments,
+ * and marks the invitation as accepted — all atomically.
+ *
+ * @param baseUrl - The base URL of the API server
+ * @param data - The registration data including invite code
+ * @returns The registration response with userId and institutionId
+ */
+export async function registerWithInstitutionInvitation(
+  baseUrl: string,
+  data: RegisterWithInstitutionInvitationRequest
+): Promise<RegisterWithInstitutionInvitationResponse> {
+  const response = await fetch(`${baseUrl}/repository/register-with-institution-invitation`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || `Registration failed with status ${response.status}`);
+  }
+
+  return response.json();
+}
+
+/**
  * User info for display purposes
  */
 export interface UserNameInfo {

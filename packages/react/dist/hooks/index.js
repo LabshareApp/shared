@@ -27,4 +27,5 @@ __exportStar(require("./reservations"), exports);
 __exportStar(require("./institution"), exports);
 __exportStar(require("./audit"), exports);
 __exportStar(require("./invoices"), exports);
+__exportStar(require("./tools"), exports);
 //# sourceMappingURL=index.js.map

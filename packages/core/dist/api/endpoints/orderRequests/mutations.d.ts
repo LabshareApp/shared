@@ -20,6 +20,10 @@ export declare function approveOrderRequest(client: ApiClient, orderRequestId: s
     id: string;
     message: string;
 }>;
+export declare function unapproveOrderRequest(client: ApiClient, orderRequestId: string): Promise<{
+    id: string;
+    message: string;
+}>;
 export declare function placeOrderRequest(client: ApiClient, payload: PlaceOrderPayload): Promise<{
     id: string;
 }>;

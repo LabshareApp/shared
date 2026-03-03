@@ -34,6 +34,7 @@ export async function fetchTools(
   if (params?.category) query.category = params.category;
   if (params?.search) query.search = params.search;
   if (params?.includeShared) query.includeShared = 'true';
+  if (params?.includeDeptTools) query.includeDeptTools = 'true';
 
   const response = await client.request<{
     tools: Tool[];

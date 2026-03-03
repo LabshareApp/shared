@@ -42,6 +42,8 @@ async function fetchTools(client, params) {
         query.search = params.search;
     if (params === null || params === void 0 ? void 0 : params.includeShared)
         query.includeShared = 'true';
+    if (params === null || params === void 0 ? void 0 : params.includeDeptTools)
+        query.includeDeptTools = 'true';
     const response = await client.request({
         method: 'GET',
         path: '/tools',

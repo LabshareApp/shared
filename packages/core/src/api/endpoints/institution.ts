@@ -948,3 +948,15 @@ export async function updateInstitutionProfile(
   };
   return client.request(request);
 }
+
+export async function reprovisionDepartmentHeads(
+  client: ApiClient,
+  institutionId: string
+): Promise<{ provisioned: number; message: string }> {
+  const request: ApiRequest = {
+    method: 'POST',
+    path: '/institution/reprovision-department-heads',
+    body: { institutionId },
+  };
+  return client.request(request);
+}

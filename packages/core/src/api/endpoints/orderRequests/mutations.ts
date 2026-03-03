@@ -127,6 +127,18 @@ export async function approveOrderRequest(
   return validateObjectResponse(response, 'approveOrderRequest', ['id']) as { id: string; message: string };
 }
 
+export async function unapproveOrderRequest(
+  client: ApiClient,
+  orderRequestId: string
+): Promise<{ id: string; message: string }> {
+  const response = await client.request<{ id: string; message: string }>({
+    method: 'POST',
+    path: '/unapprove-order-request',
+    body: { orderRequestId },
+  });
+  return validateObjectResponse(response, 'unapproveOrderRequest', ['id']) as { id: string; message: string };
+}
+
 export async function placeOrderRequest(
   client: ApiClient,
   payload: PlaceOrderPayload

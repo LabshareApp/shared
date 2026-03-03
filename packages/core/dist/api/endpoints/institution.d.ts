@@ -298,4 +298,8 @@ export declare function searchInstitutionReservations(client: ApiClient, institu
  * Update institution profile (admin only)
  */
 export declare function updateInstitutionProfile(client: ApiClient, institutionId: string, data: UpdateInstitutionProfileRequest): Promise<void>;
+export declare function reprovisionDepartmentHeads(client: ApiClient, institutionId: string): Promise<{
+    provisioned: number;
+    message: string;
+}>;
 //# sourceMappingURL=institution.d.ts.map

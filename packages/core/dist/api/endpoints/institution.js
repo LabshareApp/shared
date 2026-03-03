@@ -53,6 +53,7 @@ exports.searchInstitutionTools = searchInstitutionTools;
 exports.searchInstitutionInvoices = searchInstitutionInvoices;
 exports.searchInstitutionReservations = searchInstitutionReservations;
 exports.updateInstitutionProfile = updateInstitutionProfile;
+exports.reprovisionDepartmentHeads = reprovisionDepartmentHeads;
 // --- Institution Endpoints ---
 /**
  * Get all institutions the current user belongs to
@@ -621,6 +622,14 @@ async function updateInstitutionProfile(client, institutionId, data) {
         path: '/institution/update-profile',
         query: { institutionId },
         body: data,
+    };
+    return client.request(request);
+}
+async function reprovisionDepartmentHeads(client, institutionId) {
+    const request = {
+        method: 'POST',
+        path: '/institution/reprovision-department-heads',
+        body: { institutionId },
     };
     return client.request(request);
 }
